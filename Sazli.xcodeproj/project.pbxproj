@@ -1,0 +1,493 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A71AC0A87A17E53A2AEFE278 /* SampleRecipeImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2630BB7150297F13E5A09BA4 /* SampleRecipeImporter.swift */; };
+		20E26ED0A1CE04944B83E9AC /* RecipePresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8813CFD5083E2547D3B007E /* RecipePresentation.swift */; };
+		184F7BCB1781567618077B16 /* Sazli/Models/RecipeCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C2FD655FB1D0B3227D2464 /* Sazli/Models/RecipeCategory.swift */; };
+		26B0D41DFF4C7F7BA89120C2 /* Sazli/Models/Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BF8EB69F1F9A5C0DF909CBD /* Sazli/Models/Recipe.swift */; };
+		2B5B98B7EE583D5C110F15AF /* Sazli/Features/Settings/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FFFFB38A08E7744A2B3DE0 /* Sazli/Features/Settings/SettingsView.swift */; };
+		2C98B59E0BA1041BD03C36D8 /* Sazli/Services/RecipeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C36CE834F1A069691687D8 /* Sazli/Services/RecipeStore.swift */; };
+		3B37616500821ABDDE90BDD7 /* Sazli/App/SazliApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75823E54BB9FECD20D1FFAA /* Sazli/App/SazliApp.swift */; };
+		4D84E541B5348CC739D38AE3 /* Sazli/Services/RecipeDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2954AF9DB7405F10AF6E94 /* Sazli/Services/RecipeDraft.swift */; };
+		4E20D644BD5988AA3E491216 /* Sazli/Features/RecipeDetail/RecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D487BFF3FEB2C17A7A1B1F93 /* Sazli/Features/RecipeDetail/RecipeDetailView.swift */; };
+		54D589952FD1537BE017D97A /* Sazli/App/SazliTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0CCCDF20E90B997BC44BA0 /* Sazli/App/SazliTheme.swift */; };
+		5BEA0F7F6BC87C1D08CA95E7 /* SazliTests/SazliTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F770F5D27CBD372993B9A9 /* SazliTests/SazliTests.swift */; };
+		64EAD39AEA897C6D1A18A14B /* Sazli/Services/SourceLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C6C3D6B176C715FEA81B37 /* Sazli/Services/SourceLink.swift */; };
+		69F483DF528E2410E65FC5D0 /* Sazli/Components/PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8036ABC467B5CA585AE9D7E4 /* Sazli/Components/PrimaryButton.swift */; };
+		7667ABDBBCC436BACDB63E2D /* Sazli/Components/RatingStars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F752D0210D584250E79256 /* Sazli/Components/RatingStars.swift */; };
+		797E9ECD32676EA8782EB9DE /* Sazli/Services/CookingScreenSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4731645238092DCC91E8649 /* Sazli/Services/CookingScreenSession.swift */; };
+		8821E86BE7C8FE65EA9B4A82 /* Sazli/Resources/PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8805A8A343CA59074841E51A /* Sazli/Resources/PrivacyInfo.xcprivacy */; };
+		89DFA7A1ACD7833DE416DF15 /* Sazli/Features/Library/LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E96889FEA6562899D62F1D /* Sazli/Features/Library/LibraryView.swift */; };
+		8CB1EB07A724938459F96EF4 /* Sazli/Features/RecipeDetail/RecipeRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F48077561A6BBC6C1FA7F5 /* Sazli/Features/RecipeDetail/RecipeRatingView.swift */; };
+		99F72668FF2BF74EB3ECD8F9 /* Sazli/Components/IngredientRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66649371EDB411BD8535B7DA /* Sazli/Components/IngredientRow.swift */; };
+		ADDED10462E19DE151A5B468 /* Sazli/Services/RecipePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DCFB05B64350CE7333EDEA /* Sazli/Services/RecipePhoto.swift */; };
+		B9ADC5A8EECFE8FB8FD248D4 /* Sazli/Components/RecipeEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFC09FDDCCCD90C1355B906 /* Sazli/Components/RecipeEmptyState.swift */; };
+		B9ED66CAB0397B9A90B37722 /* Sazli/Features/RecipeEditor/PasteRecipeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B29EF852E65ABDAE3B1FA7D /* Sazli/Features/RecipeEditor/PasteRecipeTextView.swift */; };
+		BB5819E0E13DC5A957514786 /* Sazli/Features/RecipeEditor/RecipeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAD482A60A92102C1915E23 /* Sazli/Features/RecipeEditor/RecipeEditorView.swift */; };
+		D87CF044DBB1A9DB7C89772B /* Sazli/Components/RecipeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5DB5A11F25395BF7A668A5 /* Sazli/Components/RecipeCard.swift */; };
+		DF1DE33E16AD90043A35D945 /* Sazli/Features/CookingMode/CookingModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B09E8E83658F3303908DF3 /* Sazli/Features/CookingMode/CookingModeView.swift */; };
+		F0C85A5B7976CC9FB950A423 /* Sazli/Resources/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16A17B8CB6662468D691A7B9 /* Sazli/Resources/Assets.xcassets */; };
+		FD937798A2E9699C0B622CA7 /* Sazli/Services/RecipeText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4F0E43EF170924DBF5110E /* Sazli/Services/RecipeText.swift */; };
+		225D119B7FD78E7C91E3AE41 /* Sazli/Services/RecipeImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3C30067C32F85FAE40EBB5 /* Sazli/Services/RecipeImportParser.swift */; };
+		31ECD9C29DF73712799F48F6 /* Sazli/Services/RecipeImportInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E8BA77765F674F82563058 /* Sazli/Services/RecipeImportInbox.swift */; };
+		75499ABC4DC461642EE94ADF /* Sazli/Services/ImportRecipeIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3EFEC6AF2802AF7F8DAE2C5 /* Sazli/Services/ImportRecipeIntent.swift */; };
+		D45B085AE3FFA694637886F8 /* Sazli/Features/RecipeEditor/ImportRecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A44BFEDC33CFD9987DDD4C1 /* Sazli/Features/RecipeEditor/ImportRecipeView.swift */; };
+		170D749D30F803621DB07A07 /* Sazli/Features/RecipeEditor/RecipeImportHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3EC050A82E9403C0FE5F21 /* Sazli/Features/RecipeEditor/RecipeImportHelpView.swift */; };
+		3A798AB487D4E74B9AD47530 /* Sazli/Services/ChatGPTShareDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9072CF78200CBD57AE1000 /* Sazli/Services/ChatGPTShareDocument.swift */; };
+		869172E8F8F20CC7D5EE291E /* Sazli/Services/ChatGPTRecipeExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C748D994410B01D232DE5370 /* Sazli/Services/ChatGPTRecipeExtractor.swift */; };
+		AF76B23EE2009ABF84AEC2F3 /* Sazli/Features/RecipeEditor/ChatGPTShareWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D79CFF8FBDB28F5696A2F9 /* Sazli/Features/RecipeEditor/ChatGPTShareWebView.swift */; };
+		4A552E86612CDFFC07B52806 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8766A153E08A463AE3A6BC93 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift */; };
+		80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C054CCA038066234F5504F16; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D799BAE6088A90139B415FCC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C13732C8E715C9BEE4FA51C9;
+			remoteInfo = Sazli;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2630BB7150297F13E5A09BA4 /* SampleRecipeImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/SampleRecipeImporter.swift; sourceTree = SOURCE_ROOT; };
+		F8813CFD5083E2547D3B007E /* RecipePresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Components/RecipePresentation.swift; sourceTree = SOURCE_ROOT; };
+		06E96889FEA6562899D62F1D /* Sazli/Features/Library/LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/Library/LibraryView.swift; sourceTree = SOURCE_ROOT; };
+		0FFC09FDDCCCD90C1355B906 /* Sazli/Components/RecipeEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Components/RecipeEmptyState.swift; sourceTree = SOURCE_ROOT; };
+		16A17B8CB6662468D691A7B9 /* Sazli/Resources/Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Sazli/Resources/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		16F48077561A6BBC6C1FA7F5 /* Sazli/Features/RecipeDetail/RecipeRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/RecipeDetail/RecipeRatingView.swift; sourceTree = SOURCE_ROOT; };
+		20DCFB05B64350CE7333EDEA /* Sazli/Services/RecipePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/RecipePhoto.swift; sourceTree = SOURCE_ROOT; };
+		27B09E8E83658F3303908DF3 /* Sazli/Features/CookingMode/CookingModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/CookingMode/CookingModeView.swift; sourceTree = SOURCE_ROOT; };
+		37C6C3D6B176C715FEA81B37 /* Sazli/Services/SourceLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/SourceLink.swift; sourceTree = SOURCE_ROOT; };
+		3A2954AF9DB7405F10AF6E94 /* Sazli/Services/RecipeDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/RecipeDraft.swift; sourceTree = SOURCE_ROOT; };
+		5F4F0E43EF170924DBF5110E /* Sazli/Services/RecipeText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/RecipeText.swift; sourceTree = SOURCE_ROOT; };
+		66649371EDB411BD8535B7DA /* Sazli/Components/IngredientRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Components/IngredientRow.swift; sourceTree = SOURCE_ROOT; };
+		6BF8EB69F1F9A5C0DF909CBD /* Sazli/Models/Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Models/Recipe.swift; sourceTree = SOURCE_ROOT; };
+		6EAD482A60A92102C1915E23 /* Sazli/Features/RecipeEditor/RecipeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/RecipeEditor/RecipeEditorView.swift; sourceTree = SOURCE_ROOT; };
+		7D1043473D55BFA90E8530D3 /* Sazli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Sazli.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8036ABC467B5CA585AE9D7E4 /* Sazli/Components/PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Components/PrimaryButton.swift; sourceTree = SOURCE_ROOT; };
+		8805A8A343CA59074841E51A /* Sazli/Resources/PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Sazli/Resources/PrivacyInfo.xcprivacy; sourceTree = SOURCE_ROOT; };
+		8B29EF852E65ABDAE3B1FA7D /* Sazli/Features/RecipeEditor/PasteRecipeTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/RecipeEditor/PasteRecipeTextView.swift; sourceTree = SOURCE_ROOT; };
+		93F752D0210D584250E79256 /* Sazli/Components/RatingStars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Components/RatingStars.swift; sourceTree = SOURCE_ROOT; };
+		94F770F5D27CBD372993B9A9 /* SazliTests/SazliTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SazliTests/SazliTests.swift; sourceTree = SOURCE_ROOT; };
+		9C0CCCDF20E90B997BC44BA0 /* Sazli/App/SazliTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/App/SazliTheme.swift; sourceTree = SOURCE_ROOT; };
+		B2C36CE834F1A069691687D8 /* Sazli/Services/RecipeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/RecipeStore.swift; sourceTree = SOURCE_ROOT; };
+		B4731645238092DCC91E8649 /* Sazli/Services/CookingScreenSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Services/CookingScreenSession.swift; sourceTree = SOURCE_ROOT; };
+		C75823E54BB9FECD20D1FFAA /* Sazli/App/SazliApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/App/SazliApp.swift; sourceTree = SOURCE_ROOT; };
+		D487BFF3FEB2C17A7A1B1F93 /* Sazli/Features/RecipeDetail/RecipeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/RecipeDetail/RecipeDetailView.swift; sourceTree = SOURCE_ROOT; };
+		EF5DB5A11F25395BF7A668A5 /* Sazli/Components/RecipeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Components/RecipeCard.swift; sourceTree = SOURCE_ROOT; };
+		F1C2FD655FB1D0B3227D2464 /* Sazli/Models/RecipeCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Models/RecipeCategory.swift; sourceTree = SOURCE_ROOT; };
+		F219C0274590DA45E4BEF1EA /* SazliTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = SazliTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4FFFFB38A08E7744A2B3DE0 /* Sazli/Features/Settings/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sazli/Features/Settings/SettingsView.swift; sourceTree = SOURCE_ROOT; };
+		1A3C30067C32F85FAE40EBB5 /* Sazli/Services/RecipeImportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeImportParser.swift"; sourceTree = SOURCE_ROOT; };
+		F4E8BA77765F674F82563058 /* Sazli/Services/RecipeImportInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeImportInbox.swift"; sourceTree = SOURCE_ROOT; };
+		E3EFEC6AF2802AF7F8DAE2C5 /* Sazli/Services/ImportRecipeIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ImportRecipeIntent.swift"; sourceTree = SOURCE_ROOT; };
+		4A44BFEDC33CFD9987DDD4C1 /* Sazli/Features/RecipeEditor/ImportRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/RecipeEditor/ImportRecipeView.swift"; sourceTree = SOURCE_ROOT; };
+		3E3EC050A82E9403C0FE5F21 /* Sazli/Features/RecipeEditor/RecipeImportHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/RecipeEditor/RecipeImportHelpView.swift"; sourceTree = SOURCE_ROOT; };
+		CE9072CF78200CBD57AE1000 /* Sazli/Services/ChatGPTShareDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTShareDocument.swift"; sourceTree = SOURCE_ROOT; };
+		C748D994410B01D232DE5370 /* Sazli/Services/ChatGPTRecipeExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTRecipeExtractor.swift"; sourceTree = SOURCE_ROOT; };
+		D4D79CFF8FBDB28F5696A2F9 /* Sazli/Features/RecipeEditor/ChatGPTShareWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/RecipeEditor/ChatGPTShareWebView.swift"; sourceTree = SOURCE_ROOT; };
+		8766A153E08A463AE3A6BC93 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift"; sourceTree = SOURCE_ROOT; };
+		C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTShareTests.swift"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1ABF84E55BD30AC2CEF8FC42 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7561BFB015D8F536760CB671 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1BDBD24583AAF7F81F76B976 /* Sazli */ = {
+			isa = PBXGroup;
+			children = (
+				8766A153E08A463AE3A6BC93 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift */,
+				D4D79CFF8FBDB28F5696A2F9 /* Sazli/Features/RecipeEditor/ChatGPTShareWebView.swift */,
+				C748D994410B01D232DE5370 /* Sazli/Services/ChatGPTRecipeExtractor.swift */,
+				CE9072CF78200CBD57AE1000 /* Sazli/Services/ChatGPTShareDocument.swift */,
+				3E3EC050A82E9403C0FE5F21 /* Sazli/Features/RecipeEditor/RecipeImportHelpView.swift */,
+				4A44BFEDC33CFD9987DDD4C1 /* Sazli/Features/RecipeEditor/ImportRecipeView.swift */,
+				E3EFEC6AF2802AF7F8DAE2C5 /* Sazli/Services/ImportRecipeIntent.swift */,
+				F4E8BA77765F674F82563058 /* Sazli/Services/RecipeImportInbox.swift */,
+				1A3C30067C32F85FAE40EBB5 /* Sazli/Services/RecipeImportParser.swift */,
+				C75823E54BB9FECD20D1FFAA /* Sazli/App/SazliApp.swift */,
+				9C0CCCDF20E90B997BC44BA0 /* Sazli/App/SazliTheme.swift */,
+				66649371EDB411BD8535B7DA /* Sazli/Components/IngredientRow.swift */,
+				F8813CFD5083E2547D3B007E /* RecipePresentation.swift */,
+				8036ABC467B5CA585AE9D7E4 /* Sazli/Components/PrimaryButton.swift */,
+				93F752D0210D584250E79256 /* Sazli/Components/RatingStars.swift */,
+				EF5DB5A11F25395BF7A668A5 /* Sazli/Components/RecipeCard.swift */,
+				0FFC09FDDCCCD90C1355B906 /* Sazli/Components/RecipeEmptyState.swift */,
+				27B09E8E83658F3303908DF3 /* Sazli/Features/CookingMode/CookingModeView.swift */,
+				06E96889FEA6562899D62F1D /* Sazli/Features/Library/LibraryView.swift */,
+				D487BFF3FEB2C17A7A1B1F93 /* Sazli/Features/RecipeDetail/RecipeDetailView.swift */,
+				16F48077561A6BBC6C1FA7F5 /* Sazli/Features/RecipeDetail/RecipeRatingView.swift */,
+				8B29EF852E65ABDAE3B1FA7D /* Sazli/Features/RecipeEditor/PasteRecipeTextView.swift */,
+				6EAD482A60A92102C1915E23 /* Sazli/Features/RecipeEditor/RecipeEditorView.swift */,
+				F4FFFFB38A08E7744A2B3DE0 /* Sazli/Features/Settings/SettingsView.swift */,
+				6BF8EB69F1F9A5C0DF909CBD /* Sazli/Models/Recipe.swift */,
+				F1C2FD655FB1D0B3227D2464 /* Sazli/Models/RecipeCategory.swift */,
+				B4731645238092DCC91E8649 /* Sazli/Services/CookingScreenSession.swift */,
+				3A2954AF9DB7405F10AF6E94 /* Sazli/Services/RecipeDraft.swift */,
+				20DCFB05B64350CE7333EDEA /* Sazli/Services/RecipePhoto.swift */,
+				B2C36CE834F1A069691687D8 /* Sazli/Services/RecipeStore.swift */,
+				2630BB7150297F13E5A09BA4 /* SampleRecipeImporter.swift */,
+				5F4F0E43EF170924DBF5110E /* Sazli/Services/RecipeText.swift */,
+				37C6C3D6B176C715FEA81B37 /* Sazli/Services/SourceLink.swift */,
+				16A17B8CB6662468D691A7B9 /* Sazli/Resources/Assets.xcassets */,
+				8805A8A343CA59074841E51A /* Sazli/Resources/PrivacyInfo.xcprivacy */,
+			);
+			name = Sazli;
+			sourceTree = "<group>";
+		};
+		B28B7AF69320201D1CF206EB = {
+			isa = PBXGroup;
+			children = (
+				1BDBD24583AAF7F81F76B976 /* Sazli */,
+				BFC937463906E5DB7A02A37C /* SazliTests */,
+				FBDC4F23F93125BBEEAE800C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BFC937463906E5DB7A02A37C /* SazliTests */ = {
+			isa = PBXGroup;
+			children = (
+				C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */,
+				94F770F5D27CBD372993B9A9 /* SazliTests/SazliTests.swift */,
+			);
+			name = SazliTests;
+			sourceTree = "<group>";
+		};
+		FBDC4F23F93125BBEEAE800C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7D1043473D55BFA90E8530D3 /* Sazli.app */,
+				F219C0274590DA45E4BEF1EA /* SazliTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		64BCB755386F844C96A2A5B0 /* SazliTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 691DF7F039442FF5A771E663 /* Build configuration list for PBXNativeTarget "SazliTests" */;
+			buildPhases = (
+				6E431EB0650617AA1756B320 /* Sources */,
+				1ABF84E55BD30AC2CEF8FC42 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DE58E2B17C19600779694943 /* PBXTargetDependency */,
+			);
+			name = SazliTests;
+			productName = SazliTests;
+			productReference = F219C0274590DA45E4BEF1EA /* SazliTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C13732C8E715C9BEE4FA51C9 /* Sazli */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 211093B3B1F936BC80182959 /* Build configuration list for PBXNativeTarget "Sazli" */;
+			buildPhases = (
+				BCE16DD0260827ECF338C787 /* Sources */,
+				0189424A5A60FED329FA868E /* Resources */,
+				7561BFB015D8F536760CB671 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Sazli;
+			productName = Sazli;
+			productReference = 7D1043473D55BFA90E8530D3 /* Sazli.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		98F54143AB4E86B28C3AFEE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1700;
+			};
+			buildConfigurationList = 8E70B5292C2478FA2B77DC09 /* Build configuration list for PBXProject "Sazli" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B28B7AF69320201D1CF206EB;
+			productRefGroup = FBDC4F23F93125BBEEAE800C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C13732C8E715C9BEE4FA51C9 /* Sazli */,
+				64BCB755386F844C96A2A5B0 /* SazliTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0189424A5A60FED329FA868E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0C85A5B7976CC9FB950A423 /* Sazli/Resources/Assets.xcassets in Resources */,
+				8821E86BE7C8FE65EA9B4A82 /* Sazli/Resources/PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6E431EB0650617AA1756B320 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */,
+				5BEA0F7F6BC87C1D08CA95E7 /* SazliTests/SazliTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCE16DD0260827ECF338C787 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A552E86612CDFFC07B52806 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift in Sources */,
+				AF76B23EE2009ABF84AEC2F3 /* Sazli/Features/RecipeEditor/ChatGPTShareWebView.swift in Sources */,
+				869172E8F8F20CC7D5EE291E /* Sazli/Services/ChatGPTRecipeExtractor.swift in Sources */,
+				3A798AB487D4E74B9AD47530 /* Sazli/Services/ChatGPTShareDocument.swift in Sources */,
+				170D749D30F803621DB07A07 /* Sazli/Features/RecipeEditor/RecipeImportHelpView.swift in Sources */,
+				D45B085AE3FFA694637886F8 /* Sazli/Features/RecipeEditor/ImportRecipeView.swift in Sources */,
+				75499ABC4DC461642EE94ADF /* Sazli/Services/ImportRecipeIntent.swift in Sources */,
+				31ECD9C29DF73712799F48F6 /* Sazli/Services/RecipeImportInbox.swift in Sources */,
+				225D119B7FD78E7C91E3AE41 /* Sazli/Services/RecipeImportParser.swift in Sources */,
+				3B37616500821ABDDE90BDD7 /* Sazli/App/SazliApp.swift in Sources */,
+				54D589952FD1537BE017D97A /* Sazli/App/SazliTheme.swift in Sources */,
+				99F72668FF2BF74EB3ECD8F9 /* Sazli/Components/IngredientRow.swift in Sources */,
+				20E26ED0A1CE04944B83E9AC /* RecipePresentation.swift in Sources */,
+				69F483DF528E2410E65FC5D0 /* Sazli/Components/PrimaryButton.swift in Sources */,
+				7667ABDBBCC436BACDB63E2D /* Sazli/Components/RatingStars.swift in Sources */,
+				D87CF044DBB1A9DB7C89772B /* Sazli/Components/RecipeCard.swift in Sources */,
+				B9ADC5A8EECFE8FB8FD248D4 /* Sazli/Components/RecipeEmptyState.swift in Sources */,
+				DF1DE33E16AD90043A35D945 /* Sazli/Features/CookingMode/CookingModeView.swift in Sources */,
+				89DFA7A1ACD7833DE416DF15 /* Sazli/Features/Library/LibraryView.swift in Sources */,
+				4E20D644BD5988AA3E491216 /* Sazli/Features/RecipeDetail/RecipeDetailView.swift in Sources */,
+				8CB1EB07A724938459F96EF4 /* Sazli/Features/RecipeDetail/RecipeRatingView.swift in Sources */,
+				B9ED66CAB0397B9A90B37722 /* Sazli/Features/RecipeEditor/PasteRecipeTextView.swift in Sources */,
+				BB5819E0E13DC5A957514786 /* Sazli/Features/RecipeEditor/RecipeEditorView.swift in Sources */,
+				2B5B98B7EE583D5C110F15AF /* Sazli/Features/Settings/SettingsView.swift in Sources */,
+				26B0D41DFF4C7F7BA89120C2 /* Sazli/Models/Recipe.swift in Sources */,
+				184F7BCB1781567618077B16 /* Sazli/Models/RecipeCategory.swift in Sources */,
+				797E9ECD32676EA8782EB9DE /* Sazli/Services/CookingScreenSession.swift in Sources */,
+				4D84E541B5348CC739D38AE3 /* Sazli/Services/RecipeDraft.swift in Sources */,
+				ADDED10462E19DE151A5B468 /* Sazli/Services/RecipePhoto.swift in Sources */,
+				2C98B59E0BA1041BD03C36D8 /* Sazli/Services/RecipeStore.swift in Sources */,
+				A71AC0A87A17E53A2AEFE278 /* SampleRecipeImporter.swift in Sources */,
+				FD937798A2E9699C0B622CA7 /* Sazli/Services/RecipeText.swift in Sources */,
+				64EAD39AEA897C6D1A18A14B /* Sazli/Services/SourceLink.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DE58E2B17C19600779694943 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C13732C8E715C9BEE4FA51C9 /* Sazli */;
+			targetProxy = D799BAE6088A90139B415FCC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0F3D67935A4F199E058A017A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sazli.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sazli";
+			};
+			name = Debug;
+		};
+		20B70E15FDC36C625E57F658 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sazli.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sazli";
+			};
+			name = Release;
+		};
+		639A7CA24D39909E713B47F7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 62TPVT35FP;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		7082CC0B6FC1282FCEABD07A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 62TPVT35FP;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		89E1FD6268CC0F221A2BE178 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		E6DE6C99132752C914FEF632 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		211093B3B1F936BC80182959 /* Build configuration list for PBXNativeTarget "Sazli" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7082CC0B6FC1282FCEABD07A /* Debug */,
+				639A7CA24D39909E713B47F7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		691DF7F039442FF5A771E663 /* Build configuration list for PBXNativeTarget "SazliTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F3D67935A4F199E058A017A /* Debug */,
+				20B70E15FDC36C625E57F658 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8E70B5292C2478FA2B77DC09 /* Build configuration list for PBXProject "Sazli" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89E1FD6268CC0F221A2BE178 /* Debug */,
+				E6DE6C99132752C914FEF632 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+}
