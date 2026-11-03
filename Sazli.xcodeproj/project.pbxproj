@@ -46,6 +46,7 @@
 		80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C054CCA038066234F5504F16; };
 		D8B1FA1737025A9BB36B0CBF /* Sazli/Services/CookingTimerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B380D8769260CC3752D132D8; };
 		9A1D1D61F299BB54FC230964 /* Sazli/Services/CookingTimerNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF6632F9EDE4295D122FDAA; };
+		24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C67EED75DD86763E213FA8; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 		C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTShareTests.swift"; sourceTree = SOURCE_ROOT; };
 		B380D8769260CC3752D132D8 /* Sazli/Services/CookingTimerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerStore.swift"; sourceTree = SOURCE_ROOT; };
 		8DF6632F9EDE4295D122FDAA /* Sazli/Services/CookingTimerNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerNotifications.swift"; sourceTree = SOURCE_ROOT; };
+		27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CookingTimerTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 		BFC937463906E5DB7A02A37C /* SazliTests */ = {
 			isa = PBXGroup;
 			children = (
+				27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */,
 				C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */,
 				94F770F5D27CBD372993B9A9 /* SazliTests/SazliTests.swift */,
 			);
@@ -273,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */,
 				80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */,
 				5BEA0F7F6BC87C1D08CA95E7 /* SazliTests/SazliTests.swift in Sources */,
 			);
