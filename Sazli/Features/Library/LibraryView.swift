@@ -9,6 +9,8 @@ struct LibraryView: View {
   @State private var filter: LibraryFilter = .all
   @State private var showingEditor = false
   @State private var showingSettings = false
+  @State private var timerPresentation: CookingTimerState?
+  @State private var timerStore = CookingTimerStore.shared
   @State private var importPresentation: ImportPresentation?
   @State private var inbox = RecipeImportInbox.shared
   @State private var importError: String?
@@ -112,6 +114,9 @@ struct LibraryView: View {
     .navigationSplitViewStyle(.balanced)
     .sheet(isPresented: $showingEditor) { RecipeEditorView() }
     .sheet(isPresented: $showingSettings) { SettingsView() }
+    .sheet(item: $timerPresentation) { timer in
+      CookingTimerView(recipeID: timer.recipeID, recipeTitle: timer.recipeTitle, stepNumber: timer.stepNumber)
+    }
     .sheet(item: $importPresentation) { presentation in
       ImportRecipeView(request: presentation.request) { id in
         if let request = presentation.request { acknowledgeImport(request.id) }
@@ -150,6 +155,7 @@ struct LibraryView: View {
           filters
         }
       }
+      CookingTimerSummary { timerPresentation = timerStore.timer }
       if !inbox.pending.isEmpty {
         Button(action: reviewPendingImport) {
           HStack(spacing: 12) {
@@ -243,7 +249,8 @@ struct LibraryView: View {
   }
 
   private func reviewPendingImport() {
-    guard !showingEditor, !showingSettings, importPresentation == nil,
+    guard !showingEditor, !showingSettings, timerPresentation == nil, !timerStore.isUpdating,
+          importPresentation == nil,
           let request = inbox.pending.first else { return }
     if recipes.contains(where: { $0.id == request.id }) {
       // The recipe was saved before the app stopped, but its inbox file remains.

@@ -8,6 +8,8 @@ struct CookingModeView: View {
   let recipe: Recipe
   @State private var step = 0
   @State private var showingIngredients = false
+  @State private var showingTimer = false
+  @State private var timerStore = CookingTimerStore.shared
   @State private var preparedIngredients: Set<Int> = []
   @State private var screenSession = CookingScreenSession()
   @AccessibilityFocusState private var stepFocused: Bool
@@ -51,12 +53,22 @@ struct CookingModeView: View {
       .toolbar {
         ToolbarItem(placement: .cancellationAction) { Button("Close") { dismiss() } }
         ToolbarItem(placement: .topBarTrailing) {
+          Button { showingTimer = true } label: {
+            Image(systemName: "timer")
+          }
+          .accessibilityLabel("Cooking timer")
+          .disabled(steps.isEmpty)
+        }
+        ToolbarItem(placement: .topBarTrailing) {
           Button {
             showingIngredients = true
           } label: {
             Image(systemName: "list.bullet")
           }.accessibilityLabel("Show ingredients")
         }
+      }
+      .sheet(isPresented: $showingTimer) {
+        CookingTimerView(recipeID: recipe.id, recipeTitle: recipe.title, stepNumber: step + 1)
       }
       .sheet(isPresented: $showingIngredients) {
         NavigationStack {
@@ -99,9 +111,14 @@ struct CookingModeView: View {
       .padding(18)
       .background(SazliTheme.terracotta.opacity(0.07), in: RoundedRectangle(cornerRadius: 22))
       ScrollView {
-        RecipeStepCard(number: step + 1, text: steps[step], prominent: true)
-          .id(step)
-          .accessibilityFocused($stepFocused)
+        VStack(spacing: 16) {
+          if timerStore.timer != nil {
+            CookingTimerSummary { showingTimer = true }
+          }
+          RecipeStepCard(number: step + 1, text: steps[step], prominent: true)
+            .id(step)
+            .accessibilityFocused($stepFocused)
+        }
       }
       .defaultScrollAnchor(.top)
     }
