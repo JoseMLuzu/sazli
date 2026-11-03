@@ -140,3 +140,51 @@ New source files: `Services/ChatGPTShareDocument.swift`, `Services/ChatGPTRecipe
 
 
 Deployment note for this follow-up: selection of the connected iPhone destination was attempted, but native computer control began returning `cgWindowNotFound` for Xcode and Device Hub before the final run/install could be verified. The previous iPhone build remains the last confirmed physical-device deployment. The new public-share reader has been built and exercised on the simulator; installation on the physical iPhone is pending restored native UI access.
+
+
+## Compact library navigation bar — November 2, 2026
+
+Updated `LibraryView.swift` to use an inline native navigation bar. The 28-point brand logo and Sazli wordmark are centered together; the existing import and Settings actions stay on the trailing side. Removed the separate welcome block and large scrolling title, and moved the filters closer to the navigation bar. The bar uses the existing adaptive cream background. Recipe navigation, forms, pending imports, and persistence logic were not changed.
+
+The generic iOS Debug build passed. The compact dark-mode library was visually inspected on **iPhone 18 Pro, iOS 27.0** in Device Hub: a single brand row, both trailing actions, the existing pending-import banner, filters, and saved recipe cards were present. The temporary import view was closed without discarding its pending item. The persisted imported pasta recipe was still present among four saved recipes after launch.
+
+Updated the visual-system description in `ARCHITECTURE.md`. This is a presentation-only change; no additional unit tests were introduced. Full VoiceOver, maximum Dynamic Type, and all expanded/folded layout combinations remain in the broader manual checklist.
+
+Xcode also built, installed, and launched this update on the connected **iPhone 15, iOS 26.6** after the device was unlocked. The debug session attached successfully and Xcode reported **Running Sazli on iPhone de Jose manuel Luzuriaga**. Physical-device appearance was not captured through computer control.
+
+## Photo-grid library — November 2, 2026
+
+Updated `LibraryView.swift` and `RecipeCard.swift` to present a photo grid inspired by the supplied reference while keeping Sazli's adaptive palette. The library now includes a collection heading/count, an in-content search field with a clear action, category filters, a navigation-bar plus, and an ellipsis menu for importing and Settings. Cards show shaded full-bleed photos, overlaid titles, serving/time badges, and rating/favorite indicators. Two columns are used at pane widths of at least 340 points; narrower panes and accessibility text sizes use one. Native split navigation and persistence are unchanged.
+
+The final generic iOS Debug build passed. An earlier iteration was built and launched natively on **iPhone 18 Pro, iOS 27.0**: the two-column library, heading, search, navigation actions, saved records, and Settings route were visually checked. The explicit Debug sample importer reported four photo recipes added while keeping the four existing records. The simulator was temporarily switched from Dark to Light for photo review.
+
+Before final photo inspection, native control began returning `cgWindowNotFound` for both Device Hub and Xcode. The last rating-badge refinement has passed compilation but has not yet received native visual review. Search interaction, final light/dark photo inspection, restoring the simulator's previous Dark appearance, and deploying this grid update to the connected iPhone remain pending native access. No additional unit tests were introduced for this presentation-only change.
+
+## Library hierarchy and leading logo — November 2, 2026
+
+Updated `LibraryView.swift` to put only the brand logo on the leading side of the native navigation bar. The visible centered wordmark was removed; Sazli remains the logo's accessibility label. The stable Your recipes heading has a result count beneath it. Search and filters are grouped together, followed by a smaller pending-import row when needed, then the photo grid. The plus and ellipsis actions remain on the trailing side.
+
+Native access recovered during this follow-up. The final generic iOS Debug build passed, and Xcode built and launched the update on **iPhone 18 Pro, iOS 27.0**. Visually checked the final photo cards, leading logo, heading, grouped controls, and pending row in both Light and Dark. The simulator's original Dark appearance was restored. Searching for avocado returned one recipe; clearing restored all eight records. A photo card opened its detail and the native back action returned to the grid. The plus opened an empty new-recipe editor, which was canceled. The ellipsis menu exposed Import recipe and Settings, and Settings opened successfully. Favorites reduced the grid to the existing rated recipe with its star and heart visible; All restored the full grid. The pending import was closed without discarding it. These checks also complete the preceding photo-grid visual/search checks.
+
+Documentation changes are in `ARCHITECTURE.md` and this verification record. No model, store, or project/signing settings changed. Full VoiceOver, maximum Dynamic Type, and expanded Duo regression checks remain in the manual checklist.
+
+Xcode also built, installed, and launched the final update on the connected **iPhone 15, iOS 26.6**, using the existing development team. The fresh device debug process attached, and Xcode reported **Running Sazli on iPhone de Jose manuel Luzuriaga**. Physical-device appearance was not captured through computer control.
+
+## Ingredient search and recipe-detail cleanup — November 2, 2026
+
+Added name/ingredient search through `RecipeText.matchesSearch`, retaining category/favorites filtering. The query is a substring/phrase matched against either the title or stored ingredient text; surrounding whitespace, case, and accents are ignored. There is no translation, inferred ingredient data, or search of method/source/notes. Updated the search placeholder, accessibility label, and empty-state guidance.
+
+Reorganized recipe detail into photo, category/title/description, a single preparation/servings panel, ingredients/method, rating/notes, and original source. Sections have simpler headings, reading steps place a small number beside the text, and cooking retains its large step presentation. The native detail bar keeps Back and Favorite, with editing, rating, and confirmed deletion in an ellipsis menu. The fixed bottom action starts cooking or opens the existing editor when preparation steps are missing. Photo framing now follows its available width and exposes a descriptive accessibility label. Ingredient/method columns and accessibility stacking remain in place.
+
+Verification performed:
+
+- Eight direct checks of the actual Swift search helper passed, covering title and ingredient matches, uppercase, accents, whitespace, misses, and empty ingredients.
+- The native XCTest run on **iPhone 18 Pro, iOS 27.0**, completed at **15:42:11** with **20 tests passed, 0 failed, 0 skipped, and 0 test-action warnings**. It includes the new search test and the existing persistence/import regression suite.
+- The final generic iOS Debug build passed after the final presentation/accessibility refinements. Xcode also built and launched the final version on the simulator.
+- Searching for **olive oil** through the UI returned four saved recipes whose titles do not contain that phrase. Applying Breakfast reduced the results to one; returning to All restored four, and clearing the query restored all eight recipes.
+- Visually inspected the photo/detail overview in Light and Dark, compact method cards and notes in Dark, the no-photo/no-steps recipe, the source row's accessible label, and the detail options menu. The final photo accessibility label was present in the native tree. Restored the simulator's original Dark appearance afterward.
+- Opened/canceled the rating sheet. Opened/canceled the existing editor using Add preparation steps on a link-only recipe. Opened the deletion confirmation and dismissed it without deleting. Start cooking opened the large step view; Next step advanced from step 1/5 (20%) to 2/5 (40%), and Close returned to detail.
+
+Updated `LibraryView.swift`, `RecipeText.swift`, `RecipeEmptyState.swift`, `RecipeDetailView.swift`, `RecipePresentation.swift`, and `SazliTests.swift`, plus the English README, architecture, testing guide, and this record. The SwiftData schema/store, existing recipe content, signing settings, and external-service configuration are unchanged. Full VoiceOver, maximum Dynamic Type, expanded Duo regression, and oldest-supported-iOS acceptance remain manual checks.
+
+The final version was also built, installed, and launched on the connected **iPhone 15, iOS 26.6**, with the existing signing configuration. After native access was restored, Xcode showed the fresh physical-device process attached and **Running Sazli on iPhone de Jose manuel Luzuriaga**. Physical-device appearance was not captured through computer control.

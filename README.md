@@ -13,13 +13,13 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 
 ## What is included
 
-- A SwiftData library with title search, category filters, favorites, and empty states.
+- A SwiftData library with a two-column photo grid, name/ingredient search, category filters, favorites, and empty states. Search ignores case and accents. Narrow panes and accessibility text sizes use one column.
 - Create and edit recipes, including recipes containing only a title and an original link.
 - Ingredients and instructions stored as newline-separated text and presented as ingredient rows and numbered steps.
 - Optional photo selection through Apple's system Photos picker. Images are downsampled and stored locally.
 - Recipe detail, confirmed deletion, editable personal ratings, notes, and a “would make again” preference.
 - Cooking mode with large text, progress, previous/next controls, and an ingredient sheet. The previous idle-timer setting is restored when cooking closes or the app becomes inactive.
-- Refined recipe presentation with olive ingredient cards, numbered terracotta step cards, preparation/serving tiles, and a dedicated notes card. Cooking ingredients can be checked off with a separate preparation-progress indicator.
+- An organized recipe detail with a photo, category/title/description, grouped preparation/serving information, ingredient list, compact numbered steps, rating/notes, and original source. Favorite is directly accessible; editing, rating, and confirmed deletion are in the options menu. Recipes without steps offer an action to complete them. Cooking ingredients can be checked off with a separate preparation-progress indicator.
 - Whole-recipe text/link import with English and Spanish section parsing and editable review before saving. The existing field-level paste tool also remains available.
 - A local reader for supported public ChatGPT share pages, offering complete recipes for editable review without an API key or backend.
 - A native **Import recipe** Shortcuts action for sharing text and URLs into Sazli, with a durable pending inbox. One-time share-sheet shortcut setup is described in [importing recipes](docs/IMPORTING.md).
