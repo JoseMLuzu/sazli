@@ -47,6 +47,7 @@
 		D8B1FA1737025A9BB36B0CBF /* Sazli/Services/CookingTimerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B380D8769260CC3752D132D8; };
 		9A1D1D61F299BB54FC230964 /* Sazli/Services/CookingTimerNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF6632F9EDE4295D122FDAA; };
 		24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C67EED75DD86763E213FA8; };
+		09FA0FC1AE066813D508A1D0 /* Sazli/Features/CookingMode/CookingTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121067555167433016E19CB2; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +103,7 @@
 		B380D8769260CC3752D132D8 /* Sazli/Services/CookingTimerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerStore.swift"; sourceTree = SOURCE_ROOT; };
 		8DF6632F9EDE4295D122FDAA /* Sazli/Services/CookingTimerNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerNotifications.swift"; sourceTree = SOURCE_ROOT; };
 		27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CookingTimerTests.swift"; sourceTree = SOURCE_ROOT; };
+		121067555167433016E19CB2 /* Sazli/Features/CookingMode/CookingTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/CookingMode/CookingTimerView.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 		1BDBD24583AAF7F81F76B976 /* Sazli */ = {
 			isa = PBXGroup;
 			children = (
+				121067555167433016E19CB2 /* Sazli/Features/CookingMode/CookingTimerView.swift */,
 				8DF6632F9EDE4295D122FDAA /* Sazli/Services/CookingTimerNotifications.swift */,
 				B380D8769260CC3752D132D8 /* Sazli/Services/CookingTimerStore.swift */,
 				8766A153E08A463AE3A6BC93 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift */,
@@ -286,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09FA0FC1AE066813D508A1D0 /* Sazli/Features/CookingMode/CookingTimerView.swift in Sources */,
 				9A1D1D61F299BB54FC230964 /* Sazli/Services/CookingTimerNotifications.swift in Sources */,
 				D8B1FA1737025A9BB36B0CBF /* Sazli/Services/CookingTimerStore.swift in Sources */,
 				4A552E86612CDFFC07B52806 /* Sazli/Features/RecipeEditor/ChatGPTShareImportView.swift in Sources */,
