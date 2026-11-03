@@ -3,6 +3,7 @@
 ## Automated coverage
 
 - `SazliTests`: name/ingredient search (case, accents, whitespace, empty fields), URL/platform boundaries, unsafe and malformed links, minimal-recipe validation, newline presentation, disk-backed recipe lifecycle checks, bilingual import parsing, the App Intent handoff, and pending-inbox persistence/retry/failure behavior.
+- `CookingTimerTests`: deadline accuracy without ticks, pause/resume, running/paused/expired restoration, alert scheduling/cancellation through a fake, denied permission/recovery, failure reporting, duration bounds, formatting, and prevention of a second active timer.
 - `Scripts/check_persistence.sh`: compiles the real model/services and uses separate executable launches to verify durable create/edit/rate/favorite/photo/delete behavior. It also exercises link detection and draft validation.
 - Xcode's `build-for-testing` action checks that the app and XCTest target compile together. Executing XCTest requires a bootable simulator or an appropriately signed physical device.
 
@@ -25,6 +26,10 @@
 15. Cancel deletion and confirm the recipe remains. Confirm deletion on a disposable test recipe, relaunch, and confirm it stays deleted.
 
 For the refreshed cooking checklist, mark two ingredients prepared and confirm the count, progress bar, checkmarks, and strikethrough update. Fold Duo, open the ingredient sheet, and confirm the same selections. Uncheck one item there, unfold, and confirm the inline panel reflects the change while the current cooking step stays selected. Closing and reopening cooking should start a fresh checklist without changing the saved ingredient text.
+
+## Timer acceptance
+
+Start a short timer in cooking mode. Check editable minutes/seconds, presets, invalid zero/out-of-range values, and the first-use notification prompt. Verify the count changes while open, pauses without consuming time, and resumes from the same remainder. Change steps and leave cooking; check the same recipe/step timer remains available in the library. Relaunch while running, paused, and after expiry. Check foreground and background delivery, sound/lock-screen behavior on the physical iPhone, permission denial, and recovery after changing notification settings. Pausing/canceling must remove the scheduled alert, and starting another timer must not leave a second notification. Confirm controls remain usable with Dynamic Type, VoiceOver, a small screen, and Duo folding. See [timer behavior](COOKING_TIMER.md).
 
 ## Import acceptance
 

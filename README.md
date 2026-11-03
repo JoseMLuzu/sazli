@@ -19,6 +19,7 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 - Optional photo selection through Apple's system Photos picker. Images are downsampled and stored locally.
 - Recipe detail, confirmed deletion, editable personal ratings, notes, and a “would make again” preference.
 - Cooking mode with large text, progress, previous/next controls, and an ingredient sheet. The previous idle-timer setting is restored when cooking closes or the app becomes inactive.
+- A local cooking timer with editable minutes/seconds, pause/resume/cancel, saved state across app restarts, optional local notification alerts. An active timer remains accessible from the library. See [cooking timer](docs/COOKING_TIMER.md).
 - An organized recipe detail with a photo, category/title/description, grouped preparation/serving information, ingredient list, compact numbered steps, rating/notes, and original source. Favorite is directly accessible; editing, rating, and confirmed deletion are in the options menu. Recipes without steps offer an action to complete them. Cooking ingredients can be checked off with a separate preparation-progress indicator.
 - Whole-recipe text/link import with English and Spanish section parsing and editable review before saving. The existing field-level paste tool also remains available.
 - A local reader for supported public ChatGPT share pages, offering complete recipes for editable review without an API key or backend.
