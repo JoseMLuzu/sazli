@@ -69,7 +69,7 @@ protocol CookingTimerNotifying {
 /// A single device-local timer, independent of recipe persistence and view lifetimes.
 @MainActor @Observable
 final class CookingTimerStore {
-  static let shared = CookingTimerStore()
+  static let shared = CookingTimerStore(activity: CookingTimerLiveActivity.shared)
   static let storageKey = "cookingTimer.v1"
   private(set) var timer: CookingTimerState?
   private(set) var isUpdating = false
@@ -77,13 +77,17 @@ final class CookingTimerStore {
   @ObservationIgnored private let defaults: UserDefaults
   @ObservationIgnored private let notifications: any CookingTimerNotifying
   @ObservationIgnored private let now: () -> Date
+  @ObservationIgnored private let activity: (any CookingTimerActivityUpdating)?
+  @ObservationIgnored private var activityExpiryTask: Task<Void, Never>?
 
   init(defaults: UserDefaults = .standard,
        notifications: any CookingTimerNotifying = CookingTimerNotifications.shared,
+       activity: (any CookingTimerActivityUpdating)? = nil,
        now: @escaping () -> Date = Date.init) {
     self.defaults = defaults
     self.notifications = notifications
     self.now = now
+    self.activity = activity
     if let data = defaults.data(forKey: Self.storageKey) {
       do {
         let restored = try JSONDecoder().decode(CookingTimerState.self, from: data)
@@ -107,14 +111,18 @@ final class CookingTimerStore {
                                      stepNumber: stepNumber, seconds: seconds, now: now())
     guard save(candidate) else { return }
     await scheduleIfAllowed(allowed)
+    await synchronizeActivity(requestIfNeeded: true)
   }
 
-  func pause() {
+  func pause() async {
     guard !isUpdating, var candidate = timer, candidate.deadline != nil else { return }
+    isUpdating = true
+    defer { isUpdating = false }
     candidate.pause(at: now())
     guard save(candidate) else { return }
     notifications.remove()
     notice = nil
+    await synchronizeActivity()
   }
 
   func resume() async {
@@ -125,14 +133,41 @@ final class CookingTimerStore {
     candidate.resume(at: now())
     guard save(candidate) else { return }
     await scheduleIfAllowed(allowed)
+    await synchronizeActivity()
   }
 
-  func cancel() {
+  func cancel() async {
     guard !isUpdating else { return }
+    isUpdating = true
+    defer { isUpdating = false }
     notifications.remove()
     defaults.removeObject(forKey: Self.storageKey)
     timer = nil
     notice = nil
+    await synchronizeActivity()
+  }
+
+  func refreshLiveActivity() async {
+    guard !isUpdating, activity != nil else { return }
+    isUpdating = true
+    defer { isUpdating = false }
+    await synchronizeActivity()
+  }
+
+  private func synchronizeActivity(requestIfNeeded: Bool = false) async {
+    activityExpiryTask?.cancel()
+    guard let activity else { return }
+    await activity.synchronize(timer, now: now(), requestIfNeeded: requestIfNeeded)
+    if let timer, timer.phase(at: now()) == .running {
+      let remaining = timer.remaining(at: now())
+      activityExpiryTask = Task { [weak self] in
+        do { try await Task.sleep(for: .seconds(remaining)) }
+        catch { return }
+        guard !Task.isCancelled, let self else { return }
+        self.activityExpiryTask = nil
+        await self.refreshLiveActivity()
+      }
+    }
   }
 
   func refreshAlertStatus() async {

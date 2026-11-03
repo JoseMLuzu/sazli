@@ -2,6 +2,67 @@ import XCTest
 @testable import Sazli
 
 final class CookingTimerTests: XCTestCase {
+  @MainActor func testLiveActivityFollowsStartPauseResumeAndCancelWithoutNotificationPermission() async throws {
+    let fixture = fixture()
+    defer { fixture.defaults.removePersistentDomain(forName: fixture.name) }
+    fixture.alerts.allowed = false
+    let activity = TimerActivityFake()
+    var now = Date(timeIntervalSince1970: 5_000)
+    let store = CookingTimerStore(defaults: fixture.defaults, notifications: fixture.alerts,
+                                  activity: activity, now: { now })
+    await store.start(recipeID: UUID(), title: "Soup", stepNumber: 2, seconds: 120)
+    XCTAssertEqual(activity.latest?.phase, .running)
+    XCTAssertEqual(activity.requests, [true])
+    now = now.addingTimeInterval(30)
+    await store.pause()
+    XCTAssertEqual(activity.latest?.phase, .paused)
+    XCTAssertEqual(activity.latest?.remainingSeconds, 90)
+    XCTAssertNil(activity.latest?.deadline)
+    now = now.addingTimeInterval(300)
+    await store.resume()
+    XCTAssertEqual(activity.latest?.deadline, now.addingTimeInterval(90))
+    XCTAssertEqual(activity.requests, [true, false, false])
+    await store.cancel()
+    XCTAssertEqual(activity.requests, [true, false, false, false])
+    XCTAssertNil(activity.latest)
+    XCTAssertNil(store.timer)
+  }
+
+  @MainActor func testLiveActivityRestoreAndExpiryDoNotRequestAnotherActivity() async {
+    let fixture = fixture()
+    defer { fixture.defaults.removePersistentDomain(forName: fixture.name) }
+    let activity = TimerActivityFake()
+    var now = Date(timeIntervalSince1970: 6_000)
+    let original = CookingTimerStore(defaults: fixture.defaults, notifications: fixture.alerts, now: { now })
+    await original.start(recipeID: UUID(), title: "Rice", stepNumber: 1, seconds: 60)
+    let restored = CookingTimerStore(defaults: fixture.defaults, notifications: fixture.alerts,
+                                     activity: activity, now: { now })
+    now = now.addingTimeInterval(20)
+    await restored.refreshLiveActivity()
+    XCTAssertEqual(activity.latest?.remainingSeconds, 40)
+    XCTAssertEqual(activity.requests, [false])
+    now = now.addingTimeInterval(100)
+    await restored.refreshLiveActivity()
+    XCTAssertEqual(activity.latest?.phase, .finished)
+    XCTAssertEqual(activity.latest?.remainingSeconds, 0)
+    XCTAssertEqual(activity.requests, [false, false])
+    await restored.cancel()
+  }
+
+  func testLiveActivityContentHasStableRangeAndFrozenPausedReadout() {
+    let now = Date(timeIntervalSince1970: 7_000)
+    var timer = CookingTimerState(recipeID: UUID(), recipeTitle: "Roast", stepNumber: 1,
+                                  seconds: 3_661, now: now)
+    let running = timer.activityContent(at: now.addingTimeInterval(61))
+    XCTAssertEqual(running.countdownRange, now...now.addingTimeInterval(3_661))
+    XCTAssertEqual(running.remainingSeconds, 3_600)
+    timer.pause(at: now.addingTimeInterval(61))
+    let paused = timer.activityContent(at: now.addingTimeInterval(500))
+    XCTAssertNil(paused.countdownRange)
+    XCTAssertEqual(paused.formattedRemaining, "01:00:00")
+    XCTAssertEqual(paused.phase, .paused)
+  }
+
   func testDeadlineSurvivesMissedTicksAndPauseDoesNotConsumeTime() {
     let start = Date(timeIntervalSince1970: 1_000)
     var timer = CookingTimerState(recipeID: UUID(), recipeTitle: "Soup", stepNumber: 2,
@@ -44,7 +105,7 @@ final class CookingTimerTests: XCTestCase {
     let store = CookingTimerStore(defaults: fixture.defaults, notifications: fixture.alerts, now: { now })
     await store.start(recipeID: UUID(), title: "Rice", stepNumber: 1, seconds: 100)
     now = now.addingTimeInterval(25)
-    store.pause()
+    await store.pause()
     XCTAssertEqual(fixture.alerts.removals, 1)
     XCTAssertFalse(try XCTUnwrap(store.timer).hasScheduledAlert)
     now = now.addingTimeInterval(500)
@@ -54,7 +115,7 @@ final class CookingTimerTests: XCTestCase {
     await reopened.resume()
     XCTAssertEqual(reopened.timer?.deadline, now.addingTimeInterval(75))
     XCTAssertEqual(fixture.alerts.scheduled.count, 2)
-    reopened.cancel()
+    await reopened.cancel()
     XCTAssertEqual(fixture.alerts.removals, 2)
     XCTAssertNil(reopened.timer)
     XCTAssertNil(fixture.defaults.data(forKey: CookingTimerStore.storageKey))
@@ -120,6 +181,16 @@ final class CookingTimerTests: XCTestCase {
   @MainActor private func fixture() -> (name: String, defaults: UserDefaults, alerts: TimerNotificationsFake) {
     let name = "SazliTimerTests.\(UUID().uuidString)"
     return (name, UserDefaults(suiteName: name)!, TimerNotificationsFake())
+  }
+}
+
+@MainActor private final class TimerActivityFake: CookingTimerActivityUpdating {
+  var states: [CookingTimerAttributes.ContentState?] = []
+  var requests: [Bool] = []
+  var latest: CookingTimerAttributes.ContentState? { states.last ?? nil }
+  func synchronize(_ timer: CookingTimerState?, now: Date, requestIfNeeded: Bool) async {
+    states.append(timer?.activityContent(at: now))
+    requests.append(requestIfNeeded)
   }
 }
 

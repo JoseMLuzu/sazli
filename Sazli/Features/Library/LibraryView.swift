@@ -129,9 +129,17 @@ struct LibraryView: View {
     .alert("Recipe import", isPresented: Binding(
       get: { importError != nil }, set: { if !$0 { importError = nil } }
     )) { Button("OK") { importError = nil } } message: { Text(importError ?? "") }
-    .task { refreshImportInbox() }
+    .task {
+      await timerStore.refreshLiveActivity()
+      refreshImportInbox()
+    }
     .onChange(of: scenePhase) { _, phase in
-      if phase == .active { refreshImportInbox() }
+      if phase == .active {
+        Task {
+          await timerStore.refreshLiveActivity()
+          refreshImportInbox()
+        }
+      }
     }
     .onChange(of: inbox.pending.first?.id, initial: true) { _, id in
       if id != nil { reviewPendingImport() }

@@ -120,14 +120,16 @@ struct CookingTimerView: View {
       }
       .padding(24).frame(maxWidth: .infinity).recipePanel()
       if phase == .finished {
-        PrimaryButton(title: "Dismiss timer", symbol: "checkmark") { store.cancel(); dismiss() }
+        PrimaryButton(title: "Dismiss timer", symbol: "checkmark") {
+          Task { await store.cancel(); dismiss() }
+        }
       } else {
         PrimaryButton(title: phase == .paused ? "Resume timer" : "Pause timer",
                       symbol: phase == .paused ? "play.fill" : "pause.fill") {
           if phase == .paused { Task { await store.resume() } }
-          else { store.pause() }
+          else { Task { await store.pause() } }
         }
-        Button("Cancel timer", role: .destructive) { store.cancel() }
+        Button("Cancel timer", role: .destructive) { Task { await store.cancel() } }
           .frame(minHeight: 44)
         if phase == .running {
           Text(timer.hasScheduledAlert && store.notice == nil
