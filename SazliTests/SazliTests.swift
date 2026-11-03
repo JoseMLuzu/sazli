@@ -4,6 +4,19 @@ import UIKit
 @testable import Sazli
 
 final class SazliTests: XCTestCase {
+    func testSearchFindsTitlesAndIngredientsAcrossCaseAndAccents() {
+        let title = "Weeknight bowl"
+        let ingredients = "200 g chicken\n1 limón\nOlive oil"
+        XCTAssertTrue(RecipeText.matchesSearch("bowl", title: title, ingredients: ingredients))
+        XCTAssertTrue(RecipeText.matchesSearch("CHICKEN", title: title, ingredients: ingredients))
+        XCTAssertTrue(RecipeText.matchesSearch("limon", title: title, ingredients: ingredients))
+        XCTAssertTrue(RecipeText.matchesSearch("  olive oil\n", title: title, ingredients: ingredients))
+        XCTAssertTrue(RecipeText.matchesSearch(" \n ", title: title, ingredients: ingredients))
+        XCTAssertFalse(RecipeText.matchesSearch("tomato", title: title, ingredients: ingredients))
+        XCTAssertTrue(RecipeText.matchesSearch("link", title: "Saved link", ingredients: ""))
+        XCTAssertFalse(RecipeText.matchesSearch("salt", title: "Saved link", ingredients: ""))
+    }
+
     @MainActor func testImportIntentQueuesOriginalTextForReview() async throws {
         let text = "Intent test \(UUID().uuidString)\nIngredients:\n2 eggs\nInstructions:\nBeat the eggs."
         let intent = ImportRecipeIntent()

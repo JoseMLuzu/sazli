@@ -14,7 +14,7 @@ struct RecipeEmptyState: View {
                 .accessibilityHidden(true)
             Text(isSearching ? "Nothing here just yet" : "Good food starts here")
                 .font(.title2.weight(.semibold))
-            Text(isSearching ? "Try another name or filter to find a recipe." : "Save a family favorite, a new discovery, or just a link for later.")
+            Text(isSearching ? "Try another name, ingredient, or filter to find a recipe." : "Save a family favorite, a new discovery, or just a link for later.")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)

@@ -23,9 +23,7 @@ struct LibraryView: View {
 
   private var filteredRecipes: [Recipe] {
     recipes.filter { recipe in
-      (search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        || recipe.title.localizedStandardContains(
-          search.trimmingCharacters(in: .whitespacesAndNewlines)))
+      RecipeText.matchesSearch(search, title: recipe.title, ingredients: recipe.ingredients)
         && filter.includes(recipe)
     }
   }
@@ -216,14 +214,14 @@ struct LibraryView: View {
     HStack(spacing: 10) {
       Image(systemName: "magnifyingglass")
         .foregroundStyle(.secondary).accessibilityHidden(true)
-      TextField("Search recipes", text: $search)
+      TextField("Recipes or ingredients", text: $search)
         .font(.subheadline)
         .focused($searchFocused)
         .submitLabel(.search)
         .textInputAutocapitalization(.never)
         .autocorrectionDisabled()
         .onSubmit { searchFocused = false }
-        .accessibilityLabel("Search recipes by name")
+        .accessibilityLabel("Search recipes by name or ingredient")
       if !search.isEmpty {
         Button { search = "" } label: {
           Image(systemName: "xmark.circle.fill")
