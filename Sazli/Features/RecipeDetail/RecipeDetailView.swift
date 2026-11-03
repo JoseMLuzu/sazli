@@ -24,23 +24,38 @@ struct RecipeDetailView: View {
       }
     }
     .sazliScreen()
-    .navigationTitle("Recipe").navigationBarTitleDisplayMode(.inline)
+    .navigationTitle("").navigationBarTitleDisplayMode(.inline)
+    .toolbarBackground(SazliTheme.background, for: .navigationBar)
+    .toolbarBackground(.visible, for: .navigationBar)
     .toolbar {
       ToolbarItemGroup(placement: .topBarTrailing) {
         Button(action: toggleFavorite) {
           Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
         }
         .accessibilityLabel(recipe.isFavorite ? "Remove from favorites" : "Add to favorites")
-        Button("Edit") { showingEditor = true }
+        Menu {
+          Button { showingEditor = true } label: {
+            Label("Edit recipe", systemImage: "pencil")
+          }
+          Button { showingRating = true } label: {
+            Label("Rating & notes", systemImage: "star")
+          }
+          Divider()
+          Button(role: .destructive) { confirmingDelete = true } label: {
+            Label("Delete recipe", systemImage: "trash")
+          }
+        } label: {
+          Image(systemName: "ellipsis")
+        }
+        .accessibilityLabel("Recipe options")
       }
     }
     .safeAreaInset(edge: .bottom) {
-      VStack(spacing: 6) {
-        PrimaryButton(title: "Let's cook", symbol: "fork.knife") { showingCooking = true }
-          .disabled(recipe.instructionLines.isEmpty)
+      Group {
         if recipe.instructionLines.isEmpty {
-          Text("Add preparation steps to start cooking.")
-            .font(.caption).foregroundStyle(.secondary)
+          PrimaryButton(title: "Add preparation steps", symbol: "pencil") { showingEditor = true }
+        } else {
+          PrimaryButton(title: "Start cooking", symbol: "fork.knife") { showingCooking = true }
         }
       }
       .frame(maxWidth: SazliLayout.actionWidth)
@@ -77,52 +92,57 @@ struct RecipeDetailView: View {
       ? AnyLayout(HStackLayout(alignment: .top, spacing: 32))
       : AnyLayout(VStackLayout(alignment: .leading, spacing: 24))
 
-    return VStack(alignment: .leading, spacing: 24) {
+    return VStack(alignment: .leading, spacing: 28) {
       if let data = recipe.imageData, let image = UIImage(data: data) {
-        Image(uiImage: image).resizable().scaledToFill()
-          .frame(height: 240).frame(maxWidth: .infinity).clipped()
-          .clipShape(RoundedRectangle(cornerRadius: 26))
-          .accessibilityLabel("Photo of \(recipe.title)")
+        GeometryReader { photoGeometry in
+          Image(uiImage: image).resizable().scaledToFill()
+            .frame(width: photoGeometry.size.width, height: photoGeometry.size.height)
+            .clipped()
+        }
+        .frame(height: min(max(width * 0.6, 200), 320))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Photo of \(recipe.title)")
+        .accessibilityAddTraits(.isImage)
       }
       introduction
-      if !recipe.recipeDescription.isEmpty {
-        Text(recipe.recipeDescription).foregroundStyle(.secondary).lineSpacing(4)
-      }
       layout {
         ingredientsCard
         methodSection
       }
+      notesCard
       if let url = SourceLink.url(from: recipe.sourceURL) {
         sourceCard(url)
       }
-      notesCard
-      Button("Delete recipe", role: .destructive) { confirmingDelete = true }
-        .frame(maxWidth: .infinity, minHeight: 44).padding(.top, 8)
     }
   }
 
   private var ingredientsCard: some View {
-    VStack(alignment: .leading, spacing: 18) {
+    VStack(alignment: .leading, spacing: 14) {
       RecipeSectionHeading(
         title: "Ingredients",
         subtitle: "For \(recipe.servings) \(recipe.servings == 1 ? "serving" : "servings")",
-        symbol: "leaf.fill", tint: SazliTheme.olive)
-      if recipe.ingredientLines.isEmpty {
-        emptyText("Add ingredients when you're ready to make this recipe.")
-      } else {
-        VStack(spacing: 0) {
-          ForEach(Array(recipe.ingredientLines.enumerated()), id: \.offset) { index, line in
-            IngredientRow(text: line)
-            if index < recipe.ingredientLines.count - 1 {
-              Divider().overlay(SazliTheme.olive.opacity(0.08)).padding(.leading, 36)
+        symbol: "leaf.fill", tint: SazliTheme.olive, showsIcon: false)
+      VStack(alignment: .leading, spacing: 0) {
+        if recipe.ingredientLines.isEmpty {
+          emptyText("Add ingredients when you're ready to make this recipe.")
+            .padding(.vertical, 8)
+        } else {
+          VStack(spacing: 0) {
+            ForEach(Array(recipe.ingredientLines.enumerated()), id: \.offset) { index, line in
+              IngredientRow(text: line)
+              if index < recipe.ingredientLines.count - 1 {
+                Divider().overlay(SazliTheme.olive.opacity(0.08)).padding(.leading, 36)
+              }
             }
           }
         }
       }
+      .padding(.horizontal, 18).padding(.vertical, 8)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .recipePanel(cornerRadius: 20)
     }
-    .padding(20)
     .frame(maxWidth: .infinity, alignment: .leading)
-    .recipePanel()
     .accessibilityElement(children: .contain)
   }
 
@@ -130,12 +150,12 @@ struct RecipeDetailView: View {
     VStack(alignment: .leading, spacing: 16) {
       RecipeSectionHeading(
         title: "Method",
-        subtitle:
-          "\(recipe.instructionLines.count) \(recipe.instructionLines.count == 1 ? "step" : "steps") to follow",
-        symbol: "list.number")
+        subtitle: recipe.instructionLines.isEmpty ? "No steps added yet"
+          : "\(recipe.instructionLines.count) \(recipe.instructionLines.count == 1 ? "step" : "steps")",
+        symbol: "list.number", showsIcon: false)
       if recipe.instructionLines.isEmpty {
         emptyText("Your steps will appear here. Edit this recipe to add them.")
-          .padding(20).frame(maxWidth: .infinity, alignment: .leading).recipePanel()
+          .padding(18).frame(maxWidth: .infinity, alignment: .leading).recipePanel(cornerRadius: 20)
       } else {
         LazyVStack(spacing: 12) {
           ForEach(Array(recipe.instructionLines.enumerated()), id: \.offset) { index, line in
@@ -154,21 +174,22 @@ struct RecipeDetailView: View {
         if !accepted { errorMessage = "This link couldn't be opened on your device." }
       }
     } label: {
-      HStack {
+      HStack(spacing: 12) {
         Image(systemName: "link")
-          .font(.title3).foregroundStyle(SazliTheme.terracotta)
-          .frame(width: 42, height: 42)
-          .background(SazliTheme.terracotta.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
+          .font(.body).foregroundStyle(SazliTheme.terracotta)
+          .frame(width: 24)
           .accessibilityHidden(true)
         VStack(alignment: .leading, spacing: 5) {
-          Text("Original source").font(.caption).foregroundStyle(.secondary)
-          Text(recipe.platform.title).font(.headline)
-          Text(url.host ?? recipe.sourceURL).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+          Text("Original recipe · \(recipe.platform.title)").font(.subheadline.weight(.semibold))
+          Text(url.host ?? recipe.sourceURL).font(.caption).foregroundStyle(.secondary)
+            .lineLimit(2)
         }
         Spacer()
         Image(systemName: "arrow.up.right")
+          .font(.caption.weight(.semibold)).foregroundStyle(SazliTheme.terracotta)
+          .accessibilityHidden(true)
       }
-      .padding(18).recipePanel()
+      .padding(18).recipePanel(cornerRadius: 20)
     }
     .buttonStyle(.plain)
     .accessibilityHint("Opens the original recipe link.")
@@ -176,9 +197,7 @@ struct RecipeDetailView: View {
 
   private var notesCard: some View {
     VStack(alignment: .leading, spacing: 18) {
-      RecipeSectionHeading(
-        title: "Your cooking notes", subtitle: "Make it yours, every time", symbol: "pencil.line",
-        tint: SazliTheme.orange)
+      Text("Rating & notes").font(.title3.weight(.semibold)).accessibilityAddTraits(.isHeader)
       let ratingLayout = dynamicTypeSize.isAccessibilitySize
         ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
         : AnyLayout(HStackLayout(spacing: 12))
@@ -206,18 +225,22 @@ struct RecipeDetailView: View {
     }
     .padding(20)
     .frame(maxWidth: .infinity, alignment: .leading)
-    .recipePanel()
+    .recipePanel(cornerRadius: 20)
     .accessibilityElement(children: .contain)
   }
 
   private var introduction: some View {
-    VStack(alignment: .leading, spacing: 14) {
-      Label(recipe.recipeCategory.title, systemImage: recipe.recipeCategory.symbol)
-        .font(.caption.weight(.semibold)).foregroundStyle(SazliTheme.terracotta)
-        .padding(.horizontal, 12).padding(.vertical, 7)
-        .background(SazliTheme.terracotta.opacity(0.1), in: Capsule())
-      Text(recipe.title).font(.system(.largeTitle, design: .rounded, weight: .bold))
-        .accessibilityAddTraits(.isHeader)
+    VStack(alignment: .leading, spacing: 16) {
+      VStack(alignment: .leading, spacing: 10) {
+        Label(recipe.recipeCategory.title, systemImage: recipe.recipeCategory.symbol)
+          .font(.subheadline.weight(.medium)).foregroundStyle(SazliTheme.terracotta)
+        Text(recipe.title).font(.title.bold())
+          .accessibilityAddTraits(.isHeader)
+        if !recipe.recipeDescription.isEmpty {
+          Text(recipe.recipeDescription).font(.subheadline)
+            .foregroundStyle(.secondary).lineSpacing(4)
+        }
+      }
       let metadataLayout =
         dynamicTypeSize.isAccessibilitySize
         ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
@@ -225,10 +248,15 @@ struct RecipeDetailView: View {
         RecipeInfoTile(
           value: recipe.preparationTime > 0 ? "\(recipe.preparationTime) min" : "Not set",
           title: "Preparation", symbol: "clock")
+        if !dynamicTypeSize.isAccessibilitySize {
+          Divider().frame(height: 32).accessibilityHidden(true)
+        }
         RecipeInfoTile(
           value: "\(recipe.servings)", title: recipe.servings == 1 ? "Serving" : "Servings",
           symbol: "person.2", tint: SazliTheme.olive)
       }
+      .padding(16)
+      .recipePanel(cornerRadius: 20)
     }
   }
 

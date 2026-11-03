@@ -5,15 +5,18 @@ struct RecipeSectionHeading: View {
   let subtitle: String
   let symbol: String
   var tint: Color = SazliTheme.terracotta
+  var showsIcon = true
 
   var body: some View {
     HStack(spacing: 12) {
-      Image(systemName: symbol)
-        .font(.system(size: 18, weight: .semibold))
-        .foregroundStyle(tint)
-        .frame(width: 42, height: 42)
-        .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
-        .accessibilityHidden(true)
+      if showsIcon {
+        Image(systemName: symbol)
+          .font(.system(size: 18, weight: .semibold))
+          .foregroundStyle(tint)
+          .frame(width: 42, height: 42)
+          .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+          .accessibilityHidden(true)
+      }
       VStack(alignment: .leading, spacing: 3) {
         Text(title).font(.title3.weight(.semibold)).accessibilityAddTraits(.isHeader)
         Text(subtitle).font(.caption).foregroundStyle(.secondary)
@@ -42,8 +45,6 @@ struct RecipeInfoTile: View {
       .fixedSize(horizontal: false, vertical: true)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
-    .padding(14)
-    .recipePanel(cornerRadius: 18)
     .accessibilityElement(children: .combine)
   }
 }
@@ -54,32 +55,58 @@ struct RecipeStepCard: View {
   var prominent = false
 
   var body: some View {
-    VStack(alignment: .leading, spacing: prominent ? 24 : 14) {
+    Group {
+      if prominent { cookingCard }
+      else { readingCard }
+    }
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel("Step \(number). \(text)")
+  }
+
+  private var readingCard: some View {
+    HStack(alignment: .top, spacing: 14) {
+      Text("\(number)")
+        .font(.subheadline.weight(.semibold)).monospacedDigit()
+        .foregroundStyle(SazliTheme.terracotta)
+        .frame(minWidth: 30, minHeight: 30)
+        .background(SazliTheme.terracotta.opacity(0.1), in: Circle())
+        .accessibilityHidden(true)
+      Text(text)
+        .font(.body).lineSpacing(4)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 3)
+    }
+    .padding(18)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .recipePanel(cornerRadius: 20)
+  }
+
+  private var cookingCard: some View {
+    VStack(alignment: .leading, spacing: 24) {
       HStack(spacing: 10) {
         Text(String(format: "%02d", number))
-          .font(.system(prominent ? .title2 : .headline, design: .rounded, weight: .bold))
+          .font(.system(.title2, design: .rounded, weight: .bold))
           .monospacedDigit()
           .foregroundStyle(SazliTheme.terracotta)
-          .frame(minWidth: prominent ? 56 : 40, minHeight: prominent ? 56 : 40)
+          .frame(minWidth: 56, minHeight: 56)
           .background(
             SazliTheme.terracotta.opacity(0.11),
-            in: RoundedRectangle(cornerRadius: prominent ? 18 : 13))
+            in: RoundedRectangle(cornerRadius: 18))
         Text("STEP \(number)")
           .font(.caption.weight(.semibold)).tracking(1.3)
           .foregroundStyle(SazliTheme.terracotta)
       }
       .accessibilityHidden(true)
       Text(text)
-        .font(prominent ? .largeTitle.weight(.medium) : .body)
-        .lineSpacing(prominent ? 6 : 4)
+        .font(.largeTitle.weight(.medium))
+        .lineSpacing(6)
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-    .padding(prominent ? 24 : 20)
-    .frame(maxWidth: .infinity, minHeight: prominent ? 220 : nil, alignment: .topLeading)
+    .padding(24)
+    .frame(maxWidth: .infinity, minHeight: 220, alignment: .topLeading)
     .recipePanel()
-    .accessibilityElement(children: .ignore)
-    .accessibilityLabel("Step \(number). \(text)")
   }
 }
 
