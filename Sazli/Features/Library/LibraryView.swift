@@ -43,34 +43,42 @@ struct LibraryView: View {
         }
       }
       .sazliScreen()
-      .navigationTitle("Sazli")
+      .navigationTitle("")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbarBackground(SazliTheme.background, for: .navigationBar)
+      .toolbarBackground(.visible, for: .navigationBar)
       .navigationSplitViewColumnWidth(min: 260, ideal: 320, max: 360)
       .searchable(text: $search, prompt: "Find a recipe")
       .toolbar {
+        ToolbarItem(placement: .topBarLeading) {
+          libraryBrand
+        }
         ToolbarItem(placement: .topBarTrailing) {
           Button {
-            if inbox.pending.isEmpty { importPresentation = ImportPresentation(request: nil) }
-            else { reviewPendingImport() }
+            showingEditor = true
           } label: {
-            Image(systemName: "square.and.arrow.down")
+            Image(systemName: "plus").fontWeight(.semibold)
           }
-          .accessibilityLabel("Import recipe")
-          .accessibilityIdentifier("importRecipe")
+          .accessibilityLabel("Add a recipe")
+          .accessibilityIdentifier("addRecipe")
         }
         ToolbarItem(placement: .topBarTrailing) {
-          Button {
-            showingSettings = true
+          Menu {
+            Button {
+                if inbox.pending.isEmpty { importPresentation = ImportPresentation(request: nil) }
+              else { reviewPendingImport() }
+            } label: {
+              Label("Import recipe", systemImage: "square.and.arrow.down")
+            }.accessibilityIdentifier("importRecipe")
+            Button {
+                showingSettings = true
+            } label: {
+              Label("Settings", systemImage: "gearshape")
+            }
           } label: {
-            Image(systemName: "gearshape")
-          }.accessibilityLabel("Settings")
+            Image(systemName: "ellipsis")
+          }.accessibilityLabel("Library options")
         }
-      }
-      .safeAreaInset(edge: .bottom) {
-        PrimaryButton(title: "Add a recipe") { showingEditor = true }
-          .frame(maxWidth: SazliLayout.actionWidth)
-          .padding(.horizontal, 20).padding(.vertical, 12)
-          .frame(maxWidth: .infinity)
-          .background(SazliTheme.background.opacity(0.97))
       }
     } detail: {
       if let recipe = selectedRecipe {
@@ -131,7 +139,6 @@ struct LibraryView: View {
 
   private func libraryContent(width: CGFloat) -> some View {
     return VStack(alignment: .leading, spacing: 28) {
-      welcomeHeader.padding(.top, 8)
       if !inbox.pending.isEmpty {
         Button(action: reviewPendingImport) {
           Label("Review shared recipe (\(inbox.pending.count))", systemImage: "tray.and.arrow.down")
@@ -203,24 +210,15 @@ struct LibraryView: View {
     catch { importError = "The import could not be removed from the inbox. It has been kept for retry. \(error.localizedDescription)" }
   }
 
-  private var welcomeHeader: some View {
-    let layout =
-      dynamicTypeSize.isAccessibilitySize
-      ? AnyLayout(VStackLayout(alignment: .leading, spacing: 16))
-      : AnyLayout(HStackLayout(alignment: .center, spacing: 16))
-
-    return layout {
-      Image("BrandLogo")
-        .resizable()
-        .scaledToFit()
-        .frame(width: 56, height: 56)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .accessibilityHidden(true)
-      Text("A little inspiration for your next meal.")
-        .font(.subheadline)
-        .foregroundStyle(.secondary)
-        .fixedSize(horizontal: false, vertical: true)
-    }
+  private var libraryBrand: some View {
+    Image("BrandLogo")
+      .resizable()
+      .scaledToFit()
+      .frame(width: 36, height: 36)
+      .clipShape(RoundedRectangle(cornerRadius: 10))
+      .accessibilityLabel("Sazli")
+      .accessibilityAddTraits(.isHeader)
+      .accessibilityIdentifier("libraryBrand")
   }
 
   private var filters: some View {
