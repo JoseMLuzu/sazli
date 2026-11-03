@@ -46,10 +46,13 @@
 		80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C054CCA038066234F5504F16; };
 		D8B1FA1737025A9BB36B0CBF /* Sazli/Services/CookingTimerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B380D8769260CC3752D132D8; };
 		9A1D1D61F299BB54FC230964 /* Sazli/Services/CookingTimerNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF6632F9EDE4295D122FDAA; };
-		24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C67EED75DD86763E213FA8; };
 		09FA0FC1AE066813D508A1D0 /* Sazli/Features/CookingMode/CookingTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 121067555167433016E19CB2; };
+		24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C67EED75DD86763E213FA8; };
 		13470A08DD8901C9C6310D72 = {isa = PBXBuildFile; fileRef = 1A6AC606AAFAB52BD1E0B3B4; };
 		5AFCA9A353FE33E65D5E2C6B = {isa = PBXBuildFile; fileRef = BEA91E8B1D60A9CF0B14C326; };
+		39D45B7002BFBD976096ECB3 = {isa = PBXBuildFile; fileRef = 1A6AC606AAFAB52BD1E0B3B4; };
+		04BBFD0DA2861369A9F0AA7E = {isa = PBXBuildFile; fileRef = 8A2EB81F58A140560B439AF7; };
+		BC1A00F8216215179D1E8C8A = {isa = PBXBuildFile; fileRef = 61B11BD87EAAA5A3D8C18A04; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +63,7 @@
 			remoteGlobalIDString = C13732C8E715C9BEE4FA51C9;
 			remoteInfo = Sazli;
 		};
+		8E7A38046F68D5CE1B3659EA = {isa = PBXContainerItemProxy; containerPortal = 98F54143AB4E86B28C3AFEE0; proxyType = 1; remoteGlobalIDString = 42FF274AC3693C3B05811041; remoteInfo = SazliTimerExtension; };
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -104,11 +108,18 @@
 		C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTShareTests.swift"; sourceTree = SOURCE_ROOT; };
 		B380D8769260CC3752D132D8 /* Sazli/Services/CookingTimerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerStore.swift"; sourceTree = SOURCE_ROOT; };
 		8DF6632F9EDE4295D122FDAA /* Sazli/Services/CookingTimerNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerNotifications.swift"; sourceTree = SOURCE_ROOT; };
-		27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CookingTimerTests.swift"; sourceTree = SOURCE_ROOT; };
 		121067555167433016E19CB2 /* Sazli/Features/CookingMode/CookingTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/CookingMode/CookingTimerView.swift"; sourceTree = SOURCE_ROOT; };
+		27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CookingTimerTests.swift"; sourceTree = SOURCE_ROOT; };
 		1A6AC606AAFAB52BD1E0B3B4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerAttributes.swift"; sourceTree = SOURCE_ROOT; };
 		BEA91E8B1D60A9CF0B14C326 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingTimerLiveActivity.swift"; sourceTree = SOURCE_ROOT; };
+		8A2EB81F58A140560B439AF7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliLiveActivity/SazliTimerLiveActivity.swift"; sourceTree = SOURCE_ROOT; };
+		61B11BD87EAAA5A3D8C18A04 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SazliTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B1CB0529C8999068D9159BE = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SazliLiveActivity/Info.plist; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5D6E486F5083177332FC0F80 = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (BC1A00F8216215179D1E8C8A,); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1ABF84E55BD30AC2CEF8FC42 /* Frameworks */ = {
@@ -125,6 +136,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E8B8AF016E9C857591B6966D = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -178,6 +190,7 @@
 		B28B7AF69320201D1CF206EB = {
 			isa = PBXGroup;
 			children = (
+				2CC8C28B4BD522AC51076A16,
 				1BDBD24583AAF7F81F76B976 /* Sazli */,
 				BFC937463906E5DB7A02A37C /* SazliTests */,
 				FBDC4F23F93125BBEEAE800C /* Products */,
@@ -197,12 +210,14 @@
 		FBDC4F23F93125BBEEAE800C /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				61B11BD87EAAA5A3D8C18A04,
 				7D1043473D55BFA90E8530D3 /* Sazli.app */,
 				F219C0274590DA45E4BEF1EA /* SazliTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2CC8C28B4BD522AC51076A16 = {isa = PBXGroup; children = (8A2EB81F58A140560B439AF7, 7B1CB0529C8999068D9159BE,); name = SazliLiveActivity; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -230,16 +245,19 @@
 				BCE16DD0260827ECF338C787 /* Sources */,
 				0189424A5A60FED329FA868E /* Resources */,
 				7561BFB015D8F536760CB671 /* Frameworks */,
+				5D6E486F5083177332FC0F80,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				500B4EBE184F165D24A08B04,
 			);
 			name = Sazli;
 			productName = Sazli;
 			productReference = 7D1043473D55BFA90E8530D3 /* Sazli.app */;
 			productType = "com.apple.product-type.application";
 		};
+		42FF274AC3693C3B05811041 = {isa = PBXNativeTarget; buildConfigurationList = 0803FA2BA1A804A9911B7104; buildPhases = (B2E7A658DD0761782E65A002, C751EE189D1554C314DDF648, E8B8AF016E9C857591B6966D,); buildRules = (); dependencies = (); name = SazliTimerExtension; productName = SazliTimerExtension; productReference = 61B11BD87EAAA5A3D8C18A04; productType = "com.apple.product-type.app-extension"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -262,6 +280,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				42FF274AC3693C3B05811041,
 				C13732C8E715C9BEE4FA51C9 /* Sazli */,
 				64BCB755386F844C96A2A5B0 /* SazliTests */,
 			);
@@ -278,6 +297,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C751EE189D1554C314DDF648 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -336,6 +356,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B2E7A658DD0761782E65A002 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (39D45B7002BFBD976096ECB3, 04BBFD0DA2861369A9F0AA7E,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -344,6 +365,7 @@
 			target = C13732C8E715C9BEE4FA51C9 /* Sazli */;
 			targetProxy = D799BAE6088A90139B415FCC /* PBXContainerItemProxy */;
 		};
+		500B4EBE184F165D24A08B04 = {isa = PBXTargetDependency; target = 42FF274AC3693C3B05811041; targetProxy = 8E7A38046F68D5CE1B3659EA; };
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -400,6 +422,7 @@
 				DEVELOPMENT_TEAM = 62TPVT35FP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -430,6 +453,7 @@
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -481,6 +505,8 @@
 			};
 			name = Release;
 		};
+		2F1CB98FABFABF1338DF3EE3 = {isa = XCBuildConfiguration; buildSettings = { APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_TEAM = 62TPVT35FP; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SazliLiveActivity/Info.plist; INFOPLIST_KEY_CFBundleDisplayName = "Sazli Timer"; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks",); MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.timer; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 6.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; DEBUG_INFORMATION_FORMAT = dwarf; }; name = Debug; };
+		1E8E6AC21F8C8317C8D1B771 = {isa = XCBuildConfiguration; buildSettings = { APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_TEAM = 62TPVT35FP; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SazliLiveActivity/Info.plist; INFOPLIST_KEY_CFBundleDisplayName = "Sazli Timer"; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks",); MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.timer; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 6.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_OPTIMIZATION_LEVEL = "-O"; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; }; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -511,6 +537,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		0803FA2BA1A804A9911B7104 = {isa = XCConfigurationList; buildConfigurations = (2F1CB98FABFABF1338DF3EE3, 1E8E6AC21F8C8317C8D1B771,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
 	rootObject = 98F54143AB4E86B28C3AFEE0 /* Project object */;
