@@ -18,13 +18,26 @@ Sazli schedules a single local notification with a default sound. It does not ne
 
 If permission is denied or scheduling fails, the countdown still works and the controls explain that an outside-app alert is unavailable. Changing permission in iOS Settings and reopening the controls refreshes the alert status. iOS notification settings, Focus, and sound settings control delivery and audibility; this is a normal app notification, not a critical alarm.
 
+## Dynamic Island and Lock Screen
+
+Starting a timer also requests a local Live Activity when iOS permits it. Compatible iPhones show the remaining time in Dynamic Island, with a minimal timer icon when space is shared. Touch and hold the island for the expanded recipe/step view. Other supported devices can show the Lock Screen card. Tapping the activity opens Sazli; pause, resume, and cancel remain in the app's timer controls.
+
+Live Activity permission is separate from notification permission. iOS may ask **Allow Live Activities from Sazli?** on the Lock Screen card. If Live Activities are disabled, the existing countdown and notification continue working. There is no backend, ActivityKit push token, App Group, or extension access to the recipe database.
+
+The system draws a countdown from the same deadline used by Sazli. Pausing updates it to a frozen value; resuming updates the deadline. Canceling ends it immediately. Expiry ends the activity while Sazli is executing, and foreground reconciliation removes expired or orphaned activities. When iOS suspends or terminates Sazli, the system countdown stops at zero and stale content indicates **Time's up** until the app can reconcile or iOS removes it. No continuous background execution or exact background removal is claimed. Reopening the app updates an existing activity without recreating one the user dismissed.
+
+Apple limits Live Activity duration; it can stop before a timer longer than eight hours completes. The saved timer and its local notification remain independent. See [Apple's Live Activity constraints](https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities).
+
 ## Implementation and verification
 
 - `CookingTimerStore.swift`: Codable timer state, deadline calculations, explicit transitions, local persistence, and notification coordination.
 - `CookingTimerNotifications.swift`: UserNotifications permission, scheduling, cancellation, and foreground presentation.
 - `CookingTimerView.swift`: duration entry, countdown controls, and a reusable summary.
+- `CookingTimerAttributes.swift`: the shared, small ActivityKit payload compiled into both targets.
+- `CookingTimerLiveActivity.swift`: native authorization, activity reconciliation, updates, and ending.
+- `SazliLiveActivity/`: the embedded WidgetKit extension for compact/minimal/expanded Dynamic Island and Lock Screen layouts.
 - `CookingModeView.swift` and `LibraryView.swift`: entry points and shared timer presentation.
-- `CookingTimerTests.swift`: deterministic elapsed-time, pause/resume, restoration, expiry, denial, scheduling failure, validation, single-timer checks.. Test notification requests are faked and never prompt or schedule real alerts.
+- `CookingTimerTests.swift`: deterministic elapsed-time, pause/resume, restoration, expiry, denial, scheduling failure, validation, single-timer, and Live Activity transition/payload checks. Test notification/activity adapters are faked and never prompt, schedule real alerts, or create Live Activities.
 
 See the [verification record](VERIFICATION.md) for performed native checks. Full lock-screen notification sound and Focus behavior on physical devices remain part of release acceptance.
 

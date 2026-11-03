@@ -19,7 +19,7 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 - Optional photo selection through Apple's system Photos picker. Images are downsampled and stored locally.
 - Recipe detail, confirmed deletion, editable personal ratings, notes, and a “would make again” preference.
 - Cooking mode with large text, progress, previous/next controls, and an ingredient sheet. The previous idle-timer setting is restored when cooking closes or the app becomes inactive.
-- A local cooking timer with editable minutes/seconds, pause/resume/cancel, saved state across app restarts, optional local notification alerts. An active timer remains accessible from the library. See [cooking timer](docs/COOKING_TIMER.md).
+- A local cooking timer with editable minutes/seconds, pause/resume/cancel, saved state across app restarts, optional local notification alerts, and a Live Activity on Dynamic Island/Lock Screen when allowed by iOS. An active timer remains accessible from the library. See [cooking timer](docs/COOKING_TIMER.md).
 - An organized recipe detail with a photo, category/title/description, grouped preparation/serving information, ingredient list, compact numbered steps, rating/notes, and original source. Favorite is directly accessible; editing, rating, and confirmed deletion are in the options menu. Recipes without steps offer an action to complete them. Cooking ingredients can be checked off with a separate preparation-progress indicator.
 - Whole-recipe text/link import with English and Spanish section parsing and editable review before saving. The existing field-level paste tool also remains available.
 - A local reader for supported public ChatGPT share pages, offering complete recipes for editable review without an API key or backend.
@@ -46,6 +46,7 @@ Sazli/
   Services/                Validation, storage, link handling, image processing
   Resources/               Adaptive color assets and privacy manifest
 SazliTests/                XCTest coverage
+SazliLiveActivity/         Embedded timer Live Activity extension
 Scripts/                   Project generation and process-restart persistence check
 docs/                      Architecture and manual QA
 ```
@@ -105,4 +106,4 @@ The checked-in project opens directly; generation is not required for normal dev
 python3 Scripts/generate_project.py
 ```
 
-The generator uses only the Python standard library and writes deterministic project and shared-scheme files. It resets generated target settings, so preserve any custom signing or build settings before regenerating.
+The generator uses only the Python standard library and writes deterministic app, tests, embedded Live Activity target, and shared-scheme files. It resets generated target settings, so preserve custom signing/build settings for both app and extension before regenerating. Normal development does not require regeneration.
