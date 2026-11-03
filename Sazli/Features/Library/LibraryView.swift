@@ -15,6 +15,7 @@ struct LibraryView: View {
   @State private var selectedRecipeID: UUID?
   @State private var columnVisibility: NavigationSplitViewVisibility = .all
   @State private var preferredCompactColumn: NavigationSplitViewColumn = .sidebar
+  @FocusState private var searchFocused: Bool
 
   private var selectedRecipe: Recipe? {
     recipes.first { $0.id == selectedRecipeID }
@@ -37,10 +38,11 @@ struct LibraryView: View {
         ScrollView {
           libraryContent(width: geometry.size.width)
             .frame(maxWidth: SazliLayout.contentWidth)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 16)
             .padding(.bottom, 24)
             .frame(maxWidth: .infinity, alignment: .top)
         }
+        .scrollDismissesKeyboard(.interactively)
       }
       .sazliScreen()
       .navigationTitle("")
@@ -48,13 +50,13 @@ struct LibraryView: View {
       .toolbarBackground(SazliTheme.background, for: .navigationBar)
       .toolbarBackground(.visible, for: .navigationBar)
       .navigationSplitViewColumnWidth(min: 260, ideal: 320, max: 360)
-      .searchable(text: $search, prompt: "Find a recipe")
       .toolbar {
         ToolbarItem(placement: .topBarLeading) {
           libraryBrand
         }
         ToolbarItem(placement: .topBarTrailing) {
           Button {
+            searchFocused = false
             showingEditor = true
           } label: {
             Image(systemName: "plus").fontWeight(.semibold)
@@ -65,13 +67,15 @@ struct LibraryView: View {
         ToolbarItem(placement: .topBarTrailing) {
           Menu {
             Button {
-                if inbox.pending.isEmpty { importPresentation = ImportPresentation(request: nil) }
+              searchFocused = false
+              if inbox.pending.isEmpty { importPresentation = ImportPresentation(request: nil) }
               else { reviewPendingImport() }
             } label: {
               Label("Import recipe", systemImage: "square.and.arrow.down")
             }.accessibilityIdentifier("importRecipe")
             Button {
-                showingSettings = true
+              searchFocused = false
+              showingSettings = true
             } label: {
               Label("Settings", systemImage: "gearshape")
             }
@@ -138,14 +142,27 @@ struct LibraryView: View {
   }
 
   private func libraryContent(width: CGFloat) -> some View {
-    return VStack(alignment: .leading, spacing: 28) {
+    let columnCount = width >= 340 && !dynamicTypeSize.isAccessibilitySize ? 2 : 1
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 12, alignment: .top), count: columnCount)
+    return VStack(alignment: .leading, spacing: 20) {
+      VStack(alignment: .leading, spacing: 16) {
+        libraryHeading
+        VStack(spacing: 12) {
+          searchField
+          filters
+        }
+      }
       if !inbox.pending.isEmpty {
         Button(action: reviewPendingImport) {
-          Label("Review shared recipe (\(inbox.pending.count))", systemImage: "tray.and.arrow.down")
-            .font(.subheadline.weight(.semibold))
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(16)
-            .background(SazliTheme.surface, in: RoundedRectangle(cornerRadius: 18))
+          HStack(spacing: 12) {
+            Label("Review shared recipe (\(inbox.pending.count))", systemImage: "tray.and.arrow.down")
+              .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.right").font(.caption.weight(.semibold))
+              .accessibilityHidden(true)
+          }
+          .font(.subheadline.weight(.medium))
+          .padding(14)
+          .background(SazliTheme.surface, in: RoundedRectangle(cornerRadius: 14))
         }.buttonStyle(.plain).foregroundStyle(SazliTheme.terracotta)
       }
       if let message = inbox.errorMessage {
@@ -154,37 +171,72 @@ struct LibraryView: View {
           Button("Retry imports") { refreshImportInbox() }
         }
       }
-      filters
       if filteredRecipes.isEmpty {
         RecipeEmptyState(isSearching: !recipes.isEmpty || !search.isEmpty || filter != .all) {
           showingEditor = true
         }
         .padding(.top, 20)
       } else {
-        VStack(alignment: .leading, spacing: 16) {
-          Text("\(filteredRecipes.count) \(filteredRecipes.count == 1 ? "recipe" : "recipes")")
-            .font(.subheadline).foregroundStyle(.secondary)
-          LazyVStack(spacing: 14) {
-            ForEach(filteredRecipes) { recipe in
-              Button {
-                selectedRecipeID = recipe.id
-                preferredCompactColumn = .detail
-              } label: {
-                RecipeCard(recipe: recipe, compact: width < 380)
-                  .overlay {
-                    if selectedRecipeID == recipe.id {
-                      RoundedRectangle(cornerRadius: 24)
-                        .strokeBorder(SazliTheme.terracotta, lineWidth: 2)
-                    }
+        LazyVGrid(columns: columns, spacing: 14) {
+          ForEach(filteredRecipes) { recipe in
+            Button {
+              searchFocused = false
+              selectedRecipeID = recipe.id
+              preferredCompactColumn = .detail
+            } label: {
+              RecipeCard(recipe: recipe)
+                .overlay {
+                  if selectedRecipeID == recipe.id {
+                    RoundedRectangle(cornerRadius: 20)
+                      .strokeBorder(SazliTheme.terracotta, lineWidth: 2)
                   }
-              }
-              .buttonStyle(.plain)
-              .accessibilityAddTraits(selectedRecipeID == recipe.id ? .isSelected : [])
+                }
             }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(selectedRecipeID == recipe.id ? .isSelected : [])
           }
         }
       }
     }
+    .padding(.top, 12)
+  }
+
+  private var libraryHeading: some View {
+    VStack(alignment: .leading, spacing: 4) {
+      Text("Your recipes")
+        .font(.title.bold())
+        .accessibilityAddTraits(.isHeader)
+      Text("\(filteredRecipes.count) \(filteredRecipes.count == 1 ? "recipe" : "recipes")")
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
+    }
+  }
+
+  private var searchField: some View {
+    HStack(spacing: 10) {
+      Image(systemName: "magnifyingglass")
+        .foregroundStyle(.secondary).accessibilityHidden(true)
+      TextField("Search recipes", text: $search)
+        .font(.subheadline)
+        .focused($searchFocused)
+        .submitLabel(.search)
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
+        .onSubmit { searchFocused = false }
+        .accessibilityLabel("Search recipes by name")
+      if !search.isEmpty {
+        Button { search = "" } label: {
+          Image(systemName: "xmark.circle.fill")
+            .foregroundStyle(.secondary)
+            .frame(width: 44, height: 44)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Clear search")
+      }
+    }
+    .padding(.leading, 14).padding(.trailing, search.isEmpty ? 14 : 0)
+    .frame(minHeight: 46)
+    .background(SazliTheme.surface, in: RoundedRectangle(cornerRadius: 14))
   }
 
   private func refreshImportInbox() {

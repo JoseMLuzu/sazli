@@ -2,54 +2,86 @@ import SwiftUI
 
 struct RecipeCard: View {
     let recipe: Recipe
-    var compact = false
+    @ScaledMetric(relativeTo: .headline) private var cardHeight: CGFloat = 180
 
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
-            Group {
-                if let data = recipe.imageData, let image = UIImage(data: data) {
-                    Image(uiImage: image).resizable().scaledToFill()
-                } else {
-                    ZStack {
-                        SazliTheme.olive.opacity(0.12)
-                        Image(systemName: recipe.recipeCategory.symbol)
-                            .font(.title).foregroundStyle(SazliTheme.olive)
+        GeometryReader { geometry in
+            ZStack(alignment: .topLeading) {
+                photo
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipped()
+                LinearGradient(
+                    stops: [.init(color: .black.opacity(0.68), location: 0),
+                            .init(color: .black.opacity(0.08), location: 0.55),
+                            .init(color: .black.opacity(0.24), location: 1)],
+                    startPoint: .top, endPoint: .bottom)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(alignment: .top, spacing: 6) {
+                        Text(recipe.title)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(3)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .shadow(color: .black.opacity(0.15), radius: 2, y: 1)
+                        if recipe.isFavorite {
+                            Image(systemName: "heart.fill")
+                                .font(.caption).foregroundStyle(SazliTheme.coral)
+                        }
                     }
+                    if recipe.rating > 0 {
+                        Label {
+                            Text("\(recipe.rating)/5").foregroundStyle(.white)
+                        } icon: {
+                            Image(systemName: "star.fill").foregroundStyle(SazliTheme.orange)
+                        }
+                        .font(.caption2.weight(.semibold))
+                    }
+                    Spacer(minLength: 8)
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 8) { metadata }
+                        VStack(alignment: .leading, spacing: 6) { metadata }
+                    }
+                    .font(.caption2.weight(.semibold))
+                    .labelStyle(.titleAndIcon)
+                    .foregroundStyle(.primary)
+                    .padding(.horizontal, 9).padding(.vertical, 7)
+                    .background(SazliTheme.background.opacity(0.96), in: RoundedRectangle(cornerRadius: 12))
                 }
-            }
-            .frame(width: compact ? 56 : 84, height: compact ? 72 : 100)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .accessibilityHidden(true)
-
-            VStack(alignment: .leading, spacing: 9) {
-                Text(recipe.recipeCategory.title.uppercased())
-                    .font(.caption2.weight(.semibold)).tracking(1.1)
-                    .foregroundStyle(SazliTheme.terracotta)
-                Text(recipe.title).font(.headline).foregroundStyle(.primary)
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) { metadata }
-                    VStack(alignment: .leading, spacing: 8) { metadata }
-                }
-                .font(.caption).foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            if recipe.isFavorite {
-                Image(systemName: "heart.fill").foregroundStyle(SazliTheme.terracotta)
-                    .accessibilityLabel("Favorite")
+                .padding(12)
             }
         }
-        .padding(14)
-        .background(SazliTheme.surface, in: RoundedRectangle(cornerRadius: 24))
-        .contentShape(RoundedRectangle(cornerRadius: 24))
-        .accessibilityElement(children: .combine)
+        .frame(height: cardHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .contentShape(RoundedRectangle(cornerRadius: 20))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilitySummary)
+    }
+
+    @ViewBuilder private var photo: some View {
+        if let data = recipe.imageData, let image = UIImage(data: data) {
+            Image(uiImage: image).resizable().scaledToFill()
+        } else {
+            ZStack {
+                LinearGradient(colors: [SazliTheme.olive, SazliTheme.orange],
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
+                Image(systemName: recipe.recipeCategory.symbol)
+                    .font(.system(size: 64, weight: .ultraLight))
+                    .foregroundStyle(.white.opacity(0.3))
+            }
+        }
     }
 
     @ViewBuilder private var metadata: some View {
-        Label(recipe.preparationTime > 0 ? "\(recipe.preparationTime) min" : "Time not set", systemImage: "clock")
-        if recipe.rating > 0 {
-            Label("\(recipe.rating)/5", systemImage: "star.fill")
-        } else {
-            Text("Not rated")
-        }
+        Label("\(recipe.servings)", systemImage: "person.2.fill")
+            .monospacedDigit()
+        Label(recipe.preparationTime > 0 ? "\(recipe.preparationTime) min" : "—", systemImage: "clock")
+            .monospacedDigit()
+    }
+
+    private var accessibilitySummary: String {
+        let time = recipe.preparationTime > 0 ? "\(recipe.preparationTime) minutes" : "Preparation time not set"
+        let rating = recipe.rating > 0 ? "\(recipe.rating) of 5 stars" : "Not rated"
+        let servings = "\(recipe.servings) \(recipe.servings == 1 ? "serving" : "servings")"
+        return "\(recipe.title), \(recipe.recipeCategory.title), \(servings), \(time), \(rating)\(recipe.isFavorite ? ", Favorite" : "")"
     }
 }

@@ -8,7 +8,7 @@ The implementation uses native SwiftUI APIs available on iOS 17. It does not ide
 
 `LibraryView` uses `NavigationSplitView` with balanced presentation and a preferred sidebar width of 320 points (260–360 points). The system determines when both columns can be displayed and when navigation should collapse.
 
-The sidebar contains the logo, search, filters, a single-column recipe list, Settings, and Add a recipe. Narrow rows use smaller thumbnails, and a terracotta outline plus an accessibility selection trait identifies the current recipe. Each pane scrolls independently.
+The library contains the compact brand bar, an Add a recipe action, an ellipsis menu for importing and Settings, a collection heading, search, filters, and photo cards. The grid uses two columns when the library pane is at least 340 points wide, and one column in narrower panes or at accessibility Dynamic Type sizes. Card height scales with Dynamic Type; serving/time badges can stack when space is limited. A terracotta outline plus an accessibility selection trait identifies the current recipe. Each pane scrolls independently.
 
 The selected UUID lives at the split-view root:
 
