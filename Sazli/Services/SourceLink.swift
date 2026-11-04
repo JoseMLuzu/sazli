@@ -1,6 +1,16 @@
 import Foundation
 
 enum SourceLink {
+    static func tikTokVideoURL(from text: String) -> URL? {
+        guard let url = url(from: text), url.scheme?.lowercased() == "https",
+              url.port == nil || url.port == 443, let host = url.host?.lowercased() else { return nil }
+        if ["vt.tiktok.com", "vm.tiktok.com"].contains(host),
+           url.pathComponents.filter({ $0 != "/" }).count == 1 { return url }
+        guard ["www.tiktok.com", "tiktok.com", "m.tiktok.com"].contains(host),
+              url.path.range(of: #"^/@[^/]+/video/\d+/?$"#, options: .regularExpression) != nil else { return nil }
+        return url
+    }
+
     /// Only public ChatGPT share pages are read automatically; private chat URLs stay references.
     static func chatGPTShareURL(from text: String) -> URL? {
         guard let url = url(from: text), url.scheme?.lowercased() == "https",
