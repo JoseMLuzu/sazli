@@ -6,6 +6,7 @@ struct LibraryView: View {
   @Environment(\.scenePhase) private var scenePhase
   @Query(sort: \Recipe.createdAt, order: .reverse) private var recipes: [Recipe]
   @State private var search = ""
+  @AppStorage("recipeSort") private var sortOrder = RecipeSort.newest
   @State private var filter: LibraryFilter = .all
   @State private var showingEditor = false
   @State private var showingSettings = false
@@ -24,10 +25,10 @@ struct LibraryView: View {
   }
 
   private var filteredRecipes: [Recipe] {
-    recipes.filter { recipe in
+    sortOrder.ordered(recipes.filter { recipe in
       RecipeText.matchesSearch(search, title: recipe.title, ingredients: recipe.ingredients)
         && filter.includes(recipe)
-    }
+    })
   }
 
   var body: some View {
@@ -66,6 +67,16 @@ struct LibraryView: View {
         }
         ToolbarItem(placement: .topBarTrailing) {
           Menu {
+            Menu {
+              Picker("Sort recipes", selection: $sortOrder) {
+                ForEach(RecipeSort.allCases) { order in
+                  Text(order.title).tag(order)
+                }
+              }
+            } label: {
+              Label("Sort recipes", systemImage: "arrow.up.arrow.down")
+            }
+            Divider()
             Button {
               searchFocused = false
               if inbox.pending.isEmpty { importPresentation = ImportPresentation(request: nil) }

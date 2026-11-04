@@ -4,6 +4,22 @@ import UIKit
 @testable import Sazli
 
 final class SazliTests: XCTestCase {
+    @MainActor func testRecipeOrderingHandlesUnknownTimesAndStableTies() {
+        let a = Recipe(title: "Apple"); a.preparationTime = 20; a.rating = 5
+        let b = Recipe(title: "Bread"); b.preparationTime = 10; b.rating = 3
+        let c = Recipe(title: "Cake"); c.preparationTime = 0; c.rating = 0
+        a.createdAt = Date(timeIntervalSince1970: 1)
+        b.createdAt = Date(timeIntervalSince1970: 2)
+        c.createdAt = Date(timeIntervalSince1970: 3)
+        let recipes = [c, b, a]
+        XCTAssertEqual(RecipeSort.newest.ordered(recipes).map(\.title), ["Cake", "Bread", "Apple"])
+        XCTAssertEqual(RecipeSort.alphabetical.ordered(recipes).map(\.title), ["Apple", "Bread", "Cake"])
+        XCTAssertEqual(RecipeSort.rating.ordered(recipes).map(\.title), ["Apple", "Bread", "Cake"])
+        XCTAssertEqual(RecipeSort.quickest.ordered(recipes).map(\.title), ["Bread", "Apple", "Cake"])
+        b.title = a.title; b.createdAt = a.createdAt; b.rating = a.rating
+        XCTAssertEqual(RecipeSort.rating.ordered([b,a]).map(\.id), RecipeSort.rating.ordered([a,b]).map(\.id))
+    }
+
     func testSearchFindsTitlesAndIngredientsAcrossCaseAndAccents() {
         let title = "Weeknight bowl"
         let ingredients = "200 g chicken\n1 limón\nOlive oil"
