@@ -62,3 +62,20 @@ The public-share tests cover inline bold titles, styled component titles, `Ingre
 Review the public pappardelle share and choose either recipe: each should load its own cover photo in the editor. Remove or replace it before saving, or choose **Continue without imported photo** while loading. Test an unavailable photo/offline connection: text must remain editable and saveable. Cancel review without inserting a recipe. Save with a photo, relaunch offline, and check the same image in library/detail.
 
 Automated coverage verifies image metadata is read only from visible final assistant messages, each recipe receives its own cover, step images are excluded, unrelated/authenticated/insecure URLs are rejected, invalid HTTP/type/size responses are rejected, and missing/unsupported candidates return no photo. Existing tests cover photo preparation, thumbnail reuse, and local image-data persistence.
+
+
+## TikTok description import
+
+Paste `https://vt.tiktok.com/ZSpRSQuyw/` in the importer or send it using the configured shortcut. The public description should populate **12 ingredients, 3 steps, and 4 servings**. The title starts as **Recipe from TikTok**, ready to edit; preparation time remains empty. Check that the 200°C / 40-minute cooking instruction is retained, nutrition and original credits remain in the description, the video cover is optional, and the original short link is retained. Save, reopen offline, and verify local text/photo persistence. Try a private/unavailable link, cancel while loading, and choose **Keep the link only**. No test recipe should be saved to a personal device unless explicitly intended.
+
+TikTokRecipeTests covers supported/unsafe routes, the supplied single-line bilingual caption forms, absent sections, portion ranges, unavailable/malformed/oversized pages, and separate image-host policies. Existing regression tests continue covering ChatGPT, optional photos, persistence, and timers.
+
+
+### TikTok headings without colons
+
+The public `@thesimplecravings` video `7694085059602550030` writes `Ingredients * … Instructions 1. …` in one caption line. Reimporting should produce **9 ingredient rows and 7 preparation steps**. Fractional amounts (½, 1½, 1¼, ¼), cooking instructions, and optional parsley must remain intact. Hashtags and creator credits belong in the description. Existing saved recipes are not automatically rewritten. Three regression tests cover this exact caption, Spanish headings and decimal quantities, and ordinary prose that must not be classified as a recipe section.
+
+
+### Caption format matrix
+
+See [TikTok caption format audit](TIKTOK_FORMAT_AUDIT.md) for six observed public captions and the before/after table for 22 constructed controls. `TikTokCaptionFormatTests.testCaptionFormatMatrix` executes the controls as named XCTest activities, checking exact ingredient/step arrays and description-only notes. Controls include Markdown/emoji headings, keycap numbers, ingredient/method bullets, Spanish aliases, macros/tips, hashtags, and deliberate partial/narrative descriptions. They complement the exact-caption regressions in TikTokRecipeTests and are not a statistical sample of TikTok.

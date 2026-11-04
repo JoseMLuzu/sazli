@@ -1,6 +1,6 @@
 # Importing recipes
 
-Sazli accepts recipe text and original links locally. Supported public ChatGPT share pages can also be read directly on the iPhone. It does not connect to private accounts, transcribe videos, or extract arbitrary webpages. No API key or backend is required.
+Sazli accepts recipe text and original links locally. Supported public ChatGPT share pages and TikTok video descriptions can also be read directly on the iPhone. It does not connect to private accounts, transcribe videos, or extract arbitrary webpages. No API key or backend is required.
 
 ## Paste from ChatGPT and other apps
 
@@ -10,7 +10,7 @@ Sazli accepts recipe text and original links locally. Supported public ChatGPT s
 4. Tap **Review recipe**. Check the name, ingredients, method, time, servings, source, and optional photo in the normal editor.
 5. Tap **Save**. The recipe is stored in the existing SwiftData library and opens in the detail pane.
 
-Copying the full ChatGPT recipe text imports its ingredients and steps when it has recognizable headings. A supported public ChatGPT share link starts the on-device reader described below. Private or unreadable links can still be kept as references. YouTube, TikTok, Facebook, and other links are retained as references with empty ingredients and steps until you provide them. Photos can be added in the review editor.
+Copying the full ChatGPT recipe text imports its ingredients and steps when it has recognizable headings. A supported public ChatGPT share link starts the on-device reader described below. Private or unreadable links can still be kept as references. Supported TikTok video links start a description reader. YouTube, Facebook, and other links are retained as references with empty ingredients and steps until you provide them. Photos can be added in the review editor.
 
 ## Read a public ChatGPT conversation
 
@@ -27,6 +27,14 @@ This is a best-effort adapter to a public website, not a supported ChatGPT histo
 Photo import is optional and best effort. The adapter currently recognizes public `async_image` components and their explicit OpenAI-hosted image URLs. It associates a cover before the ingredient section with that recipe, without borrowing pictures from another message. Ambiguous images in a message containing multiple recipes are left for manual selection through Photos. Image-only generated outputs or private file pointers without an exposed supported image URL are not automatically resolved.
 
 The downloader uses an ephemeral session without account cookies or credentials, permits only supported HTTPS image hosts (including redirects), accepts successful image responses up to 12 MB, and tries at most two URLs. Images are prepared off the main thread and stored through the existing recipe `imageData`. Downloads have timeouts; **Continue without imported photo** cancels the editor request. A failed/unavailable photo shows an explanation and keeps text import available. Nothing is saved until **Save**. Images shown by ChatGPT may come from search; Sazli does not claim that an imported photo was AI generated or create a replacement image.
+
+## TikTok video descriptions
+
+Paste a supported public `vt.tiktok.com` / `vm.tiktok.com` short link or `tiktok.com/@creator/video/<id>` link and tap **Review**. Sazli resolves public TikTok redirects in a temporary native session and reads the caption from the page’s embedded video record. Shortcuts imports of these links enter the same reader. There is no account access or backend.
+
+Explicit caption sections, including `WHAT YOU’LL NEED`, `INGREDIENTS` / `INGREDIENTES`, `METHOD` / `PREPARACIÓN`, inline bullets (including asterisks), numbered steps, and `SERVES` / `PORCIONES`, are normalized for review. Ingredient/method headings may omit the colon when immediately followed by an explicit list or written on a standalone line. Markdown/emoji heading decorations, checkmark bullets, keycap step numbers, and Spanish Procedimiento/Elaboración/Paso a paso labels are supported; ordinary prose mentioning ingredients or instructions remains in the description. Explicit nutrition/macro/tip footers and trailing hashtag/emoji blocks stay in the description rather than the final cooking step. See the [caption format audit](TIKTOK_FORMAT_AUDIT.md) for tested formats and limits. Nutrition and creator/original-recipe credits stay in the description. Cooking durations inside steps are preserved as written and are not assumed to be total preparation time. Missing ingredients/steps remain empty; a caption without a clear recipe title uses the editable name **Recipe from TikTok**.
+
+The editor attempts to import the public video cover through the shared bounded image downloader. A video cover can show its creator rather than the finished dish; you can remove, replace, or skip it. The original pasted URL is retained even after short-link resolution. No video/audio, subtitles, on-screen text, or comments are downloaded or interpreted. Private/deleted/blocked pages offer retry, description paste, and link-only alternatives. This website adapter depends on TikTok’s public page format and availability; it cannot guarantee every video will import.
 
 ## Receive content from the iOS share sheet
 

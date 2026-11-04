@@ -284,3 +284,54 @@ Validation:
 Logs: `/private/tmp/sazli-chatgpt-photo-{build,tests,release}.log`. No commits or push were performed.
 
 The subsequent physical launch request was denied because the iPhone had locked again. Installation succeeded; the user must open the updated app to complete on-phone acceptance.
+
+## TikTok public description import — November 3, 2026
+
+The supplied short link `https://vt.tiktok.com/ZSpRSQuyw/` resolved with HTTP 200 to the public Louis Howard video `7696569418880535830`. Its description contains a complete recipe, including inline `WHAT YOU’LL NEED`, bullet ingredients, `METHOD`, `SERVES`, and nutrition/original-recipe credits. Added TikTokRecipeDocument.swift to read that explicit public caption and supported cover URLs through a bounded, ephemeral native request restricted to supported public TikTok redirects. Added TikTokRecipeImportView.swift and routing for pasted/pending video links, keeping review, save, cancel, link-only, and paste-description recovery. Added supported link validation in SourceLink. Moved the existing image download transport to RecipeRemotePhoto.swift with platform-specific hosts while retaining ChatGPTRecipePhoto as its adapter. Editor receives the appropriate photo source; in-app help and English README/importing/architecture/testing guides were updated. Added TikTokRecipeTests.swift and source/target membership. No schema/signing/store changes, video processing, backend, or dependencies.
+
+Validation:
+
+- Simulator Debug build and **43 XCTest tests passed, 0 failures**, on iPhone 18 Pro / iOS 27.0. Four new tests cover public links, exact one-line caption structure, partial/bilingual descriptions, unguessed portion ranges, malformed/oversized pages, and platform-specific image-host restrictions. Existing ChatGPT/photo/persistence/action/timer tests passed. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.03_14-15-49--0500.xcresult`.
+- A separate native Foundation probe used the actual TikTok reader, shared downloader, photo preparation, parser/text/link/category sources and the value-only draft projection. It resolved the real short link, read the public caption, and produced **12 ingredients, 3 steps, 4 servings**, preserving the original URL. It obtained two cover candidates and downloaded/prepared a **76,974-byte JPEG**. Visual inspection confirmed a video cover showing the creator with the dish; it is not a promised finished-dish photograph. No total preparation time or personal rating was inferred from cooking instructions or the creator's rating.
+- Final signed iOS **Release build passed**, including existing extension, and the project plist validated. The final build includes updated in-app help. No personal recipes were saved during verification.
+- Native iPhone/simulator import-sheet interaction, cancellation during loading, real blocked/private videos, shortcut handoff, and offline reopening of a newly saved TikTok recipe remain manual acceptance checks. The live network probe ran on the Mac and does not establish that TikTok will serve every region/device without a challenge. The UI provides fallback actions.
+
+Logs: `/private/tmp/sazli-tiktok-{build,tests,release,release-final}.log`. No commits or push were performed.
+
+devicectl confirmed successful installation and launch of `com.sazli.app` on the physical iPhone 15 with the final TikTok update. Existing app data was retained; no recipe was inserted on the phone during deployment.
+
+## TikTok headings without colons — November 3, 2026
+
+Reproduced the reported field-separation error using the public `@thesimplecravings` video `7694085059602550030`. Its single-line caption uses `Ingredients * … Instructions 1. …`, without colon delimiters, and appends hashtags to the final step. The previous parser imported the whole caption into the description. A new exact-caption regression test failed against the previous parser with 0 ingredients and 0 steps.
+
+Updated only TikTokRecipeDocument.swift's caption normalization to accept missing heading colons when followed by an explicit bullet/numbered list, split inline asterisk/dash ingredient bullets within the ingredient section, and keep trailing hashtag blocks in the description. Quantities, decimal/fractional values, prose, and creator/source metadata are retained. Added three tests in TikTokRecipeTests.swift and updated English importing/testing guidance. Existing saved recipes are not rewritten; reimporting uses the corrected parser. No schema, UI, image transport, signing, or dependency changes.
+
+Validation:
+
+- Full native XCTest suite on iPhone 18 Pro / iOS 27.0: **46 passed, 0 failures**. New tests verify the exact taco mac caption, Spanish headings/fractional and decimal quantities, and ordinary prose mentioning ingredient/instruction words without recipe sections. Existing earlier TikTok caption, ChatGPT, images, persistence, timer, and action tests passed. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.03_14-24-01--0500.xcresult`.
+- A native Foundation probe fetched the actual supplied public URL through the production TikTok reader/parser sources with a value-only draft projection: **9 ingredients and 7 steps**. Last ingredient: `Optional: parsley for topping`; last step: `Top with parsley if desired and serve warm!`. It confirmed hashtags were excluded from instructions and the creator credit remained in the description.
+- Signed iOS **Release build passed**, including the existing Live Activity extension. No recipes were saved or modified during verification. On-device review/reimport remains a manual acceptance check.
+
+Logs: `/private/tmp/sazli-tiktok-caption-{before,tests,release}.log`. The `before` run intentionally demonstrates the regression before the parser fix. No commits or push were performed.
+
+devicectl confirmed successful installation and launch of the corrected build on the physical iPhone 15, preserving existing app data.
+
+## TikTok caption format audit — November 3, 2026
+
+Reviewed six fetched public descriptions: the two previously supplied full-caption recipes, three Fitwaffle dish-only announcements, and Jordi Cruz's narrative vinaigrette advice. A native production-parser audit confirmed 12/3 and 9/7 ingredient/step counts for the structured recipes; the four descriptions lacking supported complete section boundaries remained available for manual review. Full primary-source links and dated observations are in [TikTok caption format audit](TIKTOK_FORMAT_AUDIT.md).
+
+Added 22 explicitly constructed format controls to TikTokCaptionFormatTests.swift. A standalone Foundation baseline run found 12 failing controls (10 passed). Separated pure normalization into TikTokCaptionParser.swift and corrected decorated Markdown/emoji headings, keycap numbered steps, numbered/bulleted ingredient/method lists, supported Spanish heading aliases, and explicit nutrition/macro/tip/hashtag footers. The corrected production parser passes all 22 exact-text controls, including negative/partial/narrative cases and quantity preservation. These control failures are not a measured failure rate across published TikTok videos. Updated TikTokRecipeDocument to delegate to the pure parser, app/test target membership, and English audit/importing/testing documentation. No backend, inference, video processing, schema changes, or automatic rewriting of stored recipes.
+
+Validation:
+
+- Native XCTest with **Xcode 27.2** on iPhone 18 Pro / iOS 27.0: **47 tests passed, 0 failures**. The new matrix is one XCTest containing 22 named activities; existing TikTok exact-caption, ChatGPT/image, disk-persistence, timer, sorting/duplicate/share tests also passed. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.03_20-52-08--0500.xcresult`.
+- The initial native run was blocked by a CoreSimulator mismatch after Xcode updated from 27.1 to 27.2. The installed simulator components finished updating during `simctl list devices`; the subsequent full native run passed. No test failures were hidden by counting the earlier blocked run as a pass.
+- Six actual downloaded HTML documents were separately processed by the production document/caption/parser sources in a native Foundation audit with a value-only draft projection; all six had the expected structured-versus-manual-review outcome. All 22 constructed controls passed in the separate before/after audit after correction.
+- Signed generic iOS **Release build passed**, including the existing extension; the project plist validated. The existing signed-extension stripping warning remains. Native tests emitted the existing simulator image/launch diagnostics and the deliberate corrupt-image diagnostic, without test failures.
+- UI presentation and specific on-phone imports for every new format remain manual checks. No personal recipes were inserted, modified, or deleted during the audit. The actual pages may change or be regionally unavailable.
+
+Logs: `/private/tmp/sazli-tiktok-formats-{tests,tests-final,release}.log`. Separate audit results: `/private/tmp/sazli-caption-audit-{before,after}.json`. No commits or push were performed.
+
+devicectl confirmed successful installation of the final caption-format audit build on the physical iPhone 15, preserving existing app data.
+
+The updated app also launched successfully on the iPhone 15 through devicectl. Interactive imports for each new format were not performed on the personal device.
