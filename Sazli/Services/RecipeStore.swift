@@ -40,6 +40,19 @@ enum RecipeStore {
         }
     }
 
+    /// Copies recipe content; personal cooking history belongs to the original recipe.
+    @discardableResult
+    static func duplicate(_ recipe: Recipe, in context: ModelContext) throws -> Recipe {
+        let titles = try context.fetch(FetchDescriptor<Recipe>()).map(\.title)
+        var draft = RecipeDraft(recipe: recipe)
+        var number = 1
+        repeat {
+            draft.title = recipe.title + (number == 1 ? " (Copy)" : " (Copy \(number))")
+            number += 1
+        } while titles.contains(where: { $0.localizedStandardCompare(draft.title) == .orderedSame })
+        return try save(draft, editing: nil, in: context)
+    }
+
     static func delete(_ recipe: Recipe, in context: ModelContext) throws {
         context.delete(recipe)
         try commit(in: context)

@@ -8,6 +8,7 @@ struct RecipeDetailView: View {
   @Environment(\.openURL) private var openURL
   let recipe: Recipe
   var onDelete: (() -> Void)? = nil
+  var onDuplicate: ((UUID) -> Void)? = nil
   @State private var showingEditor = false
   @State private var showingRating = false
   @State private var showingCooking = false
@@ -39,6 +40,9 @@ struct RecipeDetailView: View {
           }
           Button { showingRating = true } label: {
             Label("Rating & notes", systemImage: "star")
+          }
+          Button(action: duplicate) {
+            Label("Duplicate recipe", systemImage: "doc.on.doc")
           }
           Divider()
           Button(role: .destructive) { confirmingDelete = true } label: {
@@ -270,6 +274,13 @@ struct RecipeDetailView: View {
     do { try RecipeStore.commit(in: context) } catch {
       errorMessage = "Your favorite couldn't be saved. " + error.localizedDescription
     }
+  }
+
+  private func duplicate() {
+    do {
+      let copy = try RecipeStore.duplicate(recipe, in: context)
+      onDuplicate?(copy.id)
+    } catch { errorMessage = "Your recipe couldn't be duplicated. " + error.localizedDescription }
   }
 
   private func delete() {

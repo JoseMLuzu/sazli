@@ -97,10 +97,13 @@ struct LibraryView: View {
       }
     } detail: {
       if let recipe = selectedRecipe {
-        RecipeDetailView(recipe: recipe) {
+        RecipeDetailView(recipe: recipe, onDelete: {
           selectedRecipeID = nil
           preferredCompactColumn = .sidebar
-        }
+        }, onDuplicate: { id in
+          selectedRecipeID = id
+          preferredCompactColumn = .detail
+        })
         .id(recipe.id)
       } else {
         ContentUnavailableView {

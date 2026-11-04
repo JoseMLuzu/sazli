@@ -20,6 +20,51 @@ final class SazliTests: XCTestCase {
         XCTAssertEqual(RecipeSort.rating.ordered([b,a]).map(\.id), RecipeSort.rating.ordered([a,b]).map(\.id))
     }
 
+    @MainActor func testDuplicatePersistsContentWithIndependentIdentityAndHistory() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("recipes.store")
+        var copiedID: UUID!
+        var originalID: UUID!
+        do {
+            let container = try RecipeStore.container(at: url)
+            var draft = RecipeDraft()
+            draft.title = "Soup"; draft.description = "Family recipe"
+            draft.ingredients = "1 onion\nWater"; draft.instructions = "Chop.\nSimmer."
+            draft.preparationTime = "25"; draft.servings = "2"; draft.category = .dinner
+            draft.sourceURL = "https://example.com/soup"; draft.sourcePlatform = .web
+            draft.imageData = Data([1,2,3])
+            let original = try RecipeStore.save(draft, editing: nil, in: container.mainContext)
+            original.rating = 5; original.notes = "Private note"; original.isFavorite = true
+            original.wouldCookAgain = true
+            try RecipeStore.commit(in: container.mainContext)
+            let copy = try RecipeStore.duplicate(original, in: container.mainContext)
+            originalID = original.id; copiedID = copy.id
+            XCTAssertNotEqual(original.id, copy.id)
+            XCTAssertEqual(copy.title, "Soup (Copy)")
+            XCTAssertEqual(copy.imageData, draft.imageData)
+            XCTAssertEqual(copy.instructions, original.instructions)
+            XCTAssertEqual(copy.ingredients, original.ingredients)
+            XCTAssertEqual(copy.sourceURL, original.sourceURL)
+            XCTAssertEqual(copy.recipeDescription, original.recipeDescription)
+            XCTAssertEqual(copy.servings, 2); XCTAssertEqual(copy.preparationTime, 25)
+            XCTAssertEqual(copy.recipeCategory, .dinner)
+            XCTAssertEqual(copy.rating, 0); XCTAssertEqual(copy.notes, "")
+            XCTAssertFalse(copy.isFavorite); XCTAssertFalse(copy.wouldCookAgain)
+            let second = try RecipeStore.duplicate(original, in: container.mainContext)
+            XCTAssertEqual(second.title, "Soup (Copy 2)")
+            copy.ingredients = "Different ingredients"
+            try RecipeStore.commit(in: container.mainContext)
+            XCTAssertEqual(original.ingredients, draft.ingredients)
+        }
+        let reopened = try RecipeStore.container(at: url)
+        let recipes = try reopened.mainContext.fetch(FetchDescriptor<Recipe>())
+        XCTAssertEqual(recipes.count, 3)
+        XCTAssertEqual(recipes.first { $0.id == copiedID }?.ingredients, "Different ingredients")
+        XCTAssertEqual(recipes.first { $0.id == originalID }?.notes, "Private note")
+    }
+
     func testSearchFindsTitlesAndIngredientsAcrossCaseAndAccents() {
         let title = "Weeknight bowl"
         let ingredients = "200 g chicken\n1 limón\nOlive oil"
