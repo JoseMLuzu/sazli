@@ -252,3 +252,35 @@ Validation:
 - Simulator visual checking reached the existing pending import sheet and closed its nested ChatGPT reader without discarding content. Device Hub then returned `noWindowsAvailable` while attempting to dismiss the parent sheet. Photo-grid/detail visual acceptance, accessibility sizes, and Instruments Allocations/Time Profiler profiling remain pending.
 
 Build/test logs are under `/private/tmp/sazli-optimization-{build,tests,release}.log`. No commits or push were performed for this stage.
+
+## ChatGPT ingredient/title format fix — November 3, 2026
+
+The reported public share (`6ae9a2ef-d8ec-83e9-8417-ab10621b8705?ogimg=plain`) was readable, but RecipeExtractor rejected both recipes: the first used a styled component title rather than a Markdown title; the second used an inline bold title and `Ingredientes (2 personas)`. The previous extractor required an exact ingredient heading and a separate level-one/two Markdown title.
+
+Updated ChatGPTRecipeExtractor.swift to recognize portion-qualified ingredient headings, styled and inline emphasized titles, and complete recipes without an explicit title (using the editable generic title `Recipe from ChatGPT`). Inline tips are kept outside cooking steps, and recipe boundaries keep separately titled recipes in one message apart. Explicit integer portions are retained; time/portion ranges remain unguessed. Updated ChatGPTShareImportView.swift to distinguish a readable conversation with no complete recipe from a page-read failure and offer a return to text import. The WebKit reader, URL validation, persistence, schema, and original source URLs are unchanged. Updated English importing/testing guidance.
+
+Validation:
+
+- All **37 XCTest tests passed, 0 failures**, on iPhone 18 Pro / iOS 27.0. Three new tests cover the reported heading/title format, styled/missing titles and unguessed ranges, and multiple recipes in one message. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.03_13-57-52--0500.xcresult`.
+- Downloaded the supplied public page successfully (HTTP 200). A separate Foundation parser probe used the actual document/extractor/parser/text/link/category source files and a value-only draft projection (without model editing/persistence), processing the complete downloaded HTML. The previous extractor returned **0 recipes** from its two public final assistant messages; the corrected extractor returned **2**: cheese-chicken pappardelle with **8 ingredients, 5 steps, 2 servings**, and garlic-chicken pappardelle with **9 ingredients and 4 steps**. The earlier recipe's `2–3` portion range stayed unguessed.
+- Signed iOS **Release build passed**, including the existing extension, with the existing signed-extension stripping warning. After the user unlocked the phone, devicectl confirmed installation on the iPhone 15. Existing app data was preserved.
+- Device Hub screen interaction failed with `noWindowsAvailable`; live browser import/editor visual acceptance remains a manual check. The complete-HTML parser reproduction and native tests do not claim successful on-phone browser interaction.
+
+Logs: `/private/tmp/sazli-chatgpt-fix-{tests,release}.log`. No recipes were saved during verification; no commits or push were performed.
+
+devicectl also confirmed successful launch of `com.sazli.app` on the unlocked physical iPhone 15 after installation.
+
+## Optional ChatGPT cover photos — November 3, 2026
+
+Inspected the supplied pappardelle share's image-component metadata and found accessible photo URLs for both final assistant responses. Updated ChatGPTShareDocument to return structured visible messages with explicit `async_image` component URLs/positions while preserving the text-only helper. Updated ChatGPTRecipeExtractor to associate a cover before each ingredient section and carry URLs on the nonpersistent candidate. WebKit/import views now pass these candidates to the editor. Added ChatGPTRecipePhoto.swift and app-target membership for bounded, cookie/credential-free HTTPS downloads with validated image responses/redirects and existing background JPEG preparation. Updated RecipeEditorView to import only the selected cover, allow skipping, show unavailable-photo messages, and retain normal replace/remove/save/discard flows. Updated English README/importing/architecture/testing guides. Schema and store remain unchanged.
+
+Validation:
+
+- Simulator Debug build and all **39 XCTest tests passed, 0 failures** on iPhone 18 Pro / iOS 27.0. New coverage verifies visible-message photo association, user/hidden-message exclusion, step-photo exclusion, supported URL/HTTP/MIME/size checks, and absent/unsupported-photo fallback. Existing persistence, recipe parsing, photo, timer, and action tests also passed. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.03_14-06-34--0500.xcresult`.
+- A separate native Foundation probe processed the complete downloaded share HTML using the actual document, extractor, downloader, photo preparation, parser, text, link, and category sources plus the value-only draft projection. Both recipes exposed two candidate cover URLs. Downloads succeeded and produced prepared JPEGs of **359,171 bytes** (cheese-chicken pappardelle) and **68,474 bytes** (garlic-chicken pappardelle). Visually inspected both generated local files: each contains a pasta/chicken dish, without a social-preview card or page banner. This verifies actual network decoding/preparation on the Mac, not the full iPhone browser/editor flow.
+- Signed iOS **Release build passed**, including the existing extension, and the project plist validated. devicectl confirmed installation on the user's iPhone 15 without replacing its recipe store.
+- Native editor interaction, skip/cancel while downloading, and offline relaunch of a newly saved imported image remain manual acceptance checks. No personal recipes were inserted or changed during verification. Images shown by the share may originate from search; this feature does not claim to retrieve every generated/private ChatGPT image.
+
+Logs: `/private/tmp/sazli-chatgpt-photo-{build,tests,release}.log`. No commits or push were performed.
+
+The subsequent physical launch request was denied because the iPhone had locked again. Installation succeeded; the user must open the updated app to complete on-phone acceptance.

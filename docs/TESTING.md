@@ -50,3 +50,15 @@ Final device visual QA, branded icon/logo assets, localization, export/backup de
 `testThumbnailsDownsampleReuseAndInvalidateChangedPhotos` checks a generated 1600 × 1200 image decodes to 384 × 288, repeated requests reuse the UIImage, changed photo bytes under the same ID invalidate the entry, corrupt data returns nil, and requested sizes are bucketed/clamped. Run the full suite to preserve search, sorting, duplication, import, timer, and disk persistence behavior.
 
 On a device, scroll a photo-filled library, search ingredients, open/close details repeatedly, and replace a photo. Check for stale images or cropping/layout changes, including landscape and accessibility text sizes. Use Instruments Allocations and Time Profiler for process-level memory and scrolling measurements; thumbnail pixel-buffer sizes alone do not establish whole-app memory or frame-rate improvements.
+
+
+## ChatGPT recipe-format regression
+
+The public-share tests cover inline bold titles, styled component titles, `Ingredientes (2 personas)` / `Ingredients (2 servings)` headings, recipes without explicit titles, and two recipes in one message. Verify that the cheese-chicken pappardelle share offers its two recipes separately: the most recent version has eight ingredients, five steps, and two servings; the earlier version has nine ingredients and four steps. Tips belong in the description. Time/serving ranges remain unguessed. Review or cancel without saving to avoid adding test recipes to a personal library.
+
+
+## Optional ChatGPT cover photos
+
+Review the public pappardelle share and choose either recipe: each should load its own cover photo in the editor. Remove or replace it before saving, or choose **Continue without imported photo** while loading. Test an unavailable photo/offline connection: text must remain editable and saveable. Cancel review without inserting a recipe. Save with a photo, relaunch offline, and check the same image in library/detail.
+
+Automated coverage verifies image metadata is read only from visible final assistant messages, each recipe receives its own cover, step images are excluded, unrelated/authenticated/insecure URLs are rejected, invalid HTTP/type/size responses are rejected, and missing/unsupported candidates return no photo. Existing tests cover photo preparation, thumbnail reuse, and local image-data persistence.
