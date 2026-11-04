@@ -7,7 +7,7 @@ struct RecipeCard: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
-                photo
+                RecipeThumbnail(recipe: recipe)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .clipped()
                 LinearGradient(
@@ -55,20 +55,6 @@ struct RecipeCard: View {
         .contentShape(RoundedRectangle(cornerRadius: 20))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilitySummary)
-    }
-
-    @ViewBuilder private var photo: some View {
-        if let data = recipe.imageData, let image = UIImage(data: data) {
-            Image(uiImage: image).resizable().scaledToFill()
-        } else {
-            ZStack {
-                LinearGradient(colors: [SazliTheme.olive, SazliTheme.orange],
-                               startPoint: .topLeading, endPoint: .bottomTrailing)
-                Image(systemName: recipe.recipeCategory.symbol)
-                    .font(.system(size: 64, weight: .ultraLight))
-                    .foregroundStyle(.white.opacity(0.3))
-            }
-        }
     }
 
     @ViewBuilder private var metadata: some View {

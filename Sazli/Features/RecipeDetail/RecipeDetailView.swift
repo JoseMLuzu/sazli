@@ -100,12 +100,8 @@ struct RecipeDetailView: View {
       : AnyLayout(VStackLayout(alignment: .leading, spacing: 24))
 
     return VStack(alignment: .leading, spacing: 28) {
-      if let data = recipe.imageData, let image = UIImage(data: data) {
-        GeometryReader { photoGeometry in
-          Image(uiImage: image).resizable().scaledToFill()
-            .frame(width: photoGeometry.size.width, height: photoGeometry.size.height)
-            .clipped()
-        }
+      if recipe.imageData != nil {
+        RecipeThumbnail(recipe: recipe)
         .frame(height: min(max(width * 0.6, 200), 320))
         .clipShape(RoundedRectangle(cornerRadius: 24))
         .accessibilityElement(children: .ignore)

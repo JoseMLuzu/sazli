@@ -4,6 +4,38 @@ import UIKit
 @testable import Sazli
 
 final class SazliTests: XCTestCase {
+    @MainActor func testThumbnailsDownsampleReuseAndInvalidateChangedPhotos() async throws {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 1600, height: 1200), format: format)
+        func photo(_ color: UIColor) throws -> Data {
+            try XCTUnwrap(renderer.image { context in
+                color.setFill()
+                context.fill(CGRect(x: 0, y: 0, width: 1600, height: 1200))
+            }.jpegData(compressionQuality: 0.8))
+        }
+        let cache = RecipeThumbnailCache()
+        let id = UUID()
+        let red = try photo(.red)
+        let loaded = await cache.image(id: id, data: red, pixels: 384)
+        let first = try XCTUnwrap(loaded)
+        let cgImage = try XCTUnwrap(first.cgImage)
+        XCTAssertEqual(cgImage.width, 384)
+        XCTAssertEqual(cgImage.height, 288)
+        XCTAssertLessThan(cgImage.bytesPerRow * cgImage.height, 1600 * 1200 * 4 / 10)
+        let reused = await cache.image(id: id, data: red, pixels: 384)
+        XCTAssertTrue(first === reused)
+        let blue = try photo(.blue)
+        let changed = await cache.image(id: id, data: blue, pixels: 384)
+        XCTAssertNotNil(changed)
+        XCTAssertFalse(first === changed)
+        let corrupt = await cache.image(id: id, data: Data([1, 2, 3]), pixels: 384)
+        XCTAssertNil(corrupt)
+        XCTAssertEqual(RecipeThumbnailCache.pixelSize(390), 512)
+        XCTAssertEqual(RecipeThumbnailCache.pixelSize(0), 128)
+        XCTAssertEqual(RecipeThumbnailCache.pixelSize(4000), 1800)
+    }
+
     @MainActor func testRecipeOrderingHandlesUnknownTimesAndStableTies() {
         let a = Recipe(title: "Apple"); a.preparationTime = 20; a.rating = 5
         let b = Recipe(title: "Bread"); b.preparationTime = 10; b.rating = 3
