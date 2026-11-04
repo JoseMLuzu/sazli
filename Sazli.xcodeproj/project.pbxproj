@@ -58,6 +58,8 @@
 		9092B6018EE8812F742609C4 = {isa = PBXBuildFile; fileRef = CA95E1378ACF961D452CB275; };
 		2BD8CA91E2AE06F1670D5309 = {isa = PBXBuildFile; fileRef = 444E29ECDF97C7773F94C09B; };
 		96C7C678C08FFA155B8B7556 = {isa = PBXBuildFile; fileRef = A5E33B99E2048B8639E575B6; };
+		74472460AED62B517DA02479 = {isa = PBXBuildFile; fileRef = C6ECFF927CB1D72D5BD7E906; };
+		309322C951767DA472D6DD5E = {isa = PBXBuildFile; fileRef = A05663585E308C2344521A96; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +127,8 @@
 		CA95E1378ACF961D452CB275 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Components/RecipeThumbnail.swift"; sourceTree = SOURCE_ROOT; };
 		444E29ECDF97C7773F94C09B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTRecipePhoto.swift"; sourceTree = SOURCE_ROOT; };
 		A5E33B99E2048B8639E575B6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeRemotePhoto.swift"; sourceTree = SOURCE_ROOT; };
+		C6ECFF927CB1D72D5BD7E906 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/TikTokCaptionParser.swift"; sourceTree = SOURCE_ROOT; };
+		A05663585E308C2344521A96 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/TikTokCaptionFormatTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -157,6 +161,7 @@
 				CA95E1378ACF961D452CB275,
 				444E29ECDF97C7773F94C09B,
 				A5E33B99E2048B8639E575B6,
+				C6ECFF927CB1D72D5BD7E906,
 				820C81D0F207F00CD9325BA4,
 				BEA91E8B1D60A9CF0B14C326,
 				1A6AC606AAFAB52BD1E0B3B4,
@@ -216,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */,
+				A05663585E308C2344521A96,
 				C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */,
 				94F770F5D27CBD372993B9A9 /* SazliTests/SazliTests.swift */,
 			);
@@ -321,6 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */,
+				309322C951767DA472D6DD5E,
 				80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */,
 				5BEA0F7F6BC87C1D08CA95E7 /* SazliTests/SazliTests.swift in Sources */,
 			);
@@ -334,6 +341,7 @@
 				9092B6018EE8812F742609C4,
 				2BD8CA91E2AE06F1670D5309,
 				96C7C678C08FFA155B8B7556,
+				74472460AED62B517DA02479,
 				38B4EBC4B5B71E178E2D6132,
 				5AFCA9A353FE33E65D5E2C6B,
 				13470A08DD8901C9C6310D72,
