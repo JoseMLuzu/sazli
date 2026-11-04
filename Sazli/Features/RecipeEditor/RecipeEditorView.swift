@@ -113,7 +113,7 @@ struct RecipeEditorView: View {
                         ForEach(SourcePlatform.allCases) { Text($0.title).tag($0) }
                     }
                 } header: { Text("Original source") } footer: {
-                    Text("Recognized links set the platform automatically. The original link is kept. Use the library importer to read supported public ChatGPT shares; other links remain references.")
+                    Text("Recognized links set the platform automatically. The original link is kept. Use the library importer to read supported public ChatGPT shares and TikTok descriptions; other links remain references.")
                 }
             }
             .frame(maxWidth: 720)

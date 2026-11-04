@@ -52,7 +52,7 @@ struct ImportRecipeView: View {
                         ForEach(SourcePlatform.allCases) { Text($0.title).tag($0) }
                     }
                 } footer: {
-                    Text("Public ChatGPT share links can be read on this iPhone to find recipes. Other links are saved as references; video and webpage extraction is not included.")
+                    Text("Public ChatGPT shares and supported TikTok descriptions can be read on this iPhone. Other links remain references. Video transcription is not included.")
                 }
                 Section {
                     PrimaryButton(title: "Review recipe", symbol: "arrow.right") { prepareReview() }
@@ -114,11 +114,17 @@ struct ImportRecipeView: View {
                     ChatGPTShareImportView(url: url, importIdentifier: request?.id) { recipe in
                         savedID = recipe.id
                     }
+                case .tikTok(let url):
+                    TikTokRecipeImportView(url: url, importIdentifier: request?.id) { recipe in
+                        savedID = recipe.id
+                    }
                 }
             }
             .task {
                 if let request, let url = SourceLink.chatGPTShareURL(from: request.text) {
                     review = ImportReview(content: .chatGPT(url))
+                } else if let request, let url = SourceLink.tikTokVideoURL(from: request.text) {
+                    review = ImportReview(content: .tikTok(url))
                 }
             }
         }
@@ -128,6 +134,10 @@ struct ImportRecipeView: View {
         focused = false
         if let url = SourceLink.chatGPTShareURL(from: text) {
             review = ImportReview(content: .chatGPT(url))
+            return
+        }
+        if let url = SourceLink.tikTokVideoURL(from: text) {
+            review = ImportReview(content: .tikTok(url))
             return
         }
         do {
@@ -150,5 +160,6 @@ private struct ImportReview: Identifiable {
     enum Content {
         case draft(RecipeDraft)
         case chatGPT(URL)
+        case tikTok(URL)
     }
 }

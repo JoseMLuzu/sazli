@@ -22,6 +22,7 @@ struct RecipeImportHelpView: View {
             Section("What is imported") {
                 Label("Recipe text: explicit ingredients and steps", systemImage: "text.alignleft")
                 Label("Public ChatGPT links: complete recipe sections", systemImage: "text.book.closed")
+                Label("TikTok videos: public description and available cover", systemImage: "text.below.photo")
                 Label("Other links: original URL and detected platform", systemImage: "link")
                 Text("Your private conversations and accounts are not connected. Reading a public ChatGPT page requires internet access and uses an isolated browser session. Video transcription, image recognition, and general webpage extraction are not included. Nothing is uploaded by Sazli.")
                     .foregroundStyle(.secondary)
