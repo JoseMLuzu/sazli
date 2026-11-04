@@ -183,6 +183,29 @@ final class ChatGPTShareTests: XCTestCase {
         XCTAssertTrue(ChatGPTRecipeExtractor.recipes(inSharedMessages: [noCover], sourceURL: shareURL)[0].photoURLs.isEmpty)
     }
 
+    func testPhotoDownloadsRejectUnrelatedURLsAndInvalidResponses() async throws {
+        let image = try XCTUnwrap(URL(string: "https://images.openai.com/static-rsc-4/dish"))
+        XCTAssertNotNil(ChatGPTRecipePhoto.publicURL(from: image.absoluteString))
+        for value in ["http://images.openai.com/static-rsc-4/dish", "https://images.openai.com.evil.test/static-rsc-4/dish",
+                      "https://images.openai.com:444/static-rsc-4/dish", "https://user:password@images.openai.com/static-rsc-4/dish",
+                      "https://chatgpt.com/backend-api/files/secret", "https://ogimg.chatgpt.com/title.png",
+                      "https://127.0.0.1/dish.jpg"] {
+            XCTAssertNil(ChatGPTRecipePhoto.publicURL(from: value))
+        }
+        func response(_ status: Int, _ type: String, _ length: Int) -> HTTPURLResponse {
+            HTTPURLResponse(url: image, statusCode: status, httpVersion: nil,
+                            headerFields: ["Content-Type": type, "Content-Length": String(length)])!
+        }
+        XCTAssertNoThrow(try ChatGPTRecipePhoto.validate(response(200, "image/jpeg", 1000)))
+        XCTAssertThrowsError(try ChatGPTRecipePhoto.validate(response(403, "image/jpeg", 1000)))
+        XCTAssertThrowsError(try ChatGPTRecipePhoto.validate(response(200, "text/html", 1000)))
+        XCTAssertThrowsError(try ChatGPTRecipePhoto.validate(response(200, "image/jpeg", ChatGPTRecipePhoto.maximumBytes + 1)))
+        let absent = await ChatGPTRecipePhoto.load(from: [])
+        XCTAssertNil(absent)
+        let unsupported = await ChatGPTRecipePhoto.load(from: [URL(string: "https://example.com/dish.jpg")!])
+        XCTAssertNil(unsupported)
+    }
+
     /// A reduced fixture matching the component-markup structure observed in a public share page.
     private var recipeMarkup: String {
         """

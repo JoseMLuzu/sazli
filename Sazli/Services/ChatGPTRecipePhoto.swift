@@ -1,16 +1,15 @@
 import Foundation
 
-/// Downloads only an image explicitly attached to a public assistant response.
+/// Supported photo URLs exposed by a public ChatGPT recipe response.
 enum ChatGPTRecipePhoto {
-    static let maximumBytes = 12_000_000
-
+    static let maximumBytes = RecipeRemotePhoto.maximumBytes
     static func publicURL(from text: String) -> URL? {
-        guard let url = SourceLink.url(from: text), url.scheme?.lowercased() == "https",
-              url.port == nil || url.port == 443,
-              let host = url.host?.lowercased(),
-              (host == "images.openai.com" && url.path.hasPrefix("/static-rsc-"))
-                || host == "files.oaiusercontent.com" else { return nil }
-        return url
+        RecipeRemotePhoto.publicURL(from: text, source: .chatGPT)
     }
-
+    static func load(from urls: [URL]) async -> Data? {
+        await RecipeRemotePhoto.load(from: urls, source: .chatGPT)
+    }
+    static func validate(_ response: URLResponse) throws {
+        try RecipeRemotePhoto.validate(response, source: .chatGPT)
+    }
 }
