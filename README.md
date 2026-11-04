@@ -13,10 +13,14 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 
 ## What is included
 
+- Library sorting by recently added, name, rating, or preparation time, remembered between launches.
+- Duplicate recipes into independent editable copies with their photo and source. Personal ratings, notes, and favorites start fresh.
+- Share recipe text through the system share sheet, including ingredients, numbered steps, and the original link. Personal notes and ratings are kept private.
+
 - A SwiftData library with a two-column photo grid, name/ingredient search, category filters, favorites, and empty states. Search ignores case and accents. Narrow panes and accessibility text sizes use one column.
 - Create and edit recipes, including recipes containing only a title and an original link.
 - Ingredients and instructions stored as newline-separated text and presented as ingredient rows and numbered steps.
-- Optional photo selection through Apple's system Photos picker. Images are downsampled and stored locally.
+- Optional photo selection through Apple's system Photos picker. Images are downsampled and stored locally. Library and detail photos use display-sized thumbnails decoded off the main thread and reused through an evictable memory cache.
 - Recipe detail, confirmed deletion, editable personal ratings, notes, and a “would make again” preference.
 - Cooking mode with large text, progress, previous/next controls, and an ingredient sheet. The previous idle-timer setting is restored when cooking closes or the app becomes inactive.
 - A local cooking timer with editable minutes/seconds, pause/resume/cancel, saved state across app restarts, optional local notification alerts, and a Live Activity on Dynamic Island/Lock Screen when allowed by iOS. An active timer remains accessible from the library. See [cooking timer](docs/COOKING_TIMER.md).

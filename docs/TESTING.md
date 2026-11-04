@@ -9,6 +9,8 @@
 
 ## Manual acceptance checklist
 
+For library/recipe actions: choose each Sort recipes option in the library ellipsis menu, combine it with a search/filter, and confirm the choice survives relaunch. Unknown preparation times should sort last. From recipe options, duplicate a photo recipe twice and confirm unique Copy titles, retained content/photo/source, fresh rating/notes/favorites, and independent edits after relaunch. Share a full and a link-only recipe; inspect the system sheet and copied text without sending it to anyone. Confirm numbered steps, original link, and omission of private notes, empty sections, and unspecified time. Repeat on compact/expanded layouts and with accessibility text sizes.
+
 1. Launch a fresh install. Confirm a warm cream library, an empty state, no sample recipes, and an **Add a recipe** button.
 2. Try saving an empty form. Confirm a clear validation message. Enter a title and a YouTube link, save, and confirm a real library card appears without invented ingredients or steps.
 3. Force-quit and reopen Sazli. Confirm the recipe is still present. Open it and confirm the source link, title, and empty content prompts.
@@ -42,3 +44,9 @@ For the public ChatGPT reader, share a conversation with multiple recipes and la
 ## Release follow-up
 
 Final device visual QA, branded icon/logo assets, localization, export/backup design, and App Store signing/distribution are separate from the local recipe-manager implementation. CloudKit, video transcription, general webpage extraction, and a dedicated Share Extension remain outside this implementation; native sharing currently uses the documented Shortcuts action. Supported public ChatGPT share pages use the local reader.
+
+## Photo performance regression
+
+`testThumbnailsDownsampleReuseAndInvalidateChangedPhotos` checks a generated 1600 × 1200 image decodes to 384 × 288, repeated requests reuse the UIImage, changed photo bytes under the same ID invalidate the entry, corrupt data returns nil, and requested sizes are bucketed/clamped. Run the full suite to preserve search, sorting, duplication, import, timer, and disk persistence behavior.
+
+On a device, scroll a photo-filled library, search ingredients, open/close details repeatedly, and replace a photo. Check for stale images or cropping/layout changes, including landscape and accessibility text sizes. Use Instruments Allocations and Time Profiler for process-level memory and scrolling measurements; thumbnail pixel-buffer sizes alone do not establish whole-app memory or frame-rate improvements.
