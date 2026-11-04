@@ -59,7 +59,7 @@ struct ChatGPTShareImportView: View {
                     }
                     Button("Keep the link only") { keepLink() }
                         .buttonStyle(.bordered)
-                    Text("Only details present in an explicit recipe are filled in. Photos and later conversation changes are not imported automatically.")
+                    Text("Only details present in the recipe are filled in. An accessible recipe photo is imported when available; you can replace or remove it before saving.")
                         .font(.footnote).foregroundStyle(.secondary)
                 }
                 .padding(20).frame(maxWidth: 720).frame(maxWidth: .infinity)
@@ -71,19 +71,20 @@ struct ChatGPTShareImportView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Close") { dismiss() } }
             }
             .sheet(item: $selected, onDismiss: finishIfSaved) { candidate in
-                RecipeEditorView(draft: candidate.draft, importIdentifier: importIdentifier) { recipe in
+                RecipeEditorView(draft: candidate.draft, importIdentifier: importIdentifier,
+                                 importPhotoURLs: candidate.photoURLs) { recipe in
                     savedRecipe = recipe
                 }
             }
         }
     }
 
-    private func receive(_ result: Result<[String], Error>) {
+    private func receive(_ result: Result<[SharedChatGPTMessage], Error>) {
         finishedReading = true
         switch result {
         case .success(let messages):
             readConversation = true
-            candidates = ChatGPTRecipeExtractor.recipes(in: messages, sourceURL: url)
+            candidates = ChatGPTRecipeExtractor.recipes(inSharedMessages: messages, sourceURL: url)
             if candidates.isEmpty {
                 errorMessage = "No complete recipe with explicit ingredients and instructions was found. Import the recipe text, or keep this link to complete it later."
             } else if candidates.count == 1 { selected = candidates[0] }

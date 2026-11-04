@@ -4,7 +4,7 @@ import WebKit
 /// A temporary browser reads only the public share page, with an isolated cookie store.
 struct ChatGPTShareWebView: UIViewRepresentable {
     let url: URL
-    let onRead: (Result<[String], Error>) -> Void
+    let onRead: (Result<[SharedChatGPTMessage], Error>) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(url: url, onRead: onRead) }
 
@@ -30,12 +30,12 @@ struct ChatGPTShareWebView: UIViewRepresentable {
 
     @MainActor final class Coordinator: NSObject, WKNavigationDelegate {
         private let url: URL
-        private let onRead: (Result<[String], Error>) -> Void
+        private let onRead: (Result<[SharedChatGPTMessage], Error>) -> Void
         private var reading: Task<Void, Never>?
         private var timeout: Task<Void, Never>?
         private var finished = false
 
-        init(url: URL, onRead: @escaping (Result<[String], Error>) -> Void) {
+        init(url: URL, onRead: @escaping (Result<[SharedChatGPTMessage], Error>) -> Void) {
             self.url = url
             self.onRead = onRead
         }
@@ -56,7 +56,7 @@ struct ChatGPTShareWebView: UIViewRepresentable {
                     do {
                         // Return inert HTML, not script objects. Decode only finalized assistant text.
                         if let html = try await webView.evaluateJavaScript("document.documentElement.outerHTML") as? String {
-                            let messages = try ChatGPTShareDocument.assistantMessages(in: html)
+                            let messages = try ChatGPTShareDocument.messages(in: html)
                             self.finish(.success(messages))
                             return
                         }
@@ -88,7 +88,7 @@ struct ChatGPTShareWebView: UIViewRepresentable {
             if (error as NSError).code != NSURLErrorCancelled { finish(.failure(error)) }
         }
 
-        private func finish(_ result: Result<[String], Error>) {
+        private func finish(_ result: Result<[SharedChatGPTMessage], Error>) {
             guard !finished else { return }
             finished = true
             timeout?.cancel()
