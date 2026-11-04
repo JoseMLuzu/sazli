@@ -65,6 +65,23 @@ final class SazliTests: XCTestCase {
         XCTAssertEqual(recipes.first { $0.id == originalID }?.notes, "Private note")
     }
 
+    @MainActor func testSharingIncludesRecipeContentWithoutPersonalHistoryOrInventedSections() {
+        let recipe = Recipe(title: "Soup")
+        recipe.recipeDescription = "A warm lunch"; recipe.ingredients = "Onion\nWater"
+        recipe.instructions = "Chop.\nSimmer."; recipe.preparationTime = 20
+        recipe.sourceURL = "https://example.com/soup"; recipe.sourcePlatform = SourcePlatform.web.rawValue
+        recipe.notes = "Private note"; recipe.rating = 5
+        let text = RecipeSharing.text(for: recipe)
+        XCTAssertTrue(text.contains("Ingredients\n• Onion\n• Water"))
+        XCTAssertTrue(text.contains("Instructions\n1. Chop.\n2. Simmer."))
+        XCTAssertTrue(text.contains("20 min")); XCTAssertTrue(text.contains(recipe.sourceURL))
+        XCTAssertFalse(text.contains("Private note"))
+        recipe.ingredients = ""; recipe.instructions = ""; recipe.preparationTime = 0
+        let linkOnly = RecipeSharing.text(for: recipe)
+        XCTAssertFalse(linkOnly.contains("Ingredients")); XCTAssertFalse(linkOnly.contains("Instructions"))
+        XCTAssertFalse(linkOnly.contains("0 min"))
+    }
+
     func testSearchFindsTitlesAndIngredientsAcrossCaseAndAccents() {
         let title = "Weeknight bowl"
         let ingredients = "200 g chicken\n1 limón\nOlive oil"

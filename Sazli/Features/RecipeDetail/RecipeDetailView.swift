@@ -44,6 +44,9 @@ struct RecipeDetailView: View {
           Button(action: duplicate) {
             Label("Duplicate recipe", systemImage: "doc.on.doc")
           }
+          ShareLink(item: RecipeSharing.text(for: recipe), subject: Text(recipe.title)) {
+            Label("Share recipe", systemImage: "square.and.arrow.up")
+          }
           Divider()
           Button(role: .destructive) { confirmingDelete = true } label: {
             Label("Delete recipe", systemImage: "trash")

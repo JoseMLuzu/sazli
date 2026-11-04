@@ -32,3 +32,24 @@ enum RecipeSort: String, CaseIterable, Identifiable {
     }
   }
 }
+
+enum RecipeSharing {
+  static func text(for recipe: Recipe) -> String {
+    var sections = [recipe.title]
+    if !recipe.recipeDescription.isEmpty { sections.append(recipe.recipeDescription) }
+    var details = [recipe.recipeCategory.title]
+    if recipe.preparationTime > 0 { details.append("\(recipe.preparationTime) min") }
+    details.append("\(recipe.servings) \(recipe.servings == 1 ? "serving" : "servings")")
+    sections.append(details.joined(separator: " · "))
+    if !recipe.ingredientLines.isEmpty {
+      sections.append("Ingredients\n" + recipe.ingredientLines.map { "• \($0)" }.joined(separator: "\n"))
+    }
+    if !recipe.instructionLines.isEmpty {
+      sections.append("Instructions\n" + recipe.instructionLines.enumerated().map { "\($0.offset + 1). \($0.element)" }.joined(separator: "\n"))
+    }
+    if let url = SourceLink.url(from: recipe.sourceURL) {
+      sections.append("Source · \(recipe.platform.title)\n\(url.absoluteString)")
+    }
+    return sections.joined(separator: "\n\n")
+  }
+}
