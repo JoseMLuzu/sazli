@@ -3,13 +3,19 @@ import Foundation
 struct SharedRecipeCandidate: Identifiable {
     let id = UUID()
     let draft: RecipeDraft
+    var photoURLs: [URL] = []
 }
 
 /// Selects explicit complete recipe sections; follow-up conversation stays separate.
 enum ChatGPTRecipeExtractor {
     static func recipes(in messages: [String], sourceURL: URL) -> [SharedRecipeCandidate] {
+        recipes(inSharedMessages: messages.map { SharedChatGPTMessage(text: $0) }, sourceURL: sourceURL)
+    }
+
+    static func recipes(inSharedMessages messages: [SharedChatGPTMessage], sourceURL: URL) -> [SharedRecipeCandidate] {
         var result: [SharedRecipeCandidate] = []
-        for message in messages.reversed() {
+        for shared in messages.reversed() {
+            let message = shared.text
             let cleaned = clean(message)
             let lines = cleaned.components(separatedBy: .newlines)
             // Each explicit ingredient heading marks a possible recipe, not a follow-up tip.
@@ -39,11 +45,31 @@ enum ChatGPTRecipeExtractor {
                 draft.sourceURL = sourceURL.absoluteString
                 draft.sourcePlatform = .chatGPT
                 if !result.contains(where: { $0.draft.title == draft.title && $0.draft.ingredients == draft.ingredients }) {
-                    result.append(SharedRecipeCandidate(draft: draft))
+                    result.append(SharedRecipeCandidate(draft: draft,
+                        photoURLs: coverURLs(in: shared, ingredientOrdinal: offset, title: title)))
                 }
             }
         }
         return result
+    }
+
+    private static func coverURLs(in message: SharedChatGPTMessage, ingredientOrdinal: Int, title: String) -> [URL] {
+        var offset = 0
+        var headings: [Int] = []
+        for line in message.text.components(separatedBy: "\n") {
+            if isIngredientHeading(line) { headings.append(offset) }
+            offset += line.unicodeScalars.count + 1
+        }
+        guard headings.indices.contains(ingredientOrdinal) else { return [] }
+        let upper = headings[ingredientOrdinal]
+        var lower = 0
+        if ingredientOrdinal > 0 {
+            // Be conservative when several recipes share a response: never borrow a step photo.
+            guard let range = message.text.range(of: title, options: .backwards),
+                  message.text.unicodeScalars[..<range.lowerBound].count < upper else { return [] }
+            lower = message.text.unicodeScalars[..<range.lowerBound].count
+        }
+        return message.images.first { $0.offset >= lower && $0.offset < upper }?.urls ?? []
     }
 
     private static func clean(_ text: String) -> String {

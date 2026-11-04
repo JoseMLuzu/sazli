@@ -158,6 +158,31 @@ final class ChatGPTShareTests: XCTestCase {
         XCTAssertEqual(recipes.last?.draft.servings, "2")
     }
 
+    func testCoverPhotosStayWithTheirVisibleRecipeMessage() throws {
+        let cover = "https://images.openai.com/static-rsc-4/cover?purpose=fullsize"
+        let stepPhoto = "https://images.openai.com/static-rsc-4/step"
+        let otherCover = "https://images.openai.com/static-rsc-4/other"
+        let first = "<AsyncImage query=\"soup\"/>\n# Soup\nIngredients:\n- Water\nInstructions:\n1. Simmer."
+        let second = "<AsyncImage query=\"toast\"/>\n# Toast\nIngredients:\n- Bread\nInstructions:\n1. Toast."
+        let html = try makeDocument([
+            ("user", "final", first, false),
+            ("assistant", "final", first, true),
+            ("assistant", "final", first, false),
+            ("assistant", "final", second, false)
+        ], photos: [0: [(0, [otherCover])], 1: [(0, [otherCover])],
+                    2: [(0, ["https://example.com/recipe", cover]), (first.unicodeScalars.count - 2, [stepPhoto])],
+                    3: [(0, [otherCover])]])
+        let messages = try ChatGPTShareDocument.messages(in: html)
+        XCTAssertEqual(messages.count, 2)
+        let recipes = ChatGPTRecipeExtractor.recipes(inSharedMessages: messages, sourceURL: shareURL)
+        XCTAssertEqual(recipes.map { $0.draft.title }, ["Toast", "Soup"])
+        XCTAssertEqual(recipes[0].photoURLs.map(\.absoluteString), [otherCover])
+        XCTAssertEqual(recipes[1].photoURLs.map(\.absoluteString), [cover])
+        XCTAssertNil(recipes[0].draft.imageData) // Download happens only when reviewing the chosen recipe.
+        let noCover = SharedChatGPTMessage(text: first, images: [SharedChatGPTImage(offset: first.unicodeScalars.count - 2, urls: [URL(string: stepPhoto)!])])
+        XCTAssertTrue(ChatGPTRecipeExtractor.recipes(inSharedMessages: [noCover], sourceURL: shareURL)[0].photoURLs.isEmpty)
+    }
+
     /// A reduced fixture matching the component-markup structure observed in a public share page.
     private var recipeMarkup: String {
         """
@@ -202,7 +227,8 @@ final class ChatGPTShareTests: XCTestCase {
         """
     }
 
-    private func makeDocument(_ messages: [(role: String, channel: String, text: String, hidden: Bool)]) throws -> String {
+    private func makeDocument(_ messages: [(role: String, channel: String, text: String, hidden: Bool)],
+                              photos: [Int: [(offset: Int, urls: [String])]] = [:]) throws -> String {
         var table: [Any] = []
         func store(_ value: Any) -> Int { table.append(value); return table.count - 1 }
         func object(_ fields: [(String, Int)]) -> Int {
@@ -211,10 +237,16 @@ final class ChatGPTShareTests: XCTestCase {
             return store(result)
         }
         var nodes: [Int] = []
-        for item in messages {
+        for (index, item) in messages.enumerated() {
             let author = object([("role", store(item.role))])
             let content = object([("content_type", store("text")), ("parts", store([store(item.text)]))])
-            let metadata = object([("is_visually_hidden_from_conversation", store(item.hidden))])
+            let components = (photos[index] ?? []).map { photo in
+                let links = photo.urls.map { object([("url", store($0))]) }
+                return object([("type", store("async_image")), ("start_index", store(photo.offset)),
+                               ("safe_urls", store(links))])
+            }
+            let metadata = object([("is_visually_hidden_from_conversation", store(item.hidden)),
+                                   ("genui_components", store(components))])
             let message = object([("author", author), ("content", content), ("channel", store(item.channel)),
                                   ("recipient", store("all")), ("metadata", metadata)])
             nodes.append(object([("message", message)]))

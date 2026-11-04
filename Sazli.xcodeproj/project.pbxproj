@@ -56,6 +56,7 @@
 		38B4EBC4B5B71E178E2D6132 = {isa = PBXBuildFile; fileRef = 820C81D0F207F00CD9325BA4; };
 		3EAA22085DA8D991D0A989C8 = {isa = PBXBuildFile; fileRef = 0E3A2FC90D6D6385BFB53CED; };
 		9092B6018EE8812F742609C4 = {isa = PBXBuildFile; fileRef = CA95E1378ACF961D452CB275; };
+		2BD8CA91E2AE06F1670D5309 = {isa = PBXBuildFile; fileRef = 444E29ECDF97C7773F94C09B; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +122,7 @@
 		820C81D0F207F00CD9325BA4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeActions.swift"; sourceTree = SOURCE_ROOT; };
 		0E3A2FC90D6D6385BFB53CED = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeThumbnailCache.swift"; sourceTree = SOURCE_ROOT; };
 		CA95E1378ACF961D452CB275 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Components/RecipeThumbnail.swift"; sourceTree = SOURCE_ROOT; };
+		444E29ECDF97C7773F94C09B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTRecipePhoto.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -151,6 +153,7 @@
 			children = (
 				0E3A2FC90D6D6385BFB53CED,
 				CA95E1378ACF961D452CB275,
+				444E29ECDF97C7773F94C09B,
 				820C81D0F207F00CD9325BA4,
 				BEA91E8B1D60A9CF0B14C326,
 				1A6AC606AAFAB52BD1E0B3B4,
@@ -326,6 +329,7 @@
 			files = (
 				3EAA22085DA8D991D0A989C8,
 				9092B6018EE8812F742609C4,
+				2BD8CA91E2AE06F1670D5309,
 				38B4EBC4B5B71E178E2D6132,
 				5AFCA9A353FE33E65D5E2C6B,
 				13470A08DD8901C9C6310D72,

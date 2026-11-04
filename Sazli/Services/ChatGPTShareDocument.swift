@@ -1,12 +1,26 @@
 import Foundation
 import CoreFoundation
 
+struct SharedChatGPTMessage {
+    let text: String
+    var images: [SharedChatGPTImage] = []
+}
+
+struct SharedChatGPTImage {
+    let offset: Int
+    let urls: [URL]
+}
+
 /// Reads the public share page's embedded data, without executing it or accessing an account.
 /// This is a best-effort website adapter, not a supported ChatGPT conversation API.
 enum ChatGPTShareDocument {
     static let maximumHTMLBytes = 4_000_000
 
     static func assistantMessages(in html: String) throws -> [String] {
+        try messages(in: html).map(\.text)
+    }
+
+    static func messages(in html: String) throws -> [SharedChatGPTMessage] {
         guard html.utf8.count <= maximumHTMLBytes else { throw ReadError.tooLarge }
         let expression = try NSRegularExpression(
             pattern: #"streamController\.enqueue\(\s*("(?:\\.|[^"\\])*")\s*\)"#,
@@ -19,7 +33,7 @@ enum ChatGPTShareDocument {
             let reader = ReferenceTable(values: table)
             for case let object as [String: Any] in table {
                 guard let nodes = reader.field("linear_conversation", in: object) as? [Any] else { continue }
-                var messages: [String] = []
+                var messages: [SharedChatGPTMessage] = []
                 for reference in nodes {
                     guard let node = reader.resolve(reference) as? [String: Any],
                           let message = reader.field("message", in: node) as? [String: Any],
@@ -33,8 +47,26 @@ enum ChatGPTShareDocument {
                     if let metadata = reader.field("metadata", in: message) as? [String: Any],
                        reader.field("is_visually_hidden_from_conversation", in: metadata) as? Bool == true { continue }
                     let text = parts.compactMap { reader.resolve($0) as? String }.joined(separator: "\n")
-                    if !text.isEmpty, text.utf8.count <= RecipeImportParser.maximumBytes, !messages.contains(text) {
-                        messages.append(text)
+                    if !text.isEmpty, text.utf8.count <= RecipeImportParser.maximumBytes,
+                       !messages.contains(where: { $0.text == text }) {
+                        var images: [SharedChatGPTImage] = []
+                        if let metadata = reader.field("metadata", in: message) as? [String: Any],
+                           let components = reader.field("genui_components", in: metadata) as? [Any] {
+                            for reference in components {
+                                guard let component = reader.resolve(reference) as? [String: Any],
+                                      reader.field("type", in: component) as? String == "async_image",
+                                      let offset = reader.field("start_index", in: component) as? Int,
+                                      offset >= 0,
+                                      let links = reader.field("safe_urls", in: component) as? [Any] else { continue }
+                                let urls = links.compactMap { link -> URL? in
+                                    guard let object = reader.resolve(link) as? [String: Any],
+                                          let value = reader.field("url", in: object) as? String else { return nil }
+                                    return ChatGPTRecipePhoto.publicURL(from: value)
+                                }
+                                if !urls.isEmpty { images.append(SharedChatGPTImage(offset: offset, urls: Array(urls.prefix(2)))) }
+                            }
+                        }
+                        messages.append(SharedChatGPTMessage(text: text, images: images.sorted { $0.offset < $1.offset }))
                     }
                 }
                 if !messages.isEmpty { return messages }
