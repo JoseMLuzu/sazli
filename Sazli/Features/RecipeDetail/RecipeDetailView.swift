@@ -121,20 +121,21 @@ struct RecipeDetailView: View {
   }
 
   private var ingredientsCard: some View {
-    VStack(alignment: .leading, spacing: 14) {
+    let ingredients = recipe.ingredientLines
+    return VStack(alignment: .leading, spacing: 14) {
       RecipeSectionHeading(
         title: "Ingredients",
         subtitle: "For \(recipe.servings) \(recipe.servings == 1 ? "serving" : "servings")",
         symbol: "leaf.fill", tint: SazliTheme.olive, showsIcon: false)
       VStack(alignment: .leading, spacing: 0) {
-        if recipe.ingredientLines.isEmpty {
+        if ingredients.isEmpty {
           emptyText("Add ingredients when you're ready to make this recipe.")
             .padding(.vertical, 8)
         } else {
           VStack(spacing: 0) {
-            ForEach(Array(recipe.ingredientLines.enumerated()), id: \.offset) { index, line in
+            ForEach(Array(ingredients.enumerated()), id: \.offset) { index, line in
               IngredientRow(text: line)
-              if index < recipe.ingredientLines.count - 1 {
+              if index < ingredients.count - 1 {
                 Divider().overlay(SazliTheme.olive.opacity(0.08)).padding(.leading, 36)
               }
             }
@@ -150,18 +151,19 @@ struct RecipeDetailView: View {
   }
 
   private var methodSection: some View {
-    VStack(alignment: .leading, spacing: 16) {
+    let instructions = recipe.instructionLines
+    return VStack(alignment: .leading, spacing: 16) {
       RecipeSectionHeading(
         title: "Method",
-        subtitle: recipe.instructionLines.isEmpty ? "No steps added yet"
-          : "\(recipe.instructionLines.count) \(recipe.instructionLines.count == 1 ? "step" : "steps")",
+        subtitle: instructions.isEmpty ? "No steps added yet"
+          : "\(instructions.count) \(instructions.count == 1 ? "step" : "steps")",
         symbol: "list.number", showsIcon: false)
-      if recipe.instructionLines.isEmpty {
+      if instructions.isEmpty {
         emptyText("Your steps will appear here. Edit this recipe to add them.")
           .padding(18).frame(maxWidth: .infinity, alignment: .leading).recipePanel(cornerRadius: 20)
       } else {
         LazyVStack(spacing: 12) {
-          ForEach(Array(recipe.instructionLines.enumerated()), id: \.offset) { index, line in
+          ForEach(Array(instructions.enumerated()), id: \.offset) { index, line in
             RecipeStepCard(number: index + 1, text: line)
           }
         }
