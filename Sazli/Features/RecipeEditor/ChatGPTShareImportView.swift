@@ -9,6 +9,7 @@ struct ChatGPTShareImportView: View {
     @State private var selected: SharedRecipeCandidate?
     @State private var errorMessage: String?
     @State private var finishedReading = false
+    @State private var readConversation = false
     @State private var savedRecipe: Recipe?
     @State private var attempt = UUID()
 
@@ -28,13 +29,16 @@ struct ChatGPTShareImportView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                     } else if let errorMessage {
                         ContentUnavailableView {
-                            Label("Couldn't read this conversation", systemImage: "link.badge.plus")
+                            Label(readConversation ? "No complete recipe found" : "Couldn't read this conversation",
+                                  systemImage: "link.badge.plus")
                         } description: { Text(errorMessage) } actions: {
                             Button("Try again") {
                                 self.errorMessage = nil
                                 attempt = UUID()
                                 finishedReading = false
+                                readConversation = false
                             }.buttonStyle(.bordered)
+                            Button("Paste recipe text instead") { dismiss() }
                         }
                     } else {
                         Text(candidates.count == 1 ? "Your recipe is ready to review." : "Choose a recipe to review. Follow-up advice has not been mixed into its cooking steps.")
@@ -78,6 +82,7 @@ struct ChatGPTShareImportView: View {
         finishedReading = true
         switch result {
         case .success(let messages):
+            readConversation = true
             candidates = ChatGPTRecipeExtractor.recipes(in: messages, sourceURL: url)
             if candidates.isEmpty {
                 errorMessage = "No complete recipe with explicit ingredients and instructions was found. Import the recipe text, or keep this link to complete it later."

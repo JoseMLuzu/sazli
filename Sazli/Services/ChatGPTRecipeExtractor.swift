@@ -13,14 +13,21 @@ enum ChatGPTRecipeExtractor {
             let cleaned = clean(message)
             let lines = cleaned.components(separatedBy: .newlines)
             // Each explicit ingredient heading marks a possible recipe, not a follow-up tip.
-            let starts = lines.indices.filter { headingKey(lines[$0]) == "ingredients" || headingKey(lines[$0]) == "ingredientes" }
+            let starts = lines.indices.filter { isIngredientHeading(lines[$0]) }
             for (offset, start) in starts.enumerated() {
-                let end = offset + 1 < starts.count ? starts[offset + 1] : lines.endIndex
-                let titleIndex = lines[..<start].lastIndex { line in
-                    line.hasPrefix("# ") || line.hasPrefix("## ")
-                }
-                guard let titleIndex else { continue }
-                let recipeLines = Array(lines[titleIndex..<end])
+                let lowerBound = offset == 0 ? 0 : starts[offset - 1] + 1
+                let titleIndex = Self.titleIndex(in: lines, before: start, after: lowerBound)
+                let nextStart = offset + 1 < starts.count ? starts[offset + 1] : lines.endIndex
+                let end = nextStart < lines.endIndex
+                    ? Self.titleIndex(in: lines, before: nextStart, after: start + 1) ?? nextStart
+                    : lines.endIndex
+                let prefix = lines[(titleIndex ?? lowerBound)..<start].joined(separator: "\n")
+                let title = titleIndex.map { headingText(lines[$0]) }
+                    ?? emphasizedTitle(in: prefix) ?? "Recipe from ChatGPT"
+                // A recipe does not need a Markdown title to have explicit ingredients and steps.
+                var recipeLines = ["# \(title)"]
+                if let titleIndex { recipeLines.append(contentsOf: lines[(titleIndex + 1)..<start]) }
+                recipeLines.append(contentsOf: lines[start..<end])
                 let normalized = normalizeSteps(recipeLines)
                 guard var draft = try? RecipeImportParser.parse(normalized),
                       !draft.ingredients.isEmpty, !draft.instructions.isEmpty else { continue }
@@ -44,16 +51,45 @@ enum ChatGPTRecipeExtractor {
             .replacingOccurrences(of: #"\uE200[^\uE202]*\uE202"#, with: "", options: .regularExpression)
             .replacingOccurrences(of: #"(?s)<AsyncImage[^>]*>.*?</AsyncImage>"#, with: "", options: .regularExpression)
             .replacingOccurrences(of: #"<AsyncImage[^>]*/>"#, with: "", options: .regularExpression)
+            // ChatGPT also renders recipe titles as styled text rather than Markdown headings.
+            .replacingOccurrences(of: #"(?m)^\s*<text\b[^>]*weight="(?:medium|semibold|bold)"[^>]*>([^<\n]{1,120})</text>\s*$"#,
+                                  with: "## $1", options: .regularExpression)
             .replacingOccurrences(of: #"</?[A-Za-z][^>]*>"#, with: "\n", options: .regularExpression)
-            .replacingOccurrences(of: "**", with: "")
             .replacingOccurrences(of: "\\.", with: ".")
             .replacingOccurrences(of: "\\!", with: "!")
             .components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespaces) }.joined(separator: "\n")
     }
 
     private static func headingKey(_ line: String) -> String {
-        line.trimmingCharacters(in: CharacterSet(charactersIn: "#*: "))
+        stripTitleDecoration(headingText(line)).trimmingCharacters(in: CharacterSet(charactersIn: ": "))
             .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+    }
+
+    private static func headingText(_ line: String) -> String {
+        line.trimmingCharacters(in: CharacterSet(charactersIn: "#* "))
+    }
+
+    private static func isIngredientHeading(_ line: String) -> Bool {
+        headingKey(line).range(of: #"^(?:ingredients|ingredientes)(?:\s*\(\s*\d{1,3}\s*(?:personas?|porciones?|raciones?|servings?|people)\s*\))?$"#,
+                               options: .regularExpression) != nil
+    }
+
+    private static func titleIndex(in lines: [String], before end: Int, after start: Int) -> Int? {
+        lines[start..<end].indices.last {
+            (lines[$0].hasPrefix("# ") || lines[$0].hasPrefix("## "))
+                && !isIngredientHeading(lines[$0]) && !isMethodHeading(headingKey(lines[$0]))
+        }
+    }
+
+    private static func emphasizedTitle(in prefix: String) -> String? {
+        guard let expression = try? NSRegularExpression(pattern: #"\*\*([^*\n]{3,120})\*\*"#) else { return nil }
+        return expression.matches(in: prefix, range: NSRange(prefix.startIndex..., in: prefix))
+            .compactMap { Range($0.range(at: 1), in: prefix).map { String(prefix[$0]) } }
+            .last { !$0.hasSuffix(":") && !$0.contains("?") }
+    }
+
+    private static func isMethodHeading(_ key: String) -> Bool {
+        ["preparacion paso a paso", "step-by-step instructions", "method", "preparacion", "instructions", "directions", "steps", "instrucciones", "pasos", "elaboracion"].contains(key)
     }
 
     private static func normalizeSteps(_ lines: [String]) -> String {
@@ -65,13 +101,28 @@ enum ChatGPTRecipeExtractor {
             if let step = currentStep { output.append(step) }
             currentStep = nil
         }
-        for line in lines {
+        for originalLine in lines {
+            let line = originalLine.replacingOccurrences(of: "**", with: "")
             let key = headingKey(line)
-            if key == "ingredients" || key == "ingredientes" { beforeIngredients = false }
-            if ["preparacion paso a paso", "step-by-step instructions", "method", "preparacion", "instructions", "directions", "steps", "instrucciones", "pasos", "elaboracion"].contains(key) {
+            if isIngredientHeading(line) {
+                flushStep()
+                beforeIngredients = false
+                if let count = line.range(of: #"\d{1,3}"#, options: .regularExpression),
+                   let servings = Int(line[count]), (1...999).contains(servings) {
+                    output.append("Servings: \(servings)")
+                }
+                output.append("Ingredients:")
+                inMethod = false
+            } else if isMethodHeading(key) {
                 flushStep()
                 output.append("Instructions:")
                 inMethod = true
+            } else if inMethod, ["mi truco", "un truco", "tip", "tips", "consejo", "notas", "notes"]
+                .contains(key.components(separatedBy: ":")[0]) {
+                flushStep()
+                output.append("Notes:")
+                output.append(line)
+                inMethod = false
             } else if line.hasPrefix("#") {
                 flushStep()
                 if inMethod {

@@ -73,6 +73,91 @@ final class ChatGPTShareTests: XCTestCase {
         XCTAssertTrue(ChatGPTRecipeExtractor.recipes(in: ["## A title\nIngredients:\n- Eggs"], sourceURL: shareURL).isEmpty)
     }
 
+    func testSharedRecipeWithInlineTitleAndServingHeading() throws {
+        // Reduced from the public share that reported "No complete recipe" on November 3.
+        let message = """
+        ¡Perfecto! Puedes hacer unos **pappardelle con pollo en salsa cremosa de queso holandés**, sin necesidad de crema de leche.
+        <AsyncImage query="pasta photo" aspectRatio="16:9"/>
+        ## Ingredientes (2 personas)
+        - 250 g de pappardelle o tagliatelle.
+        - 250 g de pollo.
+        - 3–4 lonchas de queso holandés.
+        - 100–150 ml de leche (si tienes).
+        - 1 cucharada de mantequilla.
+        - 2 dientes de ajo.
+        - Sal, pimienta y paprika.
+        - Agua de cocción de la pasta.
+        ## Preparación
+        1. **Prepara el pollo.** Córtalo y dóralo hasta que esté completamente cocido.
+        2. **Prepara la base.** Añade la mantequilla y el ajo.
+        3. **Haz la salsa.** Agrega leche y queso suavemente.
+        4. **Cocina la pasta.** Reserva agua antes de escurrir.
+        5. **Mezcla todo.** Añade la pasta y el pollo a la salsa.
+        **Mi truco:** añade una cucharadita de harina para espesar.
+        ### ¿Y si tampoco tienes leche?
+        Utiliza agua de cocción de la pasta.
+        """
+        let html = try makeDocument([("assistant", "final", message, false)])
+        let messages = try ChatGPTShareDocument.assistantMessages(in: html)
+        let candidate = try XCTUnwrap(ChatGPTRecipeExtractor.recipes(in: messages, sourceURL: shareURL).first)
+        XCTAssertEqual(candidate.draft.title, "pappardelle con pollo en salsa cremosa de queso holandés")
+        XCTAssertEqual(candidate.draft.servings, "2")
+        XCTAssertEqual(RecipeText.lines(in: candidate.draft.ingredients).count, 8)
+        XCTAssertEqual(RecipeText.lines(in: candidate.draft.instructions).count, 5)
+        XCTAssertFalse(candidate.draft.instructions.contains("Mi truco"))
+        XCTAssertFalse(candidate.draft.instructions.contains("tampoco tienes leche"))
+        XCTAssertTrue(candidate.draft.description.contains("cucharadita de harina"))
+        XCTAssertTrue(candidate.draft.preparationTime.isEmpty)
+        XCTAssertEqual(candidate.draft.sourceURL, shareURL.absoluteString)
+    }
+
+    func testStyledAndMissingTitlesDoNotRejectCompleteRecipes() throws {
+        let styled = """
+        <text weight="medium">Pappardelle cremoso con pollo al ajo</text>
+        <text>25–30 min</text>
+        <text>2–3 porciones</text>
+        ## Ingredientes
+        - Pasta
+        - Pollo
+        ## Preparación
+        **1. Dora el pollo**
+        Cocina hasta que esté completamente cocido.
+        **2. Cocina la pasta**
+        Hierve y mezcla.
+        **Un truco:** reserva agua de cocción.
+        """
+        let recipe = try XCTUnwrap(ChatGPTRecipeExtractor.recipes(in: [styled], sourceURL: shareURL).first)
+        XCTAssertEqual(recipe.draft.title, "Pappardelle cremoso con pollo al ajo")
+        XCTAssertEqual(RecipeText.lines(in: recipe.draft.instructions).count, 2)
+        XCTAssertFalse(recipe.draft.instructions.contains("Un truco"))
+        // Ranges remain unguessed; only single explicit values populate numeric fields.
+        XCTAssertTrue(recipe.draft.preparationTime.isEmpty)
+        XCTAssertEqual(recipe.draft.servings, "1")
+        let untitled = "Ingredients:\n- Eggs\nInstructions:\n1. Cook eggs."
+        let fallback = try XCTUnwrap(ChatGPTRecipeExtractor.recipes(in: [untitled], sourceURL: shareURL).first)
+        XCTAssertEqual(fallback.draft.title, "Recipe from ChatGPT")
+        XCTAssertTrue(ChatGPTRecipeExtractor.recipes(in: ["Ingredients (2 people):\n- Eggs"], sourceURL: shareURL).isEmpty)
+    }
+
+    func testMultipleRecipesInOneMessageKeepTheirOwnTitlesAndSteps() {
+        let message = """
+        # Soup
+        Ingredients:
+        - Water
+        Instructions:
+        1. Simmer.
+        # Toast
+        Ingredients (2 servings):
+        - Bread
+        Instructions:
+        1. Toast bread.
+        """
+        let recipes = ChatGPTRecipeExtractor.recipes(in: [message], sourceURL: shareURL)
+        XCTAssertEqual(recipes.map { $0.draft.title }, ["Soup", "Toast"])
+        XCTAssertEqual(recipes.map { $0.draft.instructions }, ["Simmer.", "Toast bread."])
+        XCTAssertEqual(recipes.last?.draft.servings, "2")
+    }
+
     /// A reduced fixture matching the component-markup structure observed in a public share page.
     private var recipeMarkup: String {
         """
