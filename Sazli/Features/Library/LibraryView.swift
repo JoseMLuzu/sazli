@@ -25,9 +25,10 @@ struct LibraryView: View {
   }
 
   private var filteredRecipes: [Recipe] {
-    sortOrder.ordered(recipes.filter { recipe in
-      RecipeText.matchesSearch(search, title: recipe.title, ingredients: recipe.ingredients)
-        && filter.includes(recipe)
+    let query = search.trimmingCharacters(in: .whitespacesAndNewlines)
+    return sortOrder.ordered(recipes.filter { recipe in
+      filter.includes(recipe)
+        && RecipeText.matchesNormalizedSearch(query, title: recipe.title, ingredients: recipe.ingredients)
     })
   }
 
@@ -167,11 +168,12 @@ struct LibraryView: View {
   }
 
   private func libraryContent(width: CGFloat) -> some View {
+    let results = filteredRecipes
     let columnCount = width >= 340 && !dynamicTypeSize.isAccessibilitySize ? 2 : 1
     let columns = Array(repeating: GridItem(.flexible(), spacing: 12, alignment: .top), count: columnCount)
     return VStack(alignment: .leading, spacing: 20) {
       VStack(alignment: .leading, spacing: 16) {
-        libraryHeading
+        libraryHeading(count: results.count)
         VStack(spacing: 12) {
           searchField
           filters
@@ -197,14 +199,14 @@ struct LibraryView: View {
           Button("Retry imports") { refreshImportInbox() }
         }
       }
-      if filteredRecipes.isEmpty {
+      if results.isEmpty {
         RecipeEmptyState(isSearching: !recipes.isEmpty || !search.isEmpty || filter != .all) {
           showingEditor = true
         }
         .padding(.top, 20)
       } else {
         LazyVGrid(columns: columns, spacing: 14) {
-          ForEach(filteredRecipes) { recipe in
+          ForEach(results) { recipe in
             Button {
               searchFocused = false
               selectedRecipeID = recipe.id
@@ -227,12 +229,12 @@ struct LibraryView: View {
     .padding(.top, 12)
   }
 
-  private var libraryHeading: some View {
+  private func libraryHeading(count: Int) -> some View {
     VStack(alignment: .leading, spacing: 4) {
       Text("Your recipes")
         .font(.title.bold())
         .accessibilityAddTraits(.isHeader)
-      Text("\(filteredRecipes.count) \(filteredRecipes.count == 1 ? "recipe" : "recipes")")
+      Text("\(count) \(count == 1 ? "recipe" : "recipes")")
         .font(.subheadline)
         .foregroundStyle(.secondary)
     }

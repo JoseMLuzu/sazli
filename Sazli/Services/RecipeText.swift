@@ -2,8 +2,13 @@ import Foundation
 
 enum RecipeText {
     static func matchesSearch(_ query: String, title: String, ingredients: String) -> Bool {
-        let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        return query.isEmpty
+        matchesNormalizedSearch(query.trimmingCharacters(in: .whitespacesAndNewlines),
+                                title: title, ingredients: ingredients)
+    }
+
+    // Callers filtering a collection normalize the query once for the whole collection.
+    static func matchesNormalizedSearch(_ query: String, title: String, ingredients: String) -> Bool {
+        query.isEmpty
             || title.localizedStandardContains(query)
             || ingredients.localizedStandardContains(query)
     }
