@@ -335,3 +335,36 @@ Logs: `/private/tmp/sazli-tiktok-formats-{tests,tests-final,release}.log`. Separ
 devicectl confirmed successful installation of the final caption-format audit build on the physical iPhone 15, preserving existing app data.
 
 The updated app also launched successfully on the iPhone 15 through devicectl. Interactive imports for each new format were not performed on the personal device.
+
+## TikTok imports from Original source — November 4, 2026
+
+The repeated report was traced to an entry path omitted from earlier work: the user pasted the TikTok URL into **Original source inside a recipe**, rather than the library's Import recipe screen. That editor field only retained the link and detected its platform; it did not call the TikTok reader. A focused production-reader diagnostic on the physical iPhone 15 / iOS 26.6 successfully returned **9 ingredients and 7 steps** for the exact public URL, and the exact-caption fixture also passed there. The issue required connecting the editor field to the reader, not another caption-format change.
+
+Added **Import recipe details** directly below a supported TikTok source URL in RecipeEditorView. The action calls the existing public reader and merges into empty fields in the current value draft via RecipeDraft.fillEmptyDetails, retaining existing text, source, photo, and numeric edits. New default portions can be filled from explicit imported values. The editor shows ingredient/step counts, supports optional cover loading/skipping, and cancels stale source/photo requests when the URL changes or the view closes. Saving remains explicit. Source and photo request IDs prevent canceled responses from applying to a newer review.
+
+Also added RecipeDraft.recoverTikTokSectionsIfNeeded for a draft/existing TikTok recipe that already has a complete caption in its description and both text sections empty. It proposes ingredients/method in the editor with a review notice, retaining creator credit in the description and preserving personal title, time, servings, category, photo, notes, ratings, and favorites. Canceling leaves the stored recipe unchanged; only Save applies the recovered fields. Existing/manual/partial structured fields are preserved. Added four regressions and shared the taco mac fixture in TikTokRecipeTests. Updated English README/importing/architecture/testing guides. No schema, signing, backend, or dependencies changed.
+
+Validation:
+
+- Final full XCTest suite on iPhone 17 Pro / iOS 26.5: **51 passed, 0 failures**. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_15-21-59--0500.xcresult`. Tests cover empty-field merges, default versus existing portions, description recovery, cancel/no mutation before Save, disk reopening with the same UUID, and preservation of notes/favorites/edits. Existing caption/ChatGPT/photo/timer/action regressions passed.
+- Focused native public-link and exact-caption diagnostic on physical iPhone 15: **2 passed**. The temporary network-dependent diagnostic was removed from permanent test sources after execution. Result: `build/DeviceImportDiagnostics/Logs/Test/Test-Sazli-2026.11.04_15-07-59--0500.xcresult`.
+- A subsequent physical-device recovery run completed with **9 passed, 0 failures** using only fixtures and test-created temporary stores. Result: `build/DeviceImportDiagnostics/Logs/Test/Test-Sazli-2026.11.04_15-14-03--0500.xcresult`. The final 11-test source/merge run was compiled but could not launch because the phone locked. It was canceled while waiting for unlock; it is not counted as a passing run. Both new merge regressions passed in the full 51-test simulator suite.
+- Signed iOS **Release build passed**, including the existing extension. The earlier full-suite attempt on the iOS 27 simulator failed to launch because SpringBoard crashed; it was not counted as a passing test run. The available iOS 26.5 simulator then completed the full suites successfully.
+- Automatic approval review rejected an optional proposal to copy the phone's entire recipe store because it could include unrelated personal recipes. The operation was not retried or bypassed. Investigation continued with the public link and isolated test fixtures; saved personal recipes were not extracted or automatically rewritten.
+- Computer-use inspection returned `noWindowsAvailable`; interactive tapping of the new source-field button and photo cancellation remains manual acceptance. Native public-reader results, unit merge/persistence results, and a successful build do not constitute visual acceptance of that button.
+
+Logs: `/private/tmp/sazli-{tiktok-iphone-diagnostic,tiktok-recovery-tests,tiktok-recovery-tests-ios26,tiktok-recovery-iphone-tests,source-import-tests,source-import-iphone-tests,source-import-release}.log`. No commits or push were performed for this follow-up.
+
+devicectl confirmed successful installation of the final signed release containing the new Original source import action on the physical iPhone 15. The saved recipe store was preserved. No personal recipes were saved, edited, or extracted during deployment.
+
+The subsequent launch request was denied because the iPhone was locked. Installation succeeded; the user can open the updated app after unlocking to complete interactive acceptance.
+
+## Cross-platform import audit — November 4, 2026
+
+See [IMPORT_AUDIT.md](IMPORT_AUDIT.md) for ten actual public URLs, per-source results, native browser-versus-HTTP distinctions, and remaining manual acceptance. Fixed shared routing, public YouTube description reading, source-field imports across all three readers, partial/mixed review notices, caption section boundaries, and the newer public ChatGPT mobile transcript. No model migration, backend, signing change, or personal recipe extraction was required.
+
+Final full suite: **66 tests passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_17-13-02--0500.xcresult`. Signed Release build passed. Public fetch/browser diagnostics are documented separately from deterministic regression tests and interactive visual acceptance. No commits or push were performed.
+
+The final signed Release build, including the updated import help and Shortcuts action description, passed (`/private/tmp/sazli-cross-import-release-final.log`). devicectl confirmed installation on the physical iPhone 15 with existing app data preserved. Interactive acceptance remains separate from installation.
+
+The installed update launched successfully on the physical iPhone 15 through devicectl. No public sample was automatically saved to the personal library.
