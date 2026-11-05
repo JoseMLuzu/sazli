@@ -8,7 +8,14 @@ struct RecipeImportHelpView: View {
                 Text("For ChatGPT, share a public conversation link or copy the recipe text. Sazli can read supported public share pages directly on this iPhone and offers complete recipes for review. Private or unreadable links can still be kept as references.")
                     .foregroundStyle(.secondary)
             }
-            Section("Set up the iOS share sheet") {
+            Section("Share directly to Sazli") {
+                step(1, "In ChatGPT or another app, open the system Share sheet and choose Sazli. Look under More if it is not visible yet.")
+                step(2, "Tap Add to imports, then Done. The original shared link or text stays on this iPhone.")
+                step(3, "Open Sazli. Review the shared recipe, complete any missing details, and tap Save.")
+                Text("No shortcut setup is needed. Only the text or link supplied by the source app is received; private accounts and chats are not connected.")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
+            Section("Optional shortcut") {
                 step(1, "Open Apple's Shortcuts app and create a shortcut named Send to Sazli.")
                 step(2, "In the shortcut's Details, enable Show in Share Sheet. Accept Text and URLs.")
                 step(3, "Add Sazli's Import recipe action. Set Recipe text or link to Shortcut Input.")

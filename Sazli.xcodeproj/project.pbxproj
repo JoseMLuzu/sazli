@@ -73,7 +73,14 @@
 		E1C2DA951E94B8138F2043B3 = {isa = PBXBuildFile; fileRef = 36A3D38943C5F54A1425D10D; };
 		7F9A5CF7C1AAFF10F435EC76 = {isa = PBXBuildFile; fileRef = 421AA48C23D10F80D9E0E8E9; };
 		75347BB8C913D718AB086D37 = {isa = PBXBuildFile; fileRef = 8560D3114FB87F8C951F2748; };
+		68F388ADF9BAAC8351CF9266 = {isa = PBXBuildFile; fileRef = 421AA48C23D10F80D9E0E8E9; };
+		73F3098306BEBA8A82A403FB = {isa = PBXBuildFile; fileRef = 8560D3114FB87F8C951F2748; };
+		D7E907F2D122BAC36A1E86B0 = {isa = PBXBuildFile; fileRef = D3B4C80E3A45D5781E2EA695; };
+		5763898FDAF0ACA04D98B1E8 = {isa = PBXBuildFile; fileRef = 9C0CCCDF20E90B997BC44BA0; };
+		F6C3F8065B71150C2D07F396 = {isa = PBXBuildFile; fileRef = 16A17B8CB6662468D691A7B9; };
+		87848E137CD0EB15ED4A77B4 = {isa = PBXBuildFile; fileRef = 8805A8A343CA59074841E51A; };
 		F5E44CE258377592B9C1D601 = {isa = PBXBuildFile; fileRef = 5A623BDE0DCEB9B32FE7B6D7; };
+		0016D185AB058B61DBE0285D = {isa = PBXBuildFile; fileRef = 1A1BEAD4A4FF3C17FFCF2420; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +92,7 @@
 			remoteInfo = Sazli;
 		};
 		8E7A38046F68D5CE1B3659EA = {isa = PBXContainerItemProxy; containerPortal = 98F54143AB4E86B28C3AFEE0; proxyType = 1; remoteGlobalIDString = 42FF274AC3693C3B05811041; remoteInfo = SazliTimerExtension; };
+		F81C225FDCAF58700812DCFA = {isa = PBXContainerItemProxy; containerPortal = 98F54143AB4E86B28C3AFEE0; proxyType = 1; remoteGlobalIDString = F35AB10DF60997C404D89EC5; remoteInfo = SazliShareExtension; };
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -156,11 +164,16 @@
 		36A3D38943C5F54A1425D10D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTPublicTranscriptTests.swift"; sourceTree = SOURCE_ROOT; };
 		421AA48C23D10F80D9E0E8E9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliShared/SharedRecipeInbox.swift"; sourceTree = SOURCE_ROOT; };
 		8560D3114FB87F8C951F2748 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliShared/ShareContentReader.swift"; sourceTree = SOURCE_ROOT; };
+		D3B4C80E3A45D5781E2EA695 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliShareExtension/ShareViewController.swift"; sourceTree = SOURCE_ROOT; };
+		F51845AF2B1255137E00EFDF = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SazliShareExtension/Info.plist"; sourceTree = SOURCE_ROOT; };
+		089470E0F86CCCAF0E595E73 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "SazliShareExtension/SazliShare.entitlements"; sourceTree = SOURCE_ROOT; };
+		9F7DD85CA81F9088B6F30EE3 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Sazli/App/Sazli.entitlements"; sourceTree = SOURCE_ROOT; };
 		5A623BDE0DCEB9B32FE7B6D7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ShareImportTests.swift"; sourceTree = SOURCE_ROOT; };
+		1A1BEAD4A4FF3C17FFCF2420 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SazliShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		5D6E486F5083177332FC0F80 = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (BC1A00F8216215179D1E8C8A,); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+		5D6E486F5083177332FC0F80 = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (BC1A00F8216215179D1E8C8A, 0016D185AB058B61DBE0285D,); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,12 +192,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E8B8AF016E9C857591B6966D = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		D3766A6E2308DF8341DD4798 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		1BDBD24583AAF7F81F76B976 /* Sazli */ = {
 			isa = PBXGroup;
 			children = (
+				9F7DD85CA81F9088B6F30EE3,
 				0E3A2FC90D6D6385BFB53CED,
 				CA95E1378ACF961D452CB275,
 				444E29ECDF97C7773F94C09B,
@@ -246,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				7A320AD629D54D7D14755914,
+				2E227FC34B6A1F4145707DAF,
 				2CC8C28B4BD522AC51076A16,
 				1BDBD24583AAF7F81F76B976 /* Sazli */,
 				BFC937463906E5DB7A02A37C /* SazliTests */,
@@ -272,6 +288,7 @@
 		FBDC4F23F93125BBEEAE800C /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				1A1BEAD4A4FF3C17FFCF2420,
 				61B11BD87EAAA5A3D8C18A04,
 				7D1043473D55BFA90E8530D3 /* Sazli.app */,
 				F219C0274590DA45E4BEF1EA /* SazliTests.xctest */,
@@ -281,6 +298,7 @@
 		};
 		2CC8C28B4BD522AC51076A16 = {isa = PBXGroup; children = (8A2EB81F58A140560B439AF7, 7B1CB0529C8999068D9159BE,); name = SazliLiveActivity; sourceTree = "<group>"; };
 		7A320AD629D54D7D14755914 = {isa = PBXGroup; children = (421AA48C23D10F80D9E0E8E9, 8560D3114FB87F8C951F2748,); name = SazliShared; sourceTree = "<group>"; };
+		2E227FC34B6A1F4145707DAF = {isa = PBXGroup; children = (D3B4C80E3A45D5781E2EA695, F51845AF2B1255137E00EFDF, 089470E0F86CCCAF0E595E73,); name = SazliShareExtension; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -314,6 +332,7 @@
 			);
 			dependencies = (
 				500B4EBE184F165D24A08B04,
+				3276EF7695626D6FB0889140,
 			);
 			name = Sazli;
 			productName = Sazli;
@@ -321,6 +340,7 @@
 			productType = "com.apple.product-type.application";
 		};
 		42FF274AC3693C3B05811041 = {isa = PBXNativeTarget; buildConfigurationList = 0803FA2BA1A804A9911B7104; buildPhases = (B2E7A658DD0761782E65A002, C751EE189D1554C314DDF648, E8B8AF016E9C857591B6966D,); buildRules = (); dependencies = (); name = SazliTimerExtension; productName = SazliTimerExtension; productReference = 61B11BD87EAAA5A3D8C18A04; productType = "com.apple.product-type.app-extension"; };
+		F35AB10DF60997C404D89EC5 = {isa = PBXNativeTarget; buildConfigurationList = B077C0313EE747A2206126B8; buildPhases = (4F91DD4BC4659877B873E8D8, 9D53643F52F90F62ACA7C62E, D3766A6E2308DF8341DD4798,); buildRules = (); dependencies = (); name = SazliShareExtension; productName = SazliShareExtension; productReference = 1A1BEAD4A4FF3C17FFCF2420; productType = "com.apple.product-type.app-extension"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -329,6 +349,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1700;
+				TargetAttributes = { C13732C8E715C9BEE4FA51C9 = { SystemCapabilities = { com.apple.ApplicationGroups.iOS = { enabled = 1; }; }; }; F35AB10DF60997C404D89EC5 = { SystemCapabilities = { com.apple.ApplicationGroups.iOS = { enabled = 1; }; }; }; };
 			};
 			buildConfigurationList = 8E70B5292C2478FA2B77DC09 /* Build configuration list for PBXProject "Sazli" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -343,6 +364,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				F35AB10DF60997C404D89EC5,
 				42FF274AC3693C3B05811041,
 				C13732C8E715C9BEE4FA51C9 /* Sazli */,
 				64BCB755386F844C96A2A5B0 /* SazliTests */,
@@ -361,6 +383,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C751EE189D1554C314DDF648 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		9D53643F52F90F62ACA7C62E = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (F6C3F8065B71150C2D07F396, 87848E137CD0EB15ED4A77B4,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -441,6 +464,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B2E7A658DD0761782E65A002 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (39D45B7002BFBD976096ECB3, 04BBFD0DA2861369A9F0AA7E,); runOnlyForDeploymentPostprocessing = 0; };
+		4F91DD4BC4659877B873E8D8 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (68F388ADF9BAAC8351CF9266, 73F3098306BEBA8A82A403FB, D7E907F2D122BAC36A1E86B0, 5763898FDAF0ACA04D98B1E8,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -450,6 +474,7 @@
 			targetProxy = D799BAE6088A90139B415FCC /* PBXContainerItemProxy */;
 		};
 		500B4EBE184F165D24A08B04 = {isa = PBXTargetDependency; target = 42FF274AC3693C3B05811041; targetProxy = 8E7A38046F68D5CE1B3659EA; };
+		3276EF7695626D6FB0889140 = {isa = PBXTargetDependency; target = F35AB10DF60997C404D89EC5; targetProxy = F81C225FDCAF58700812DCFA; };
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -505,6 +530,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 62TPVT35FP;
 				GENERATE_INFOPLIST_FILE = YES;
+				CODE_SIGN_ENTITLEMENTS = Sazli/App/Sazli.entitlements;
 				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -536,6 +562,7 @@
 				DEVELOPMENT_TEAM = 62TPVT35FP;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				CODE_SIGN_ENTITLEMENTS = Sazli/App/Sazli.entitlements;
 				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -591,6 +618,8 @@
 		};
 		2F1CB98FABFABF1338DF3EE3 = {isa = XCBuildConfiguration; buildSettings = { APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_TEAM = 62TPVT35FP; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SazliLiveActivity/Info.plist; INFOPLIST_KEY_CFBundleDisplayName = "Sazli Timer"; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks",); MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.timer; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 6.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; DEBUG_INFORMATION_FORMAT = dwarf; }; name = Debug; };
 		1E8E6AC21F8C8317C8D1B771 = {isa = XCBuildConfiguration; buildSettings = { APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_TEAM = 62TPVT35FP; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SazliLiveActivity/Info.plist; INFOPLIST_KEY_CFBundleDisplayName = "Sazli Timer"; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks",); MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.timer; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 6.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_OPTIMIZATION_LEVEL = "-O"; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; }; name = Release; };
+		7756F3C123555EF931D0DFA4 = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CODE_SIGN_ENTITLEMENTS = SazliShareExtension/SazliShare.entitlements; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_TEAM = 62TPVT35FP; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SazliShareExtension/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks",); MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.share; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 6.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; DEBUG_INFORMATION_FORMAT = dwarf;}; name = Debug; };
+		ED37DA019EFC9DBCE429A7A2 = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CODE_SIGN_ENTITLEMENTS = SazliShareExtension/SazliShare.entitlements; CURRENT_PROJECT_VERSION = 1; DEVELOPMENT_TEAM = 62TPVT35FP; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SazliShareExtension/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks",); MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.sazli.app.share; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 6.0; TARGETED_DEVICE_FAMILY = 1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_OPTIMIZATION_LEVEL = "-O"; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -622,6 +651,7 @@
 			defaultConfigurationName = Release;
 		};
 		0803FA2BA1A804A9911B7104 = {isa = XCConfigurationList; buildConfigurations = (2F1CB98FABFABF1338DF3EE3, 1E8E6AC21F8C8317C8D1B771,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		B077C0313EE747A2206126B8 = {isa = XCConfigurationList; buildConfigurations = (7756F3C123555EF931D0DFA4, ED37DA019EFC9DBCE429A7A2,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
 	rootObject = 98F54143AB4E86B28C3AFEE0 /* Project object */;
