@@ -4,6 +4,24 @@ import UIKit
 @testable import Sazli
 
 final class SazliTests: XCTestCase {
+    func testIngredientDisplayNeverHidesAGroupPrefixedActualIngredient() {
+        XCTAssertEqual(RecipeText.ingredientLines(in: "For the sauce: 2 tbsp oil:\nPara la salsa: sal:\nFor the sauce:\nSalsa:"),
+                       ["For the sauce: 2 tbsp oil", "Para la salsa: sal"])
+    }
+
+    @MainActor func testIngredientPresentationHidesGroupsAndKeepsEditableSourceAndQuantities() {
+        let original = "Pasta:\n200 g pasta,\nChicken：\n1,5 cups milk.\nFor the sauce:\n1 onion, finely chopped.\nGuarnición:\nSalt:\nOptional: parsley (chopped).\n-5°C stock;\n..."
+        let recipe = Recipe(title: "Pasta")
+        recipe.ingredients = original
+        recipe.instructions = "Mix.\nServe."
+        XCTAssertEqual(recipe.ingredientLines, ["200 g pasta", "1,5 cups milk", "1 onion, finely chopped",
+            "Salt", "Optional: parsley (chopped)", "-5°C stock"])
+        XCTAssertEqual(recipe.ingredients, original)
+        XCTAssertEqual(recipe.instructionLines, ["Mix.", "Serve."])
+        XCTAssertEqual(RecipeText.ingredientLines(in: "Pasta\n1 cup flour:\nCheese (optional)\nSauce, hot."),
+            ["Pasta", "1 cup flour", "Cheese (optional)", "Sauce, hot"])
+    }
+
     @MainActor func testThumbnailsDownsampleReuseAndInvalidateChangedPhotos() async throws {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1

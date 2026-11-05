@@ -29,6 +29,6 @@ final class Recipe {
 
     var recipeCategory: RecipeCategory { RecipeCategory(rawValue: category) ?? .other }
     var platform: SourcePlatform { SourcePlatform(rawValue: sourcePlatform) ?? .web }
-    var ingredientLines: [String] { RecipeText.lines(in: ingredients) }
+    var ingredientLines: [String] { RecipeText.ingredientLines(in: ingredients) }
     var instructionLines: [String] { RecipeText.lines(in: instructions) }
 }
