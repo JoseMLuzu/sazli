@@ -212,6 +212,79 @@ final class TikTokRecipeTests: XCTestCase {
         XCTAssertEqual(existing.ingredients, "Eggs")
     }
 
+    func testGroupedChipotleCaptionImportsThroughSourceDraftAndRecovery() throws {
+        let source = URL(string: "https://vt.tiktok.com/ZSpFB66ns/")!
+        let caption = """
+        creamy chipotle chicken pasta ✨ Ingredients   Chicken - 1.5lb chicken boneless skinless chicken breast  - 1/2 tbsp olive oil - 1 tsp chipotle powder  - 1 tsp garlic powder  - 1 tsp onion powder  - 1  tsp chili powder  - 1 tsp oregano  - 1 tsp coriander  - 1 tsp salt - 1/2 tsp black pepper  - 1 tbsp butter (for cooking) - 1 tbsp olive oil (for cooking) Pasta - 16 oz fettuccine  - 3 tbsp unsalted butter - 1/2 yellow onion, diced - 7 garlic cloves, minced - 2 cups heavy cream  - 1/4 cup chicken stock - 3 tbsp chipotle sauce  - 2 tbsp tomato paste  - Juice of 1/2 lemon - 1 cup Parmesan cheese, freshly grated - 1/3 cup Mexican 3 cheese, (chihuahua, oxaca, cotija) - 1 tsp garlic powder - 1 tsp chipotle powder  - 1 tsp onion powder  - 1 tsp chili powder  - 1 tsp smoked paprika  - 1 tsp oregano  - 1/2 tsp cumin - 1/2 tsp coriander (optional) - Salt and pepper to taste Garnish  - Parmesan cheese - Parsley  - Crushed pepper flakes (optional) Instructions Chicken - In a large bowl, combine chicken breasts, olive oil, chili powder, chipotle powder, onion powder, garlic powder, coriander, oregano, salt, and pepper. Toss until evenly coated and marinate for at least 30 minutes. - Heat oil and butter in a large skillet over medium-high heat. Sear chicken for 4–5 minutes per side until lightly charred. - Transfer to a 320°F (160°C) oven and bake until the internal temperature reaches 165°F (74°C) while preparing the sauce. Sauce & Pasta - In the same skillet, sauté diced onion until softened. Add minced garlic and cook until fragrant. - Add butter, followed by the spices, and stir until combined. - Mix in tomato paste and cook until slightly darkened. Add chipotle sauce and cook for 2–3 minutes. - Pour in chicken stock, scraping up the browned bits from the bottom of the skillet. Stir until smooth. - Reduce heat to medium-low and stir in heavy cream. Stir in freshly squeezed lemon juice until smooth and combined. -Add Parmesan and Mexican three-cheese blend, stirring until melted and smooth. Simmer for 2–3 minutes, then season with salt and pepper to taste. - Add the cooked fettuccine and parsley, tossing until evenly coated in the sauce. - Slice the chicken and serve over the pasta. Enjoy! • • • #recipes #chickenrecipe #DinnerIdeas #pasta
+        """
+        let result = try TikTokRecipeDocument.recipe(in: document(caption), sourceURL: source)
+        let ingredients = RecipeText.lines(in: result.draft.ingredients)
+        let steps = RecipeText.lines(in: result.draft.instructions)
+        XCTAssertTrue(ingredients.contains("Chicken:"))
+        XCTAssertTrue(ingredients.contains("Pasta:"))
+        XCTAssertTrue(ingredients.contains("Garnish:"))
+        XCTAssertTrue(ingredients.contains("1.5lb chicken boneless skinless chicken breast"))
+        XCTAssertTrue(ingredients.contains("1/2 tsp coriander (optional)"))
+        XCTAssertFalse(result.draft.ingredients.contains("Instructions"))
+        XCTAssertEqual(steps.count, 11)
+        XCTAssertTrue(steps[0].hasPrefix("Chicken: In a large bowl"))
+        XCTAssertTrue(steps[3].hasPrefix("Sauce & Pasta: In the same skillet"))
+        XCTAssertTrue(steps[8].hasPrefix("Add Parmesan and Mexican"))
+        XCTAssertTrue(steps.last?.hasSuffix("Enjoy!") == true)
+        XCTAssertFalse(result.draft.instructions.contains("#recipes"))
+        XCTAssertTrue(result.draft.description.contains("#recipes"))
+        XCTAssertEqual(result.draft.sourceURL, source.absoluteString)
+        var draft = RecipeDraft()
+        draft.sourceURL = source.absoluteString
+        draft.title = "My chipotle pasta"
+        draft.fillEmptyDetails(from: result.draft)
+        XCTAssertEqual(draft.title, "My chipotle pasta")
+        XCTAssertEqual(draft.ingredients, result.draft.ingredients)
+        XCTAssertEqual(draft.instructions, result.draft.instructions)
+        var savedCaption = RecipeDraft()
+        savedCaption.sourceURL = source.absoluteString
+        savedCaption.sourcePlatform = .tiktok
+        savedCaption.description = caption + "\n\nCreator: thesapor"
+        XCTAssertTrue(savedCaption.recoverTikTokSectionsIfNeeded())
+        XCTAssertEqual(savedCaption.ingredients, result.draft.ingredients)
+        XCTAssertEqual(savedCaption.instructions, result.draft.instructions)
+        XCTAssertTrue(savedCaption.description.contains("Creator: thesapor"))
+    }
+
+    func testUnpairedGroupHeadingStaysUnclassified() throws {
+        let result = try TikTokCaptionParser.parse("Ingredients Chicken - a family favorite with no written method.")
+        XCTAssertTrue(result.ingredients.isEmpty)
+        XCTAssertTrue(result.instructions.isEmpty)
+    }
+
+    func testFlattenedCajunCaptionKeepsFourteenIngredientsAndEightSteps() throws {
+        let caption = """
+        Creamy Cajun chicken pasta - cosy season | ep 9 Ingredients 2 chicken breasts  140g pasta  1 onion 2 garlic cloves 2 tbsp Cajun seasoning  2 tbsp garlic granules  1 tsp paprika  150ml chicken stock  200g reduced-fat crème fraiche  100ml milk  50g Parmesan, grated  Fresh parsley  Olive oil  Salt and pepper Method 1. Season the chicken breasts with half of the Cajun seasoning, half of the garlic granules and half of the paprika. Heat a drizzle of olive oil in a pan over a medium-high heat and fry the chicken until slightly golden on the outside. Transfer to the air fryer and cook at 180°C for a further 15 minutes, or until cooked through. 2. Bring a pan of salted water to the boil and cook the pasta according to the packet instructions. Reserve a little pasta water before draining. 3. Heat a drizzle of olive oil in a large pan over a medium heat. Add the onion and cook until softened, then add the garlic and cook for another minute. 4. Add the remaining Cajun seasoning, garlic granules and paprika. Stir well and cook for 1–2 minutes. 5. Pour in the chicken stock and bring to a gentle simmer. Cook for around 5 minutes, allowing the sauce to reduce and thicken slightly. 6. Reduce the heat and stir in the crème fraîche and milk until combined. Gradually increase the heat until the sauce reaches a gentle simmer. Cook until thickened, stirring regularly, then add the grated Parmesan and chopped parsley. 7. Add the drained pasta to the sauce and toss until coated. Add a splash of reserved pasta water if needed, then season with salt and pepper to taste. 8. Slice the cooked chicken and serve on top of the pasta. Finish with extra Parmesan and fresh parsley.
+        """
+        let source = URL(string: "https://vt.tiktok.com/ZSpFyLctE/")!
+        let result = try TikTokRecipeDocument.recipe(in: document(caption), sourceURL: source)
+        XCTAssertEqual(RecipeText.lines(in: result.draft.ingredients), [
+            "2 chicken breasts", "140g pasta", "1 onion", "2 garlic cloves", "2 tbsp Cajun seasoning",
+            "2 tbsp garlic granules", "1 tsp paprika", "150ml chicken stock", "200g reduced-fat crème fraiche",
+            "100ml milk", "50g Parmesan, grated", "Fresh parsley", "Olive oil", "Salt and pepper"
+        ])
+        XCTAssertEqual(RecipeText.lines(in: result.draft.instructions).count, 8)
+        XCTAssertTrue(result.draft.instructions.contains("180°C"))
+        XCTAssertTrue(result.draft.instructions.contains("1–2 minutes"))
+        XCTAssertFalse(result.draft.description.contains("140g pasta"))
+        XCTAssertEqual(result.draft.sourceURL, source.absoluteString)
+        var draft = RecipeDraft()
+        draft.sourceURL = source.absoluteString
+        draft.title = "My Cajun pasta"
+        draft.fillEmptyDetails(from: result.draft)
+        XCTAssertEqual(draft.title, "My Cajun pasta")
+        XCTAssertEqual(draft.ingredients, result.draft.ingredients)
+        XCTAssertEqual(draft.instructions, result.draft.instructions)
+        let narrative = try TikTokCaptionParser.parse("Ingredients 2 good reasons to watch. Method is in the video.")
+        XCTAssertTrue(narrative.ingredients.isEmpty)
+        XCTAssertTrue(narrative.instructions.isEmpty)
+    }
+
     private var tacoMacCaption: String {
         """
         one pan taco mac & cheese 🤗 recipe is below! Taco Mac & Cheese Ingredients * 1 lb ground beef * 1 packet taco seasoning * 4 oz tomato sauce * ½ cup salsa * 16 oz shell pasta * 1 cup beef broth * 1 cup milk * 1½ cups Mexican blend cheese, divided * Optional: parsley for topping Instructions 1. In a large skillet over medium high heat, cook the ground beef with the taco seasoning until browned and fully cooked. 2. Add the tomato sauce and salsa, and stir until combined. 3. Add the uncooked shell pasta, beef broth, and milk. Mix well. 4. Bring to a simmer, reduce the heat to low, cover, and cook for about 10 minutes, stirring occasionally, until the pasta is tender. If the pasta needs more time, continue cooking and add a splash of broth or milk as needed. 5. Once pasta is cooked, stir in 1¼ cups of mexican cheese until melted. 6. Sprinkle the remaining ¼ cup cheese over the top, cover, and let it melt. 7. Top with parsley if desired and serve warm! #easydinnerideas #dinnerideas #mealideas #dinner #onepanmeal
