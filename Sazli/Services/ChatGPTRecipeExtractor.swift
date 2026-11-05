@@ -20,6 +20,19 @@ enum ChatGPTRecipeExtractor {
             let lines = cleaned.components(separatedBy: .newlines)
             // Each explicit ingredient heading marks a possible recipe, not a follow-up tip.
             let starts = lines.indices.filter { isIngredientHeading(lines[$0]) }
+            if starts.isEmpty {
+                let explicitTitle = lines.first { $0.hasPrefix("# ") || $0.hasPrefix("## ") }.map { headingText($0) }
+                if var draft = RecipeCaptionParser.implicitDraft(cleaned, title: explicitTitle ?? "Recipe from ChatGPT") {
+                    draft.sourceURL = sourceURL.absoluteString
+                    draft.sourcePlatform = .chatGPT
+                    if !result.contains(where: { $0.draft.title == draft.title && $0.draft.ingredients == draft.ingredients
+                        && $0.draft.instructions == draft.instructions }) {
+                        // Without explicit ingredient headings, cover association is ambiguous.
+                        result.append(SharedRecipeCandidate(draft: draft))
+                    }
+                }
+                continue
+            }
             for (offset, start) in starts.enumerated() {
                 let lowerBound = offset == 0 ? 0 : starts[offset - 1] + 1
                 let titleIndex = Self.titleIndex(in: lines, before: start, after: lowerBound)
@@ -87,7 +100,11 @@ enum ChatGPTRecipeExtractor {
     }
 
     private static func headingKey(_ line: String) -> String {
-        stripTitleDecoration(headingText(line)).trimmingCharacters(in: CharacterSet(charactersIn: ": "))
+        var text = stripTitleDecoration(headingText(line))
+        while let last = text.last, last.isWhitespace || last.unicodeScalars.contains(where: { $0.properties.isEmojiPresentation }) {
+            text.removeLast()
+        }
+        return text.trimmingCharacters(in: CharacterSet(charactersIn: ":： "))
             .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX"))
     }
 
@@ -96,7 +113,7 @@ enum ChatGPTRecipeExtractor {
     }
 
     private static func isIngredientHeading(_ line: String) -> Bool {
-        headingKey(line).range(of: #"^(?:ingredients|ingredientes)(?:\s*\(\s*\d{1,3}\s*(?:personas?|porciones?|raciones?|servings?|people)\s*\))?$"#,
+        headingKey(line).range(of: #"^(?:ingredients|ingredient list|ingredientes|lista de ingredientes)(?:\s*\(\s*(?:(?:serves|servings|porciones|raciones)\s*[:=]?\s*\d{1,3}(?:\s*[-–]\s*\d{1,3})?|\d{1,3}(?:\s*[-–]\s*\d{1,3})?\s*(?:personas?|porciones?|raciones?|servings?|people))\s*\))?$"#,
                                options: .regularExpression) != nil
     }
 
@@ -115,7 +132,7 @@ enum ChatGPTRecipeExtractor {
     }
 
     private static func isMethodHeading(_ key: String) -> Bool {
-        ["preparacion paso a paso", "step-by-step instructions", "method", "preparacion", "instructions", "directions", "steps", "instrucciones", "pasos", "elaboracion"].contains(key)
+        ["preparacion paso a paso", "step-by-step instructions", "method", "preparacion", "instructions", "directions", "steps", "instrucciones", "pasos", "elaboracion", "modo de preparacion", "preparation steps", "como preparar", "paso a paso", "how to make"].contains(key)
     }
 
     private static func normalizeSteps(_ lines: [String]) -> String {
@@ -133,7 +150,10 @@ enum ChatGPTRecipeExtractor {
             if isIngredientHeading(line) {
                 flushStep()
                 beforeIngredients = false
-                if let count = line.range(of: #"\d{1,3}"#, options: .regularExpression),
+                if line.range(of: #"\d\s*[-–]\s*\d"#, options: .regularExpression) != nil {
+                    output.append("Notes:")
+                    output.append(headingText(line))
+                } else if let count = line.range(of: #"\d{1,3}"#, options: .regularExpression),
                    let servings = Int(line[count]), (1...999).contains(servings) {
                     output.append("Servings: \(servings)")
                 }
