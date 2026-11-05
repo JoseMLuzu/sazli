@@ -285,6 +285,129 @@ final class TikTokRecipeTests: XCTestCase {
         XCTAssertTrue(narrative.instructions.isEmpty)
     }
 
+    @MainActor func testCrunchwrapGroupsWithoutIngredientHeadingKeepMeasuresAndWrittenMethod() throws {
+        let caption = """
+        Cheesy Crunchwraps with Beef BEEF FILLING 1½ tbsp (25 ml) olive oil 1 lb (500 g) ground beef 1⅔ tsp (5 g) paprika 1 tsp (3 g) garlic powder 1 tsp (3 g) cayenne pepper ⅓ tsp (1 g) black pepper ½ beef bouillon cube (5 g) ⅓ cup (50 g) diced green bell pepper 1 small yellow onion (100 g), finely diced 3 tbsp (50 g) tomato sauce WRAPS 8 large flour tortillas (10-inch) Sauce of your choice (salsa, sour cream or chipotle mayo) Cheese slices (cheddar or Monterey Jack) CHEESE CRUST 1½ cups (150 g) shredded Mexican-blend cheese Instructions Set out all of your ingredients. Heat the olive oil in a skillet over medium-high heat. Add the ground beef, paprika, garlic powder, cayenne and black pepper. Crumble the beef bouillon cube over the pan. Cook for 3-4 minutes. Stir in the green bell pepper and onion and cook for 4-5 minutes. Add the tomato sauce and cook until everything comes together. Let the filling cool. Lay a tortilla on a clean work surface and place a slice of cheese in the center. Add sauce to taste, then spread about ⅓ cup (80 g) of the beef filling on top. Leave enough space around the edges. Fold in the sides of the tortilla, then fold the top and bottom over to make a tight package. Place it seam side down. Repeat with the remaining tortillas. Heat a skillet over medium-low to medium-high heat and lightly grease it with oil. Cook the burritos for 2-3 minutes per side, until golden brown and crispy. Lower the heat to medium-low. Sprinkle a small handful of shredded cheese in the center of the pan and let it melt slowly. Place a filled wrap on the melted cheese and cook until the cheese is golden and crispy. Remove from the pan and repeat with the other wraps. #cheese #beef #food #tiktokfood #easyrecipe
+        """
+        let source = URL(string: "https://www.tiktok.com/@kookmutsjes/video/7701715089908370721?_r=1&_t=ZS-9B8lyH984He")!
+        let result = try TikTokRecipeDocument.recipe(in: document(caption), sourceURL: source)
+        XCTAssertEqual(RecipeText.ingredientLines(in: result.draft.ingredients), [
+            "1½ tbsp (25 ml) olive oil", "1 lb (500 g) ground beef", "1⅔ tsp (5 g) paprika",
+            "1 tsp (3 g) garlic powder", "1 tsp (3 g) cayenne pepper", "⅓ tsp (1 g) black pepper",
+            "½ beef bouillon cube (5 g)", "⅓ cup (50 g) diced green bell pepper",
+            "1 small yellow onion (100 g), finely diced", "3 tbsp (50 g) tomato sauce",
+            "8 large flour tortillas (10-inch)", "Sauce of your choice (salsa, sour cream or chipotle mayo)",
+            "Cheese slices (cheddar or Monterey Jack)", "1½ cups (150 g) shredded Mexican-blend cheese"
+        ])
+        let steps = RecipeText.lines(in: result.draft.instructions)
+        XCTAssertEqual(steps.count, 20)
+        XCTAssertEqual(steps.first, "Set out all of your ingredients.")
+        XCTAssertTrue(steps.contains("Cook for 3-4 minutes."))
+        XCTAssertTrue(steps.contains("Lower the heat to medium-low."))
+        XCTAssertTrue(steps.last?.hasPrefix("Remove from the pan") == true)
+        XCTAssertFalse(result.draft.instructions.contains("#cheese"))
+        XCTAssertTrue(result.draft.description.contains("#cheese"))
+        XCTAssertEqual(result.draft.sourceURL, source.absoluteString)
+        let recipe = Recipe(title: "Family crunchwraps")
+        var draft = RecipeDraft(recipe: recipe)
+        draft.sourceURL = source.absoluteString
+        draft.sourcePlatform = .tiktok
+        draft.fillEmptyDetails(from: result.draft)
+        draft.apply(to: recipe)
+        XCTAssertEqual(recipe.title, "Family crunchwraps")
+        XCTAssertEqual(recipe.ingredientLines.count, 14)
+        XCTAssertEqual(recipe.instructionLines.count, 20)
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("Crunchwrap-" + UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let storeURL = directory.appendingPathComponent("Recipes.store")
+        do {
+            let container = try RecipeStore.container(at: storeURL)
+            container.mainContext.autosaveEnabled = false
+            try RecipeStore.save(draft, editing: nil, in: container.mainContext)
+        }
+        let reopened = try RecipeStore.container(at: storeURL)
+        let saved = try XCTUnwrap(reopened.mainContext.fetch(FetchDescriptor<Recipe>()).first)
+        XCTAssertEqual(saved.title, "Family crunchwraps")
+        XCTAssertEqual(saved.ingredientLines.count, 14)
+        XCTAssertEqual(saved.instructionLines.count, 20)
+        XCTAssertEqual(saved.sourceURL, source.absoluteString)
+    }
+
+    func testUppercaseProseWithoutPairedQuantityGroupsIsNotGuessedAsARecipe() throws {
+        for text in ["BEEF FILLING 1 lb beef Instructions See the video.",
+                     "BEEF FILLING and WRAPS are delicious. Instructions are in the video.",
+                     "A TASTY MEAL with 2 options and 3 ideas. Instructions Watch for more."] {
+            let draft = try TikTokCaptionParser.parse(text)
+            XCTAssertTrue(draft.ingredients.isEmpty)
+        }
+    }
+
+    func testUnnumberedMethodSentenceBoundariesKeepRangesAndDecimals() {
+        XCTAssertEqual(RecipeText.lines(in: RecipeGroupedCaption.methodLines(
+            "Cook for 1 - 2 minutes. Rest for 1.5 minutes.")),
+            ["1. Cook for 1 - 2 minutes.", "2. Rest for 1.5 minutes."])
+        let numbered = "1. Mix and cook. Rest briefly.\n2. Serve."
+        XCTAssertEqual(RecipeGroupedCaption.methodLines(numbered), numbered)
+    }
+
+    @MainActor func testLemonPastaWithoutSectionHeadingsKeepsTwentyFiveIngredientsAndSevenSteps() throws {
+        let caption = """
+        creamy lemon chili crisp pasta served with juicyyyy mini chicken meatballs 🍋🌶️ Mini Chicken Meatballs (makes 2-3 servings) * 1 lb ground chicken 454 g * 1 tsp garlic powder 3 g * 1 tsp onion powder 2.5 g * ½ tsp kosher salt 3 g * ½ tsp black pepper 1 g * ⅛ tsp paprika 0.3 g * ¼ cup grated Parmesan 20–25 g * ¼ cup breadcrumbs 25–30 g * 1 large egg about 50 g * 1 tbsp whole milk 15 g * 1 tbsp olive oil, 15 g Lemon Chili Crisp Sauce * 8–10 oz pasta of choice — 225–285 g * 5 tbsp unsalted butter — 71 g * 2 garlic cloves, finely grated — about 6 g * 1 tbsp chili crisp, plus more to finish — about 15 g, or to taste * 1 tsp smoked paprika — 2–2.5 g * ½ tsp garlic powder — 1.5 g * ½ tsp black pepper — 1 g * ½ tsp red pepper flakes — about 1 g, or to taste * 1¼ cups heavy cream — 300 ml / about 300 g * ½–1 cup reserved pasta water — 120–240 ml * Juice of ½ lemon — about 1½ tbsp / 20–25 g * 1 cup finely grated Parmesan — about 90 g * Salt, to taste * Fresh lemon wedges, Parmesan and extra chili crisp, for serving 1. Mix all meatball ingredients until combined. Roll into small tablespoon-sized balls and chill for 20 minutes. 2. Heat oil in a skillet over medium heat and cook meatballs until golden and cooked through to 165°F / 74°C. Set aside. 3. Cook pasta until al dente, reserving 1 cup / 240 ml pasta water before draining. 4. Melt butter over medium-low heat. Add garlic and cook until fragrant, then stir in chili crisp, smoked paprika, garlic powder, black pepper and red pepper flakes. 5. Add heavy cream, lemon juice and ½ cup / 120 ml pasta water. Bring to a gentle simmer. 6. Stir in Parmesan and simmer on low until smooth and glossy, adding more pasta water as needed. 7. Toss in the pasta and meatballs. Finish with extra chili crisp, Parmesan and fresh lemon juice. The full detailed recipe will be up later on my website - link in bio 🪩 #creamypasta #pasta #explore #recipe
+        """
+        let source = URL(string: "https://www.tiktok.com/@marisakapeal/video/7689155950074170637?_r=1&_t=ZS-9B8mpk9Glc8")!
+        let result = try TikTokRecipeDocument.recipe(in: document(caption), sourceURL: source)
+        XCTAssertEqual(RecipeText.ingredientLines(in: result.draft.ingredients), [
+            "1 lb ground chicken 454 g", "1 tsp garlic powder 3 g", "1 tsp onion powder 2.5 g",
+            "½ tsp kosher salt 3 g", "½ tsp black pepper 1 g", "⅛ tsp paprika 0.3 g",
+            "¼ cup grated Parmesan 20–25 g", "¼ cup breadcrumbs 25–30 g", "1 large egg about 50 g",
+            "1 tbsp whole milk 15 g", "1 tbsp olive oil, 15 g",
+            "8–10 oz pasta of choice — 225–285 g", "5 tbsp unsalted butter — 71 g",
+            "2 garlic cloves, finely grated — about 6 g", "1 tbsp chili crisp, plus more to finish — about 15 g, or to taste",
+            "1 tsp smoked paprika — 2–2.5 g", "½ tsp garlic powder — 1.5 g", "½ tsp black pepper — 1 g",
+            "½ tsp red pepper flakes — about 1 g, or to taste", "1¼ cups heavy cream — 300 ml / about 300 g",
+            "½–1 cup reserved pasta water — 120–240 ml", "Juice of ½ lemon — about 1½ tbsp / 20–25 g",
+            "1 cup finely grated Parmesan — about 90 g", "Salt, to taste",
+            "Fresh lemon wedges, Parmesan and extra chili crisp, for serving"
+        ])
+        XCTAssertEqual(RecipeText.lines(in: result.draft.instructions).count, 7)
+        XCTAssertTrue(result.draft.instructions.contains("165°F / 74°C"))
+        XCTAssertFalse(result.draft.instructions.contains("link in bio"))
+        XCTAssertTrue(result.draft.description.contains("link in bio"))
+        XCTAssertTrue(result.draft.description.contains("makes 2-3 servings"))
+        XCTAssertEqual(result.draft.servings, "1") // An explicit range is not an exact serving count.
+        XCTAssertEqual(result.draft.sourceURL, source.absoluteString)
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("LemonPasta-" + UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = directory.appendingPathComponent("Recipes.store")
+        do {
+            let container = try RecipeStore.container(at: store)
+            container.mainContext.autosaveEnabled = false
+            try RecipeStore.save(result.draft, editing: nil, in: container.mainContext)
+        }
+        let reopened = try RecipeStore.container(at: store)
+        let saved = try XCTUnwrap(reopened.mainContext.fetch(FetchDescriptor<Recipe>()).first)
+        XCTAssertEqual(saved.ingredientLines.count, 25)
+        XCTAssertEqual(saved.instructionLines.count, 7)
+        XCTAssertEqual(saved.sourceURL, source.absoluteString)
+    }
+
+    func testMetricConversionsStayInsideExplicitBulletIngredients() throws {
+        for marker in ["*", "•", "✅", "-"] {
+            let draft = try TikTokCaptionParser.parse("Ingredients: \(marker) 8–10 oz pasta — 225–285 g \(marker) 1 tsp salt — about 5 g Method: 1. Cook.")
+            XCTAssertEqual(RecipeText.ingredientLines(in: draft.ingredients), ["8–10 oz pasta — 225–285 g", "1 tsp salt — about 5 g"])
+        }
+    }
+
+    func testHeaderlessBulletsWithoutRecipeQuantityAndStepEvidenceRemainUnstructured() throws {
+        for text in ["My weekend * Friends * Shopping 1. Plan. 2. Enjoy.",
+                     "Dinner ideas * Chicken * Pasta See the video for instructions."] {
+            let draft = try TikTokCaptionParser.parse(text)
+            XCTAssertTrue(draft.ingredients.isEmpty)
+        }
+    }
+
     private var tacoMacCaption: String {
         """
         one pan taco mac & cheese 🤗 recipe is below! Taco Mac & Cheese Ingredients * 1 lb ground beef * 1 packet taco seasoning * 4 oz tomato sauce * ½ cup salsa * 16 oz shell pasta * 1 cup beef broth * 1 cup milk * 1½ cups Mexican blend cheese, divided * Optional: parsley for topping Instructions 1. In a large skillet over medium high heat, cook the ground beef with the taco seasoning until browned and fully cooked. 2. Add the tomato sauce and salsa, and stir until combined. 3. Add the uncooked shell pasta, beef broth, and milk. Mix well. 4. Bring to a simmer, reduce the heat to low, cover, and cook for about 10 minutes, stirring occasionally, until the pasta is tender. If the pasta needs more time, continue cooking and add a splash of broth or milk as needed. 5. Once pasta is cooked, stir in 1¼ cups of mexican cheese until melted. 6. Sprinkle the remaining ¼ cup cheese over the top, cover, and let it melt. 7. Top with parsley if desired and serve warm! #easydinnerideas #dinnerideas #mealideas #dinner #onepanmeal
