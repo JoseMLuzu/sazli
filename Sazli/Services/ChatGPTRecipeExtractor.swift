@@ -149,6 +149,11 @@ enum ChatGPTRecipeExtractor {
                 output.append("Notes:")
                 output.append(line)
                 inMethod = false
+            } else if inMethod, headingText(line).range(of: #"^\d+[.)](?:\s+|(?=\p{L}))"#,
+                                                       options: .regularExpression) != nil {
+                flushStep()
+                currentStep = headingText(line).replacingOccurrences(of: #"^(\d+[.)])\s*"#,
+                    with: "$1 ", options: .regularExpression)
             } else if line.hasPrefix("#") {
                 flushStep()
                 if inMethod {

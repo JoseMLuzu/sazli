@@ -4,6 +4,14 @@ import XCTest
 final class ChatGPTShareTests: XCTestCase {
     private let shareURL = URL(string: "https://chatgpt.com/share/01234567-89ab-cdef-0123-456789abcdef")!
 
+    func testMarkdownNumberedStepHeadingsKeepCookingParagraphs() throws {
+        let message = "## Eggs\nIngredients:\n- Eggs\nInstructions:\n### 1. Mix\nBeat gently.\n### 2.Cook\nHeat until set.\n### Notes\nServe warm."
+        let result = try XCTUnwrap(ChatGPTRecipeExtractor.recipes(in: [message], sourceURL: shareURL).first)
+        XCTAssertEqual(RecipeText.lines(in: result.draft.instructions), ["Mix Beat gently.", "Cook Heat until set."])
+        XCTAssertFalse(result.draft.instructions.contains("Serve warm"))
+        XCTAssertTrue(result.draft.description.contains("Serve warm"))
+    }
+
     func testOnlyPublicShareURLsAreRead() {
         XCTAssertNotNil(SourceLink.chatGPTShareURL(from: shareURL.absoluteString))
         XCTAssertNotNil(SourceLink.chatGPTShareURL(from: shareURL.absoluteString.replacingOccurrences(of: "https:", with: "HTTPS:")))
