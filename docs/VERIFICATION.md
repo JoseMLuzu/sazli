@@ -368,3 +368,39 @@ Final full suite: **66 tests passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xco
 The final signed Release build, including the updated import help and Shortcuts action description, passed (`/private/tmp/sazli-cross-import-release-final.log`). devicectl confirmed installation on the physical iPhone 15 with existing app data preserved. Interactive acceptance remains separate from installation.
 
 The installed update launched successfully on the physical iPhone 15 through devicectl. No public sample was automatically saved to the personal library.
+
+## Grouped TikTok caption — November 4, 2026
+
+The supplied `https://vt.tiktok.com/ZSpFB66ns/` exposed another heading shape: Ingredients/Instructions followed by a group name and then a bullet. The paired grouped headings are now supported, keeping explicit subgroup labels and 11 cooking actions separate. The exact downloaded caption produces 35 ingredient items plus 3 group labels. Two new regressions cover parsing, source-draft merging, recovery, and unpaired-heading rejection. Full native suite: **68 passed, 0 failures** on iPhone 17 Pro / iOS 26.5. Signed Release build passed. See [the follow-up audit](IMPORT_AUDIT.md). The first installation attempt lost the device connection (CoreDevice 4000); installation is not claimed for that attempt. No personal recipes were changed and no commits/push were made.
+
+A separate live native Foundation probe using the production TikTok reader also fetched the exact short link successfully and returned 38 ingredient rows / 11 steps. It uses a value-only draft projection and does not access the personal library. Log: `/private/tmp/sazli-grouped-caption-live.log`.
+
+After the device connection recovered, devicectl confirmed successful installation of the final signed update on iPhone 15. Existing app data was preserved; interactive import/save acceptance remains manual.
+
+The subsequent launch was denied because the phone was locked. Installation succeeded; the updated app can be opened manually after unlocking.
+
+## Caption combination simulations — November 4, 2026
+
+Added 1,363 constructed format scenarios across heading/list cross products, punctuation/spacing, Unicode/quantity preservation, unstructured controls and actual paste routing. Fixed shared normalization and a router case that discarded alternate section headings as titles. Native full suite: **72 passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_20-44-17--0500.xcresult`. See [CAPTION_COMBINATION_AUDIT.md](CAPTION_COMBINATION_AUDIT.md) for the scenario breakdown and limits. No commits/push were performed.
+
+The final signed generic iOS Release build passed, including the Live Activity extension (`/private/tmp/sazli-caption-combinations-release-final.log`). The Xcode project plist validated.
+
+Devicectl confirmed successful installation of the final signed update on the physical iPhone 15, preserving existing app data. No simulated recipe was saved into the personal library. Interactive import/save verification remains manual.
+
+## Ingredient presentation — November 4, 2026
+
+RecipeText.ingredientLines now supplies the Recipe presentation accessor used by detail and cooking mode. Explicit group labels such as Pasta:, Chicken:, Salsa:, Guarnición: and For the sauce: are omitted from ingredient rows and cooking checklist counts. Real ingredient rows lose only supported trailing punctuation/whitespace. Commas inside descriptions, decimal quantities, negative temperatures, optional parentheses, and interior colons remain intact. Bare Pasta without a heading colon remains an ingredient. The editor and persisted ingredients string retain the original source; instruction punctuation is unchanged. No schema migration or stored-data rewrite occurs.
+
+A regression checks the same model accessor used by both screens and verifies source preservation. Full native suite: **73 tests passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_20-51-14--0500.xcresult`. Log: `/private/tmp/sazli-ingredient-display-tests.log`. Visual acceptance remains manual. No commits or push were performed.
+
+Signed Release build passed (`/private/tmp/sazli-ingredient-display-release.log`) and devicectl confirmed installation on the physical iPhone 15, preserving app data. No personal recipes were modified during installation.
+
+## Recipe integrity and missing Cajun ingredients — November 4, 2026
+
+Reproduced six failures with new tests before fixing them: a quantified flattened ingredient heading in the supplied TikTok, spaced numeric ranges treated as bullets, numeric weight qualifiers split inside explicit bullets, numbered Markdown ChatGPT steps moved to notes, decorated/alternate-line-ending titles lost by paste routing, and actual prefixed ingredients hidden by the display filter. See [the follow-up audit](IMPORT_AUDIT.md). The exact supplied caption now yields 14 ingredients and 8 steps; source merging preserves the user's existing title.
+
+Full native suite: **79 passed, 0 failures** on iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_21-01-49--0500.xcresult`. The baseline failure log is retained separately from the passing run: `/private/tmp/sazli-recipe-integrity-before.log` / `/private/tmp/sazli-recipe-integrity-after.log`. No model migration, account connection, dependencies, personal recipe database extraction, commits or push. Visual acceptance remains manual.
+
+A separate live native Foundation probe using the production TikTok reader successfully fetched the exact Cajun short link and verified 14 ingredients, 8 steps, the original source URL and `50g Parmesan, grated`. It uses a value-only draft projection and does not access the personal library. Log: `/private/tmp/sazli-cajun-live-audit.log`. The final signed iOS Release build passed, including the Live Activity extension (`/private/tmp/sazli-recipe-integrity-release.log`).
+
+Devicectl confirmed successful installation of the final signed update on the physical iPhone 15 with existing app data preserved. No public sample was saved or modified in the personal library. Source-field visual/save acceptance remains manual.

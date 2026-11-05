@@ -45,3 +45,39 @@ The first WebKit test attempt could not start SpringBoard. Restarting only the i
 Local diagnostic logs: `/private/tmp/sazli-cross-import-tests-complete.log`, `/private/tmp/sazli-cross-import-release.log`, `/private/tmp/sazli-live-video-audit.log`, `/private/tmp/sazli-public-share-browser-audit-retry.log`, `/private/tmp/sazli-public-share-chicken-diagnostic.log`, and `/private/tmp/sazli-public-share-chicken-after.log`. Raw public pages and temporary probes remain outside the repository. No commits or push were performed.
 
 The final signed Release build, including the updated import help and Shortcuts action description, passed (`/private/tmp/sazli-cross-import-release-final.log`). devicectl confirmed installation on the physical iPhone 15 with existing app data preserved. Interactive acceptance remains separate from installation.
+
+## Grouped chipotle pasta follow-up — November 4, 2026
+
+The reported [short link](https://vt.tiktok.com/ZSpFB66ns/) resolves to [the sapor's chipotle chicken pasta](https://www.tiktok.com/@thesapor/video/7695883596913003789). The public caption flattens `Ingredients Chicken - …` and `Instructions Chicken - …` onto one line. The existing heading boundary required a colon, newline, or immediate list marker, so both sections stayed in the description. This was a parser limitation, not missing source content.
+
+RecipeCaptionParser now recognizes a bounded short group label before a bullet only when both ordered ingredient and method headings are present. Explicit common subgroup labels are separated; method groups are attached to their first action rather than becoming empty cooking steps. The existing no-space `-Add` marker is retained as an action, and decorative trailing bullet separators are removed from the method. Amounts, temperatures, optional ingredients, source link, hashtags, and creator credit remain as written. The captured public page yields **35 ingredient items plus 3 group labels (38 rows), and 11 method steps**.
+
+Two regression tests cover the exact caption through the production document parser, empty-field source merging, description-only recovery, preservation of a personal title/credits/source, and an unpaired group heading that must remain unclassified. Native XCTest on iPhone 17 Pro / iOS 26.5: **68 tests passed, 0 failures**. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_20-23-28--0500.xcresult`. Signed Release build passed. Logs: `/private/tmp/sazli-grouped-tiktok-tests.log` and `/private/tmp/sazli-grouped-tiktok-release.log`. Source-field UI acceptance remains manual; paste the link and tap **Import recipe details**, review, then Save. Previously saved description-only TikTok recipes propose recovered fields on Edit without changing storage before Save.
+
+The first device-install attempt failed with CoreDevice error 4000 / connection reset by peer; that attempt is not counted as a successful installation. No commits or push were performed for this follow-up.
+
+A separate live native Foundation probe using the production TikTok reader also fetched the exact short link successfully and returned 38 ingredient rows / 11 steps. It uses a value-only draft projection and does not access the personal library. Log: `/private/tmp/sazli-grouped-caption-live.log`.
+
+After the device connection recovered, devicectl confirmed successful installation of the final signed update on iPhone 15. Existing app data was preserved; interactive import/save acceptance remains manual.
+
+## Recipe integrity and Cajun pasta — November 4, 2026
+
+The supplied [TikTok short link](https://vt.tiktok.com/ZSpFyLctE/) resolves to [Hope Crosby's creamy Cajun chicken pasta](https://www.tiktok.com/@hopecrosby_eatss/video/7699566942000123168). Its public description contains the full recipe, but ingredients have neither bullets nor line breaks: `Ingredients 2 chicken breasts 140g pasta … Method 1. …`. The previous heading rule missed Ingredients while still recognizing the numbered method.
+
+The shared reader now accepts this quantified ingredient heading only when a supported explicit method follows it. In that bounded ingredient section, repeated spacing separates rows and explicit numeric quantities can separate a flattened list. Unquantified items with explicit double-space separation remain intact. The exact caption produces **14 ingredients / 8 method steps**, including Fresh parsley, Olive oil, Salt and pepper, and `50g Parmesan, grated`. Temperatures, duration ranges, source URL and creator credit remain available. The exact document regression also checks empty-field source merging and preservation of a personal title. A prose control without an explicit method remains unstructured.
+
+Additional integrity bugs reproduced and fixed:
+
+- Spaced ranges such as `1 - 2 eggs` and `Rest 4 – 5 minutes` were mistaken for list bullets. Numeric range separators are now retained within the same row/action.
+- A comma followed by a numeric weight inside an explicit bullet (`1 onion, 150 g total`) could incorrectly create a second ingredient. Explicit list boundaries now take priority over comma-based splitting.
+- Public ChatGPT recipe methods written as numbered Markdown headings (`### 1. Mix` / `### 2.Cook`) could be moved to notes, rejecting a complete recipe or losing steps. The extractor recognizes these numbered headings and joins each following cooking paragraph; subsequent unrelated notes remain separate.
+- Pasted titles could be lost with Markdown decoration, CR-only or Unicode line separators. The actual import router now preserves the title across those formats.
+- The ingredient display filter could hide a real prefixed item such as `For the sauce: 2 tbsp oil:`. Group-prefix suppression now preserves rows containing an internal colon or quantity.
+
+New fixtures first reproduced these failures in the baseline run. The full corrected native suite passed **79 tests, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_21-01-49--0500.xcresult`. Logs: `/private/tmp/sazli-recipe-integrity-before.log` and `/private/tmp/sazli-recipe-integrity-after.log`. Existing format combinations, public-share filtering/photos, save/reopen, timers and recipe actions passed as part of the suite.
+
+These are explicit text boundaries, not semantic recipe inference. Ambiguous unquantified inline prose remains for review. Existing/manual fields are preserved on source import, and saving still requires Save. No personal recipe was modified and no commits/push were made for this follow-up. Interactive source-field acceptance is separate from parser and merge tests.
+
+A separate live native Foundation probe using the production TikTok reader successfully fetched the exact Cajun short link and verified 14 ingredients, 8 steps, the original source URL and `50g Parmesan, grated`. It uses a value-only draft projection and does not access the personal library. Log: `/private/tmp/sazli-cajun-live-audit.log`. The final signed iOS Release build passed, including the Live Activity extension (`/private/tmp/sazli-recipe-integrity-release.log`).
+
+Devicectl confirmed successful installation of the final signed update on the physical iPhone 15 with existing app data preserved. No public sample was saved or modified in the personal library. Source-field visual/save acceptance remains manual.
