@@ -73,7 +73,7 @@ struct ChatGPTShareWebView: UIViewRepresentable {
         func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction) async -> WKNavigationActionPolicy {
             guard action.targetFrame?.isMainFrame == true else { return .allow }
             guard let target = action.request.url,
-                  SourceLink.chatGPTShareURL(from: target.absoluteString)?.path == url.path else {
+                  SourceLink.sameChatGPTShare(target, url) else {
                 finish(.failure(ChatGPTShareDocument.ReadError.unavailable))
                 return .cancel
             }

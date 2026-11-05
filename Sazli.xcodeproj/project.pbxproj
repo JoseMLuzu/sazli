@@ -67,6 +67,8 @@
 		D6EB34D56150D700247752D0 = {isa = PBXBuildFile; fileRef = 2BA1E3DECFE5EB97776AE0B8; };
 		12121089FB9A1F71592C39C6 = {isa = PBXBuildFile; fileRef = EC1A1DF06F3B897F6E68973C; };
 		D2A8CD862D7ACD786A66B857 = {isa = PBXBuildFile; fileRef = 87CBB19913412FBA2F352850; };
+		6C29675E4C349C646888C167 = {isa = PBXBuildFile; fileRef = F67DFB456F6A8249DAD5A76E; };
+		E1C2DA951E94B8138F2043B3 = {isa = PBXBuildFile; fileRef = 36A3D38943C5F54A1425D10D; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,6 +145,8 @@
 		2BA1E3DECFE5EB97776AE0B8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/VideoRecipeReader.swift"; sourceTree = SOURCE_ROOT; };
 		EC1A1DF06F3B897F6E68973C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/YouTubeRecipeDocument.swift"; sourceTree = SOURCE_ROOT; };
 		87CBB19913412FBA2F352850 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/YouTubeRecipeTests.swift"; sourceTree = SOURCE_ROOT; };
+		F67DFB456F6A8249DAD5A76E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTPublicTranscript.swift"; sourceTree = SOURCE_ROOT; };
+		36A3D38943C5F54A1425D10D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTPublicTranscriptTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -181,6 +185,7 @@
 				A7C4262A0A12FDBD12753F58,
 				2BA1E3DECFE5EB97776AE0B8,
 				EC1A1DF06F3B897F6E68973C,
+				F67DFB456F6A8249DAD5A76E,
 				820C81D0F207F00CD9325BA4,
 				BEA91E8B1D60A9CF0B14C326,
 				1A6AC606AAFAB52BD1E0B3B4,
@@ -243,6 +248,7 @@
 				B1CCB9E01F570B08A7371C8E,
 				A05663585E308C2344521A96,
 				87CBB19913412FBA2F352850,
+				36A3D38943C5F54A1425D10D,
 				C054CCA038066234F5504F16 /* SazliTests/ChatGPTShareTests.swift */,
 				94F770F5D27CBD372993B9A9 /* SazliTests/SazliTests.swift */,
 			);
@@ -351,6 +357,7 @@
 				9CFD11312100CA897D0B6661,
 				309322C951767DA472D6DD5E,
 				D2A8CD862D7ACD786A66B857,
+				E1C2DA951E94B8138F2043B3,
 				80EBB796049D941FDD019A1B /* SazliTests/ChatGPTShareTests.swift in Sources */,
 				5BEA0F7F6BC87C1D08CA95E7 /* SazliTests/SazliTests.swift in Sources */,
 			);
@@ -370,6 +377,7 @@
 				C13BA2DB62BBCD870D1E11DC,
 				D6EB34D56150D700247752D0,
 				12121089FB9A1F71592C39C6,
+				6C29675E4C349C646888C167,
 				38B4EBC4B5B71E178E2D6132,
 				5AFCA9A353FE33E65D5E2C6B,
 				13470A08DD8901C9C6310D72,

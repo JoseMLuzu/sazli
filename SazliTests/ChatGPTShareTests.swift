@@ -206,6 +206,15 @@ final class ChatGPTShareTests: XCTestCase {
         XCTAssertNil(unsupported)
     }
 
+    func testLegacyCompletedPublicTextDoesNotIncludeIncompleteOrAnalysisMessages() throws {
+        let messages = [("assistant", "legacy", "Legacy recipe", false),
+                        ("assistant", "legacy", "Incomplete text", false),
+                        ("assistant", "analysis", "Private reasoning", false),
+                        ("assistant", "legacy", "Hidden text", true)]
+        let html = try makeDocument(messages, legacyChannels: [0, 1, 3], completed: [0: true, 1: false, 2: true, 3: true])
+        XCTAssertEqual(try ChatGPTShareDocument.assistantMessages(in: html), ["Legacy recipe"])
+    }
+
     /// A reduced fixture matching the component-markup structure observed in a public share page.
     private var recipeMarkup: String {
         """
@@ -251,7 +260,8 @@ final class ChatGPTShareTests: XCTestCase {
     }
 
     private func makeDocument(_ messages: [(role: String, channel: String, text: String, hidden: Bool)],
-                              photos: [Int: [(offset: Int, urls: [String])]] = [:]) throws -> String {
+                              photos: [Int: [(offset: Int, urls: [String])]] = [:],
+                              legacyChannels: Set<Int> = [], completed: [Int: Bool] = [:]) throws -> String {
         var table: [Any] = []
         func store(_ value: Any) -> Int { table.append(value); return table.count - 1 }
         func object(_ fields: [(String, Int)]) -> Int {
@@ -270,7 +280,8 @@ final class ChatGPTShareTests: XCTestCase {
             }
             let metadata = object([("is_visually_hidden_from_conversation", store(item.hidden)),
                                    ("genui_components", store(components))])
-            let message = object([("author", author), ("content", content), ("channel", store(item.channel)),
+            let message = object([("author", author), ("content", content), ("channel", store(legacyChannels.contains(index) ? NSNull() as Any : item.channel as Any)),
+                                  ("end_turn", store(completed[index] ?? false)),
                                   ("recipient", store("all")), ("metadata", metadata)])
             nodes.append(object([("message", message)]))
         }

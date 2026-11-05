@@ -22,6 +22,7 @@ enum ChatGPTShareDocument {
 
     static func messages(in html: String) throws -> [SharedChatGPTMessage] {
         guard html.utf8.count <= maximumHTMLBytes else { throw ReadError.tooLarge }
+        if let projected = ChatGPTPublicTranscript.messages(in: html) { return projected }
         let expression = try NSRegularExpression(
             pattern: #"streamController\.enqueue\(\s*("(?:\\.|[^"\\])*")\s*\)"#,
             options: [.dotMatchesLineSeparators])
@@ -40,7 +41,9 @@ enum ChatGPTShareDocument {
                           let author = reader.field("author", in: message) as? [String: Any],
                           reader.field("role", in: author) as? String == "assistant",
                           reader.field("recipient", in: message) as? String == "all",
-                          reader.field("channel", in: message) as? String == "final",
+                          ((reader.field("channel", in: message) as? String) == "final"
+                           || ((reader.field("channel", in: message) as? String) == nil
+                               && reader.field("end_turn", in: message) as? Bool == true)),
                           let content = reader.field("content", in: message) as? [String: Any],
                           reader.field("content_type", in: content) as? String == "text",
                           let parts = reader.field("parts", in: content) as? [Any] else { continue }
