@@ -17,6 +17,13 @@ xcrun swiftc -swift-version 6 -parse-as-library "$@" \
     Sazli/Services/RecipeText.swift \
     Sazli/Services/SourceLink.swift \
     Sazli/Services/RecipeDraft.swift \
+    Sazli/Services/RecipeImportParser.swift \
+    Sazli/Services/RecipeCaptionParser.swift \
+    Sazli/Services/TikTokCaptionParser.swift \
+    Sazli/Services/RecipeGroupedCaption.swift \
+    Sazli/Services/RecipeBulletedCaption.swift \
+    Sazli/Services/RecipeMethodMarkers.swift \
+    Sazli/Services/RecipeIngredientMeasure.swift \
     Sazli/Services/RecipeStore.swift \
     Scripts/PersistenceCheck.swift \
     -o "$check_dir/persistence-check"
