@@ -1,22 +1,18 @@
 import Foundation
 import Observation
 
-struct PendingRecipeImport: Codable, Equatable, Identifiable, Sendable {
-    let id: UUID
-    let text: String
-    let createdAt: Date
-}
-
-/// A private, durable inbox for foreground App Intents. The recipe store stays in place.
+/// Private review inbox for foreground intents and received Share Extension requests.
 @MainActor @Observable
 final class RecipeImportInbox {
     static let shared = RecipeImportInbox()
     private(set) var pending: [PendingRecipeImport] = []
     private(set) var errorMessage: String?
     private let directory: URL
+    private let sharedDirectory: URL?
 
-    init(directory: URL? = nil) {
+    init(directory: URL? = nil, sharedDirectory: URL? = nil) {
         self.directory = directory ?? URL.applicationSupportDirectory.appendingPathComponent("RecipeImports", isDirectory: true)
+        self.sharedDirectory = sharedDirectory ?? (directory == nil ? SharedRecipeInbox.groupDirectory : nil)
         reload()
     }
 
@@ -36,10 +32,13 @@ final class RecipeImportInbox {
     }
 
     func reload() {
+        var sharedError: String?
+        do { try receiveSharedRequests() }
+        catch { sharedError = "Couldn't receive a shared recipe: \(error.localizedDescription) Its original has been kept." }
         do {
             guard FileManager.default.fileExists(atPath: directory.path) else {
                 pending = []
-                errorMessage = nil
+                errorMessage = sharedError
                 return
             }
             let urls = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.fileSizeKey])
@@ -57,7 +56,7 @@ final class RecipeImportInbox {
                 loaded.append(request)
             }
             pending = loaded.sorted { $0.createdAt < $1.createdAt }
-            errorMessage = nil
+            errorMessage = sharedError
         } catch { errorMessage = "Couldn't open the import inbox: \(error.localizedDescription)" }
     }
 
@@ -66,6 +65,34 @@ final class RecipeImportInbox {
         let path = url(for: id)
         if FileManager.default.fileExists(atPath: path.path) { try FileManager.default.removeItem(at: path) }
         pending.removeAll { $0.id == id }
+        reload()
+    }
+
+    private func receiveSharedRequests() throws {
+        guard let sharedDirectory else { return }
+        let shared = SharedRecipeInbox(directory: sharedDirectory)
+        let requests = try shared.pending()
+        guard !requests.isEmpty else { return }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        var privateCount = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .filter { $0.pathExtension == "json" }.count
+        for request in requests {
+            _ = try RecipeImportParser.parse(request.text)
+            let destination = url(for: request.id)
+            if FileManager.default.fileExists(atPath: destination.path) {
+                guard (try destination.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0)
+                    <= RecipeImportParser.maximumBytes * 6 + 1024,
+                    try JSONDecoder().decode(PendingRecipeImport.self, from: Data(contentsOf: destination)) == request else {
+                    throw InboxError.message("An import with the same identifier couldn't be verified.")
+                }
+            } else {
+                guard privateCount < 20 else { break }
+                try JSONEncoder().encode(request).write(to: destination, options: .atomic)
+                privateCount += 1
+            }
+            // A crash after the durable copy is safe: the same UUID is verified on retry.
+            try shared.remove(request.id)
+        }
     }
 
     private func url(for id: UUID) -> URL { directory.appendingPathComponent(id.uuidString).appendingPathExtension("json") }

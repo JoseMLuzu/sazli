@@ -71,6 +71,8 @@
 		51251F775AB93489803AC055 = {isa = PBXBuildFile; fileRef = B7EDAE1FB45F0B8DF96842E2; };
 		6C29675E4C349C646888C167 = {isa = PBXBuildFile; fileRef = F67DFB456F6A8249DAD5A76E; };
 		E1C2DA951E94B8138F2043B3 = {isa = PBXBuildFile; fileRef = 36A3D38943C5F54A1425D10D; };
+		7F9A5CF7C1AAFF10F435EC76 = {isa = PBXBuildFile; fileRef = 421AA48C23D10F80D9E0E8E9; };
+		F5E44CE258377592B9C1D601 = {isa = PBXBuildFile; fileRef = 5A623BDE0DCEB9B32FE7B6D7; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +153,8 @@
 		B7EDAE1FB45F0B8DF96842E2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/RecipeImportRoutingTests.swift"; sourceTree = SOURCE_ROOT; };
 		F67DFB456F6A8249DAD5A76E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTPublicTranscript.swift"; sourceTree = SOURCE_ROOT; };
 		36A3D38943C5F54A1425D10D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTPublicTranscriptTests.swift"; sourceTree = SOURCE_ROOT; };
+		421AA48C23D10F80D9E0E8E9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliShared/SharedRecipeInbox.swift"; sourceTree = SOURCE_ROOT; };
+		5A623BDE0DCEB9B32FE7B6D7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ShareImportTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -239,6 +243,7 @@
 		B28B7AF69320201D1CF206EB = {
 			isa = PBXGroup;
 			children = (
+				7A320AD629D54D7D14755914,
 				2CC8C28B4BD522AC51076A16,
 				1BDBD24583AAF7F81F76B976 /* Sazli */,
 				BFC937463906E5DB7A02A37C /* SazliTests */,
@@ -249,6 +254,7 @@
 		BFC937463906E5DB7A02A37C /* SazliTests */ = {
 			isa = PBXGroup;
 			children = (
+				5A623BDE0DCEB9B32FE7B6D7,
 				27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */,
 				B1CCB9E01F570B08A7371C8E,
 				A05663585E308C2344521A96,
@@ -272,6 +278,7 @@
 			sourceTree = "<group>";
 		};
 		2CC8C28B4BD522AC51076A16 = {isa = PBXGroup; children = (8A2EB81F58A140560B439AF7, 7B1CB0529C8999068D9159BE,); name = SazliLiveActivity; sourceTree = "<group>"; };
+		7A320AD629D54D7D14755914 = {isa = PBXGroup; children = (421AA48C23D10F80D9E0E8E9,); name = SazliShared; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -359,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5E44CE258377592B9C1D601,
 				24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */,
 				9CFD11312100CA897D0B6661,
 				309322C951767DA472D6DD5E,
@@ -374,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F9A5CF7C1AAFF10F435EC76,
 				3EAA22085DA8D991D0A989C8,
 				9092B6018EE8812F742609C4,
 				2BD8CA91E2AE06F1670D5309,
