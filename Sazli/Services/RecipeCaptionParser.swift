@@ -13,6 +13,10 @@ enum RecipeCaptionParser {
         return ["Ingredients", "Instructions", "Notes"].contains { normalized.contains("\n" + $0 + ":\n") }
     }
 
+    static func containsIngredientHeading(_ text: String) -> Bool {
+        normalize(text).contains("\nIngredients:\n")
+    }
+
     private static func normalize(_ caption: String) -> String {
         var text = caption.replacingOccurrences(of: "\r\n", with: "\n")
             .replacingOccurrences(of: "\r", with: "\n")
