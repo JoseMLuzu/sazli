@@ -26,7 +26,7 @@ enum RecipeCategory: String, CaseIterable, Identifiable, Sendable {
 }
 
 enum SourcePlatform: String, CaseIterable, Identifiable, Sendable {
-    case chatGPT, youtube, tiktok, facebook, web, manual
+    case chatGPT, youtube, tiktok, instagram, facebook, web, manual
 
     var id: String { rawValue }
     var title: String {
@@ -34,6 +34,7 @@ enum SourcePlatform: String, CaseIterable, Identifiable, Sendable {
         case .chatGPT: "ChatGPT"
         case .youtube: "YouTube"
         case .tiktok: "TikTok"
+        case .instagram: "Instagram"
         case .facebook: "Facebook"
         case .web: "Web"
         case .manual: "Manual"

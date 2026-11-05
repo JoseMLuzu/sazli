@@ -2,7 +2,7 @@ import Foundation
 
 /// Downloads explicitly exposed recipe images without account cookies or credentials.
 enum RecipeRemotePhoto {
-    enum Source: Sendable { case chatGPT, tikTok, youtube }
+    enum Source: Sendable { case chatGPT, tikTok, youtube, instagram }
     static let maximumBytes = 12_000_000
 
     static func publicURL(from text: String, source: Source) -> URL? {
@@ -17,6 +17,9 @@ enum RecipeRemotePhoto {
                     || host == "tiktokcdn-us.com" || host.hasSuffix(".tiktokcdn-us.com") else { return nil }
         case .youtube:
             guard ["i.ytimg.com", "img.youtube.com"].contains(host) else { return nil }
+        case .instagram:
+            guard host.hasPrefix("scontent"),
+                  host.hasSuffix(".cdninstagram.com") || host.hasSuffix(".fbcdn.net") else { return nil }
         }
         return url
     }

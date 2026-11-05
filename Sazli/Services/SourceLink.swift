@@ -1,6 +1,14 @@
 import Foundation
 
 enum SourceLink {
+    static func instagramPostURL(from text: String) -> URL? {
+        guard let url = url(from: text), url.scheme?.lowercased() == "https",
+              url.port == nil || url.port == 443,
+              ["instagram.com", "www.instagram.com", "m.instagram.com"].contains(url.host?.lowercased() ?? ""),
+              url.path.range(of: #"^/(?:p|reel|reels|tv)/[A-Za-z0-9_-]{5,64}/?$"#,
+                             options: .regularExpression) != nil else { return nil }
+        return url
+    }
     static func tikTokVideoURL(from text: String) -> URL? {
         guard let url = url(from: text), url.scheme?.lowercased() == "https",
               url.port == nil || url.port == 443, let host = url.host?.lowercased() else { return nil }
@@ -30,6 +38,7 @@ enum SourceLink {
     }
 
     static func videoRecipeURL(from text: String) -> URL? {
+        if let url = instagramPostURL(from: text) { return url }
         if let url = tikTokVideoURL(from: text) { return url }
         guard youTubeVideoID(from: text) != nil else { return nil }
         return url(from: text)
@@ -71,6 +80,7 @@ enum SourceLink {
         if matches("chatgpt.com") || matches("chat.openai.com") { return .chatGPT }
         if matches("youtube.com") || matches("youtu.be") { return .youtube }
         if matches("tiktok.com") { return .tiktok }
+        if matches("instagram.com") { return .instagram }
         if matches("facebook.com") || matches("fb.watch") { return .facebook }
         return .web
     }
