@@ -49,4 +49,31 @@ final class RecipeImportRoutingTests: XCTestCase {
         XCTAssertThrowsError(try RecipeImportRouter.route("  "))
         XCTAssertThrowsError(try RecipeImportRouter.route(String(repeating: "x", count: RecipeImportParser.maximumBytes + 1)))
     }
+
+    func testTitlesSurviveMarkdownAndNonUnixLineEndings() throws {
+        for newline in ["\n", "\r\n", "\r", "\u{2028}", "\u{2029}"] {
+            for title in ["Family eggs", "# Family eggs", "**Family eggs**"] {
+                let text = [title, "Ingredients: • Eggs • Salt", "Method: 1. Mix. 2. Cook."].joined(separator: newline)
+                guard case .draft(let draft) = try RecipeImportRouter.route(text) else { return XCTFail("No recipe draft") }
+                XCTAssertEqual(draft.title, "Family eggs")
+                XCTAssertEqual(RecipeText.lines(in: draft.ingredients), ["Eggs", "Salt"])
+                XCTAssertEqual(RecipeText.lines(in: draft.instructions), ["Mix.", "Cook."])
+            }
+        }
+    }
+
+    func testAlternativeHeadingsAreNotMistakenForTheRecipeTitle() throws {
+        for header in ["Ingredient list:", "Lista de ingredientes：", "Lo que necesitas —", "INGREDIENTES ="] {
+            for title in ["", "My eggs\n"] {
+                let text = title + header + " • Eggs • Salt\nModo de preparación: a) Mix. b) Cook.\n" + tikTok
+                guard case .draft(let draft) = try RecipeImportRouter.route(text) else {
+                    return XCTFail("Explicit recipe was replaced by a link import")
+                }
+                XCTAssertEqual(RecipeText.lines(in: draft.ingredients), ["Eggs", "Salt"], header)
+                XCTAssertEqual(RecipeText.lines(in: draft.instructions), ["Mix.", "Cook."], header)
+                XCTAssertEqual(draft.title, title.isEmpty ? "Imported recipe" : "My eggs")
+                XCTAssertEqual(draft.sourceURL, tikTok)
+            }
+        }
+    }
 }

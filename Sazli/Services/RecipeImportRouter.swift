@@ -13,9 +13,11 @@ enum RecipeImportRouter {
         if let url = SourceLink.url(from: input) { return route(url, fallback: fallback) }
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         let firstLine = text.components(separatedBy: .newlines).first ?? ""
-        let hasTitleLine = text.contains("\n") && firstLine == fallback.title
+        let hasTitleLine = text.rangeOfCharacter(from: .newlines) != nil
+            && firstLine.trimmingCharacters(in: CharacterSet(charactersIn: "#*_ ")) == fallback.title
+            && !RecipeCaptionParser.containsSectionHeading(firstLine)
         let title = hasTitleLine ? fallback.title : "Imported recipe"
-        let caption = hasTitleLine ? String(text.dropFirst(firstLine.count + 1)) : text
+        let caption = hasTitleLine ? String(text.dropFirst(firstLine.count)).trimmingCharacters(in: .newlines) : text
         var structured = try RecipeCaptionParser.parse(caption, title: title)
         if !structured.ingredients.isEmpty || !structured.instructions.isEmpty {
             structured.sourceURL = fallback.sourceURL
