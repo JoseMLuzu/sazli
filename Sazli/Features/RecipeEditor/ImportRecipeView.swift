@@ -52,7 +52,7 @@ struct ImportRecipeView: View {
                         ForEach(SourcePlatform.allCases) { Text($0.title).tag($0) }
                     }
                 } footer: {
-                    Text("Public ChatGPT shares and supported TikTok/YouTube descriptions can be read on this iPhone. Other links remain references. Video transcription is not included.")
+                    Text("Public ChatGPT shares and supported TikTok/YouTube/Instagram descriptions can be read on this iPhone. Other links remain references. Video transcription is not included.")
                 }
                 Section {
                     PrimaryButton(title: "Review recipe", symbol: "arrow.right") { prepareReview() }

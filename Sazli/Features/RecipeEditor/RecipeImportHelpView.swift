@@ -30,6 +30,7 @@ struct RecipeImportHelpView: View {
                 Label("Recipe text: explicit ingredients and steps", systemImage: "text.alignleft")
                 Label("Public ChatGPT links: complete recipe sections", systemImage: "text.book.closed")
                 Label("TikTok videos: public description and available cover", systemImage: "text.below.photo")
+                Label("Instagram posts: public caption and available cover", systemImage: "photo.on.rectangle")
                 Label("YouTube videos: public description and available thumbnail", systemImage: "play.rectangle")
                 Label("Other links: original URL and detected platform", systemImage: "link")
                 Text("Your private conversations and accounts are not connected. Reading a public ChatGPT page requires internet access and uses an isolated browser session. Video transcription, image recognition, and general webpage extraction are not included. Nothing is uploaded by Sazli.")

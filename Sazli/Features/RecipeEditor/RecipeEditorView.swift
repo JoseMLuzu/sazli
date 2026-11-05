@@ -161,7 +161,7 @@ struct RecipeEditorView: View {
                         ForEach(SourcePlatform.allCases) { Text($0.title).tag($0) }
                     }
                 } header: { Text("Original source") } footer: {
-                    Text("For a public ChatGPT share or a supported TikTok/YouTube video, tap Import recipe details to fill empty fields. Review the recipe before saving. Your existing details and original link are kept.")
+                    Text("For a public ChatGPT share or a supported TikTok/YouTube/Instagram video, tap Import recipe details to fill empty fields. Review the recipe before saving. Your existing details and original link are kept.")
                 }
             }
             .frame(maxWidth: 720)
@@ -276,7 +276,7 @@ struct RecipeEditorView: View {
         draft.recoverTikTokSectionsIfNeeded()
         draft.fillEmptyDetails(from: imported,
                                useDefaultServings: recipe == nil && draft.servings == initialDraft.servings)
-        let ingredients = RecipeText.lines(in: draft.ingredients).count
+        let ingredients = RecipeText.ingredientLines(in: draft.ingredients).count
         let steps = RecipeText.lines(in: draft.instructions).count
         sourceImportMessage = notice ?? "\(ingredients) ingredients · \(steps) steps. Empty fields were filled; review the recipe before saving."
         if draft.imageData == nil, selectedPhoto == nil, !photoURLs.isEmpty {

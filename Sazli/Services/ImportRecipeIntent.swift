@@ -3,7 +3,7 @@ import AppIntents
 /// Optional foreground shortcut; direct sharing is handled by the separate Share Extension.
 struct ImportRecipeIntent: AppIntent {
     static let title: LocalizedStringResource = "Import recipe"
-    static let description = IntentDescription("Send recipe text or an original link to Sazli for review. Supported public ChatGPT shares and TikTok/YouTube descriptions are read on your iPhone; other links remain references. No video transcription or general webpage extraction.")
+    static let description = IntentDescription("Send recipe text or an original link to Sazli for review. Supported public ChatGPT shares and TikTok/YouTube/Instagram descriptions are read on your iPhone; other links remain references. No video transcription or general webpage extraction.")
     static let openAppWhenRun = true
 
     @Parameter(title: "Recipe text or link", inputConnectionBehavior: .connectToPreviousIntentResult)
