@@ -6,6 +6,27 @@ import UniformTypeIdentifiers
 final class ShareImportTests: XCTestCase {
     private let share = "https://chatgpt.com/share/6ae9a2ef-d8ec-83e9-8417-ab10621b8705"
 
+    func testReceivesPublicURLAndRecipeTextWithoutReadingAccounts() async throws {
+        let item = NSExtensionItem()
+        item.attachments = [NSItemProvider(object: URL(string: share)! as NSURL)]
+        let received = try await ShareContentReader.read(items: [item])
+        XCTAssertEqual(received, share)
+        guard case .chatGPT = try RecipeImportRouter.route(received) else { return XCTFail("Wrong reader") }
+        let text = "Eggs\nIngredients: • Eggs • Salt\nMethod: 1. Mix. 2. Cook."
+        item.attachments = [NSItemProvider(object: text as NSString), NSItemProvider(object: text as NSString)]
+        let receivedText = try await ShareContentReader.read(items: [item])
+        XCTAssertEqual(receivedText, text)
+    }
+
+    func testUnsupportedFilesEmptyAndOversizedContentAreRejected() async throws {
+        let item = NSExtensionItem()
+        item.attachments = [NSItemProvider(object: URL(fileURLWithPath: "/private/document.txt") as NSURL)]
+        do { _ = try await ShareContentReader.read(items: [item]); XCTFail("File URL accepted") } catch {}
+        item.attachments = [NSItemProvider(object: String(repeating: "x", count: SharedRecipeInbox.maximumBytes + 1) as NSString)]
+        do { _ = try await ShareContentReader.read(items: [item]); XCTFail("Oversized text accepted") } catch {}
+        do { _ = try await ShareContentReader.read(items: []); XCTFail("Empty share accepted") } catch {}
+    }
+
     func testSharedDeliveryIsDurableAndMovesToPrivateReviewWithTheSameUUID() throws {
         let root = temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: root) }

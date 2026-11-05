@@ -72,6 +72,7 @@
 		6C29675E4C349C646888C167 = {isa = PBXBuildFile; fileRef = F67DFB456F6A8249DAD5A76E; };
 		E1C2DA951E94B8138F2043B3 = {isa = PBXBuildFile; fileRef = 36A3D38943C5F54A1425D10D; };
 		7F9A5CF7C1AAFF10F435EC76 = {isa = PBXBuildFile; fileRef = 421AA48C23D10F80D9E0E8E9; };
+		75347BB8C913D718AB086D37 = {isa = PBXBuildFile; fileRef = 8560D3114FB87F8C951F2748; };
 		F5E44CE258377592B9C1D601 = {isa = PBXBuildFile; fileRef = 5A623BDE0DCEB9B32FE7B6D7; };
 /* End PBXBuildFile section */
 
@@ -154,6 +155,7 @@
 		F67DFB456F6A8249DAD5A76E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTPublicTranscript.swift"; sourceTree = SOURCE_ROOT; };
 		36A3D38943C5F54A1425D10D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ChatGPTPublicTranscriptTests.swift"; sourceTree = SOURCE_ROOT; };
 		421AA48C23D10F80D9E0E8E9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliShared/SharedRecipeInbox.swift"; sourceTree = SOURCE_ROOT; };
+		8560D3114FB87F8C951F2748 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliShared/ShareContentReader.swift"; sourceTree = SOURCE_ROOT; };
 		5A623BDE0DCEB9B32FE7B6D7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ShareImportTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -278,7 +280,7 @@
 			sourceTree = "<group>";
 		};
 		2CC8C28B4BD522AC51076A16 = {isa = PBXGroup; children = (8A2EB81F58A140560B439AF7, 7B1CB0529C8999068D9159BE,); name = SazliLiveActivity; sourceTree = "<group>"; };
-		7A320AD629D54D7D14755914 = {isa = PBXGroup; children = (421AA48C23D10F80D9E0E8E9,); name = SazliShared; sourceTree = "<group>"; };
+		7A320AD629D54D7D14755914 = {isa = PBXGroup; children = (421AA48C23D10F80D9E0E8E9, 8560D3114FB87F8C951F2748,); name = SazliShared; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -383,6 +385,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7F9A5CF7C1AAFF10F435EC76,
+				75347BB8C913D718AB086D37,
 				3EAA22085DA8D991D0A989C8,
 				9092B6018EE8812F742609C4,
 				2BD8CA91E2AE06F1670D5309,
