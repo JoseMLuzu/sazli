@@ -85,6 +85,7 @@
 		59731672E4C25310B9738B3E = {isa = PBXBuildFile; fileRef = E49541EF7B167411448C3C07; };
 		440E58EA39B424AC712CCD0E = {isa = PBXBuildFile; fileRef = 39EAAB8A8C858663E8DF0102; };
 		9301F288B3B11AFC007BC8D4 = {isa = PBXBuildFile; fileRef = FA2E3C39FA8D4921A7539B00; };
+		7557E5D36A03C1F349AD7276 = {isa = PBXBuildFile; fileRef = 133024F475BE9D88AAD282D2; };
 		3CC6A954E270039BACF4F5CD = {isa = PBXBuildFile; fileRef = 588FFFBAC0CF09A96EE912AB; };
 		1B890DEB49ACB5E4226C33E8 = {isa = PBXBuildFile; fileRef = 76A004335D67F98C11A18D12; };
 /* End PBXBuildFile section */
@@ -180,6 +181,7 @@
 		E49541EF7B167411448C3C07 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CrossPlatformImportTests.swift"; sourceTree = SOURCE_ROOT; };
 		39EAAB8A8C858663E8DF0102 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeGroupedCaption.swift"; sourceTree = SOURCE_ROOT; };
 		FA2E3C39FA8D4921A7539B00 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeBulletedCaption.swift"; sourceTree = SOURCE_ROOT; };
+		133024F475BE9D88AAD282D2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/RecipeRobustnessTests.swift"; sourceTree = SOURCE_ROOT; };
 		588FFFBAC0CF09A96EE912AB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeMethodMarkers.swift"; sourceTree = SOURCE_ROOT; };
 		76A004335D67F98C11A18D12 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeIngredientMeasure.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -289,6 +291,7 @@
 		BFC937463906E5DB7A02A37C /* SazliTests */ = {
 			isa = PBXGroup;
 			children = (
+				133024F475BE9D88AAD282D2,
 				E49541EF7B167411448C3C07,
 				5A623BDE0DCEB9B32FE7B6D7,
 				27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */,
@@ -409,6 +412,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7557E5D36A03C1F349AD7276,
 				59731672E4C25310B9738B3E,
 				F5E44CE258377592B9C1D601,
 				24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */,
