@@ -26,14 +26,15 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 - A local cooking timer with editable minutes/seconds, pause/resume/cancel, saved state across app restarts, optional local notification alerts, and a Live Activity on Dynamic Island/Lock Screen when allowed by iOS. An active timer remains accessible from the library. See [cooking timer](docs/COOKING_TIMER.md).
 - An organized recipe detail with a photo, category/title/description, grouped preparation/serving information, ingredient list, compact numbered steps, rating/notes, and original source. Favorite is directly accessible; editing, rating, and confirmed deletion are in the options menu. Recipes without steps offer an action to complete them. Cooking ingredients can be checked off with a separate preparation-progress indicator.
 - Whole-recipe text/link import with English and Spanish section parsing and editable review before saving. The existing field-level paste tool also remains available.
-- Public TikTok video descriptions can populate explicit ingredients, steps, servings, and an available video cover; the original link is preserved. No audio/video transcription is used.
+- Public TikTok video descriptions can populate explicit ingredients, steps, servings, and an available video cover, from the library importer or Import recipe details under the editor’s Original source field; the original link is preserved. No audio/video transcription is used.
+- Public YouTube descriptions can populate explicitly labeled recipe sections, with optional thumbnails and a review notice for missing or mixed sections.
 - A local reader for supported public ChatGPT share pages, offering complete recipes and accessible cover photos for editable review without an API key or backend. Photo import is optional; unavailable images can be added from Photos.
 - A native **Import recipe** Shortcuts action for sharing text and URLs into Sazli, with a durable pending inbox. One-time share-sheet shortcut setup is described in [importing recipes](docs/IMPORTING.md).
 - Host-based detection for ChatGPT, YouTube, TikTok, and Facebook, with Web and Manual options. Original links remain editable and open in the system handler.
 - Adaptive warm colors, native typography and controls, Dynamic Type, accessibility labels, and persisted System/Light/Dark appearance settings.
 - A two-pane recipe book on the open iPhone Duo: browse the library on the left and read or edit the selected recipe on the right. Cooking uses balanced ingredient and step panels. Closing Duo keeps the selected recipe in a single-screen navigation flow.
 
-Supported public ChatGPT share pages can be read directly on the iPhone; the resulting recipes are reviewed before saving. Supported TikTok descriptions can also be read; YouTube, Facebook, and other links remain references. Video transcription and general webpage extraction are not included, and missing recipe content is never generated. There is no backend, account system, analytics, CloudKit sync, StoreKit, subscription, or Share Extension.
+Supported public ChatGPT share pages can be read directly on the iPhone; the resulting recipes are reviewed before saving. Supported TikTok and YouTube descriptions can also be read; Facebook and other links remain references. Video transcription and general webpage extraction are not included, and missing recipe content is never generated. There is no backend, account system, analytics, CloudKit sync, StoreKit, subscription, or Share Extension.
 
 ## Structure
 
@@ -112,3 +113,5 @@ python3 Scripts/generate_project.py
 ```
 
 The generator uses only the Python standard library and writes deterministic app, tests, embedded Live Activity target, and shared-scheme files. It resets generated target settings, so preserve custom signing/build settings for both app and extension before regenerating. Normal development does not require regeneration.
+
+See the [cross-platform import audit](docs/IMPORT_AUDIT.md) for public sample links, fixes, and verified limitations.

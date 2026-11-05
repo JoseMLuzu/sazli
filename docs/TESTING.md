@@ -79,3 +79,21 @@ The public `@thesimplecravings` video `7694085059602550030` writes `Ingredients 
 ### Caption format matrix
 
 See [TikTok caption format audit](TIKTOK_FORMAT_AUDIT.md) for six observed public captions and the before/after table for 22 constructed controls. `TikTokCaptionFormatTests.testCaptionFormatMatrix` executes the controls as named XCTest activities, checking exact ingredient/step arrays and description-only notes. Controls include Markdown/emoji headings, keycap numbers, ingredient/method bullets, Spanish aliases, macros/tips, hashtags, and deliberate partial/narrative descriptions. They complement the exact-caption regressions in TikTokRecipeTests and are not a statistical sample of TikTok.
+
+
+### Recover a TikTok description-only draft
+
+Create a test recipe containing the full taco mac caption and a trailing `Creator: alexis` in its description, with TikTok platform/source and empty ingredients/method. Open **Edit**: expect 9 ingredients, 7 steps, and a review notice, with hashtags/creator credit in the description. Cancel and reopen: the stored record must still contain the original text. Save the review and reopen: the same recipe UUID should now contain separate fields. Existing title, time, servings, photo, notes, and favorite must remain intact. Repeat with partially/manual-edited fields: recovery must not overwrite them.
+
+Two regression tests cover explicit-save/disk-reopen behavior and no-op preservation for manual, partial, already structured, and repeated recovery attempts. Live network diagnostics are run separately rather than adding a network-dependent test to the permanent suite.
+
+
+### Import directly from the source field
+
+In New recipe, paste the supplied Simple Cravings URL in **Original source**. Tap **Import recipe details** beneath the URL. Expect 9 ingredients and 7 steps in their respective fields, with a count/status message and an optional video cover. Save and reopen to verify persistence in the same recipe. Repeat in an existing recipe with a custom title/description/ingredient quantities/time/servings/photo: filled fields must retain those values, and only empty fields should receive source details. Cancel while reading, change the source URL during a request, and skip the cover; stale responses must not replace the current review. Two additional unit tests cover empty-field merging and default-versus-existing portions.
+
+## Cross-platform imports — November 4, 2026
+
+Run the full Sazli scheme on iPhone 17 Pro / iOS 26.5. The suite contains 66 tests, including YouTubeRecipeTests, RecipeImportRoutingTests, and ChatGPTPublicTranscriptTests. These cover URL variants and rejection, title/JSON escaping, Spanish servings/equipment, longer method headings, the word ingredients inside a cooking step, partial/mixed descriptions, source selection, recipe-text priority, public assistant visibility/completion, and cover association. Network-dependent diagnostics are separate and are not retained as permanent tests.
+
+For manual acceptance, use the public links in [IMPORT_AUDIT.md](IMPORT_AUDIT.md) through both library import and Original source → Import recipe details. Confirm notices survive into the editor; existing text and photos survive source imports; changing/canceling requests cannot apply stale results. Save only intentionally created test recipes, reopen offline, and check the same UUID/text/photo. Repeat through the configured share shortcut. Live fetches and parser tests do not replace interactive device acceptance.
