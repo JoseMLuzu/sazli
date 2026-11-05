@@ -30,7 +30,7 @@ enum RecipeImportParser {
         var ingredients: [String] = []
         var instructions: [String] = []
         var canUseTitle = true
-        for raw in text.components(separatedBy: .newlines) {
+        for raw in ingredientTables(in: text.components(separatedBy: .newlines)) {
             let line = raw.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !line.isEmpty else { continue }
             let clean = line.trimmingCharacters(in: CharacterSet(charactersIn: "#*_ "))
@@ -90,6 +90,61 @@ enum RecipeImportParser {
     private static func key(_ text: String) -> String {
         text.trimmingCharacters(in: CharacterSet(charactersIn: "#*_: "))
             .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+    }
+
+    /// Convert only tables with explicit ingredient/quantity column names inside Ingredients.
+    /// Unknown columns or malformed rows stay verbatim for review instead of dropping cells.
+    private static func ingredientTables(in lines: [String]) -> [String] {
+        var output: [String] = []
+        var inIngredients = false
+        var index = 0
+        while index < lines.count {
+            let line = lines[index]
+            let heading = key(String(line.split(separator: ":", maxSplits: 1).first ?? ""))
+            if ["ingredients", "ingredientes"].contains(heading) { inIngredients = true }
+            else if ["instructions", "method", "directions", "preparation", "steps", "preparacion", "pasos", "instrucciones", "notes", "notas"].contains(heading) {
+                inIngredients = false
+            }
+            let headers = tableCells(line).map(key)
+            let ingredient = headers.firstIndex { ["ingredient", "ingredients", "ingrediente", "ingredientes"].contains($0) }
+            let quantity = headers.firstIndex { ["quantity", "amount", "qty", "cantidad"].contains($0) }
+            let notes = headers.firstIndex { ["notes", "note", "notas", "nota"].contains($0) }
+            if inIngredients, (2...3).contains(headers.count), let ingredient, let quantity,
+               headers.count == (notes == nil ? 2 : 3), index + 1 < lines.count {
+                let separators = tableCells(lines[index + 1])
+                if separators.count == headers.count, separators.allSatisfy({
+                    $0.range(of: #"^:?-{3,}:?$"#, options: .regularExpression) != nil
+                }) {
+                    var rows: [String] = []
+                    var end = index + 2
+                    var valid = true
+                    while end < lines.count, lines[end].contains("|") {
+                        let cells = tableCells(lines[end])
+                        guard cells.count == headers.count, !cells[ingredient].isEmpty else { valid = false; break }
+                        var row = [cells[quantity], cells[ingredient]].filter { !$0.isEmpty }.joined(separator: " ")
+                        if let notes, !cells[notes].isEmpty { row += " — " + cells[notes] }
+                        rows.append(row)
+                        end += 1
+                    }
+                    if valid, !rows.isEmpty {
+                        output.append(contentsOf: rows)
+                        index = end
+                        continue
+                    }
+                }
+            }
+            output.append(line)
+            index += 1
+        }
+        return output
+    }
+
+    private static func tableCells(_ line: String) -> [String] {
+        guard line.contains("|"), !line.contains("\\|") else { return [] }
+        var value = line.trimmingCharacters(in: .whitespaces)
+        if value.hasPrefix("|") { value.removeFirst() }
+        if value.hasSuffix("|") { value.removeLast() }
+        return value.components(separatedBy: "|").map { $0.trimmingCharacters(in: .whitespaces) }
     }
 
     private static func item(_ line: String) -> String {
