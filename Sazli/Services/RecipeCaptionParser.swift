@@ -2,6 +2,7 @@ import Foundation
 
 /// Separates explicit caption sections without inferring missing recipe content.
 enum RecipeCaptionParser {
+    static let quantity = #"(?:\d+(?:[.,]\d+)?(?:[ \t]+(?:\d+[ \t]*/[ \t]*\d+|[¼½¾⅓⅔⅛⅜⅝⅞])|[ \t]*/[ \t]*\d+|[¼½¾⅓⅔⅛⅜⅝⅞])?|[¼½¾⅓⅔⅛⅜⅝⅞])"#
     static func parse(_ caption: String, title: String) throws -> RecipeDraft {
         guard caption.utf8.count <= RecipeImportParser.maximumBytes else { throw RecipeImportParser.ImportError.tooLarge }
         return try RecipeImportParser.parse(title + "\n" + normalize(caption))

@@ -81,6 +81,8 @@
 		87848E137CD0EB15ED4A77B4 = {isa = PBXBuildFile; fileRef = 8805A8A343CA59074841E51A; };
 		F5E44CE258377592B9C1D601 = {isa = PBXBuildFile; fileRef = 5A623BDE0DCEB9B32FE7B6D7; };
 		0016D185AB058B61DBE0285D = {isa = PBXBuildFile; fileRef = 1A1BEAD4A4FF3C17FFCF2420; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3CC6A954E270039BACF4F5CD = {isa = PBXBuildFile; fileRef = 588FFFBAC0CF09A96EE912AB; };
+		1B890DEB49ACB5E4226C33E8 = {isa = PBXBuildFile; fileRef = 76A004335D67F98C11A18D12; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +172,8 @@
 		9F7DD85CA81F9088B6F30EE3 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Sazli/App/Sazli.entitlements"; sourceTree = SOURCE_ROOT; };
 		5A623BDE0DCEB9B32FE7B6D7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ShareImportTests.swift"; sourceTree = SOURCE_ROOT; };
 		1A1BEAD4A4FF3C17FFCF2420 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SazliShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		588FFFBAC0CF09A96EE912AB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeMethodMarkers.swift"; sourceTree = SOURCE_ROOT; };
+		76A004335D67F98C11A18D12 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeIngredientMeasure.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -199,6 +203,8 @@
 		1BDBD24583AAF7F81F76B976 /* Sazli */ = {
 			isa = PBXGroup;
 			children = (
+				76A004335D67F98C11A18D12,
+				588FFFBAC0CF09A96EE912AB,
 				9F7DD85CA81F9088B6F30EE3,
 				0E3A2FC90D6D6385BFB53CED,
 				CA95E1378ACF961D452CB275,
@@ -407,6 +413,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B890DEB49ACB5E4226C33E8,
+				3CC6A954E270039BACF4F5CD,
 				7F9A5CF7C1AAFF10F435EC76,
 				75347BB8C913D718AB086D37,
 				3EAA22085DA8D991D0A989C8,
