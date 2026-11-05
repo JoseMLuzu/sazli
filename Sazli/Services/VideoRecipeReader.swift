@@ -9,10 +9,14 @@ struct VideoRecipeImport {
 
 enum VideoRecipeReader {
     static func platform(for url: URL) -> SourcePlatform {
-        SourceLink.youTubeVideoID(from: url.absoluteString) != nil ? .youtube : .tiktok
+        if SourceLink.instagramPostURL(from: url.absoluteString) != nil { return .instagram }
+        return SourceLink.youTubeVideoID(from: url.absoluteString) != nil ? .youtube : .tiktok
     }
 
     static func read(from url: URL) async throws -> VideoRecipeImport {
+        if SourceLink.instagramPostURL(from: url.absoluteString) != nil {
+            return try await InstagramRecipeDocument.read(from: url)
+        }
         if SourceLink.youTubeVideoID(from: url.absoluteString) != nil {
             return try await YouTubeRecipeDocument.read(from: url)
         }
