@@ -44,22 +44,30 @@ You can also paste a supported TikTok, YouTube, or public ChatGPT link into **Or
 
 For a TikTok recipe with a supported original video link, opening **Edit** also checks for explicit recipe sections when both ingredients and method are empty. If both sections can be recovered, the editor proposes them separately and shows a review notice. Creator credits remain in the description. The saved recipe changes only when you choose **Save**; canceling keeps the existing stored text. Personal title, time, servings, category, photo, notes, ratings, and favorites are preserved. Already structured or manually edited ingredient/method fields, incomplete captions, and non-TikTok drafts are left as entered. This recovery also applies to imported drafts presented to the editor.
 
-## Receive content from the iOS share sheet
+## Share directly from ChatGPT or another app
 
-The app exposes a native **Import recipe** App Intent. To use it from another app:
+1. In the source app, open the **system Share sheet**. ChatGPT may first show its own conversation-sharing menu; choose its system sharing action.
+2. Choose **Sazli**. If it is not visible, scroll the app row to **More** and enable/favorite Sazli.
+3. Review the received link/text preview and tap **Add to imports**, then **Done**.
+4. Open **Sazli**. The pending import opens for review using the matching public-link or text reader.
+5. Review ingredients, steps, source and photo, then tap **Save**.
 
-1. Open Apple's **Shortcuts** app and create **Send to Sazli**.
-2. Open the shortcut's Details and enable **Show in Share Sheet**.
-3. Configure the shortcut to accept **Text** and **URLs**.
-4. Add **Sazli → Import recipe**.
-5. Set its **Recipe text or link** parameter to **Shortcut Input**.
-6. Save. In another app's system share sheet, choose **Send to Sazli**.
+No Shortcuts setup, copied link, account connection, API key, or backend is needed for this path. The Share Extension receives only URL/text representations supplied by the source app. It does not receive the user's private account history or download video files. If ChatGPT supplies only a public conversation URL, the existing reader loads that public page in Sazli. A private, removed or unsupported link keeps the existing text/link fallback. Sharing a photo alone is not supported.
 
-Sazli opens with the received text ready to review. The shortcut is configured once on each device; it is not automatically installed by Sazli. Some apps first show their own sharing menu; use their system share option or copy the link instead. The action receives the data that the source app supplies, not access to the user's account.
+The extension saves a bounded, durable request locally in the App Group inbox. It does not insert a recipe or move the SwiftData library. Opening Sazli transfers the request into its existing private review inbox with the same UUID, keeping crash recovery and explicit save/discard behavior. Cancel before Add to imports stores nothing; after sending, the pending request remains until reviewed/saved or explicitly discarded in Sazli. Returning from a review without saving keeps the pending import.
 
-[Apple's App Intents documentation](https://developer.apple.com/documentation/appintents/appintent) describes exposing native actions to Shortcuts. [Apple's Shortcuts guide](https://support.apple.com/guide/shortcuts/launch-a-shortcut-from-another-app-apd163eb9f95/ios) describes running shortcuts from other apps.
+Apple's documented Share Extension API does not provide a supported way to force the containing app to launch. After sending, open Sazli to review. The extension intentionally uses no responder-chain or private-API launch workaround. See [Apple's extension overview](https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/ExtensionOverview.html) and [App Group configuration](https://developer.apple.com/documentation/xcode/configuring-app-groups).
 
-This implementation uses a foreground intent in the main app and a private inbox, with no Share Extension or App Group. It preserves the current development team's signing configuration and existing recipe store. The **Sazli** app does not automatically appear as its own share-extension tile: **Send to Sazli** appears as a shortcut after the setup above.
+### Optional Shortcuts alternative
+
+The native **Import recipe** App Intent remains available. To use it through a shortcut:
+
+1. Create **Send to Sazli** in Apple's Shortcuts app.
+2. Enable **Show in Share Sheet**, accepting **Text** and **URLs**.
+3. Add **Sazli → Import recipe**, with **Recipe text or link** set to **Shortcut Input**.
+4. Share through that shortcut. The foreground intent opens Sazli with the supplied content pending review.
+
+The shortcut is optional and is not installed automatically. It uses the existing private inbox; direct sharing uses the new Share Extension. Both paths converge on the same review/save workflow.
 
 ## Parsing and recovery
 
@@ -90,3 +98,7 @@ Supported HTTPS watch, youtu.be, Shorts, live, and embed URLs identify one video
 Explicit English/Spanish ingredient and method headings populate separate fields. Equipment, tips, and unrecognized text stay in the description. Missing methods remain empty. If an unlabeled ingredient section mixes several cooking directions, the original description remains available for manual organization. Partial/mixed results carry a notice into the review editor. No recipe is stored before Save.
 
 Bare supported links and short recognized share wrappers use the same router in the library and pending inbox. Complete pasted recipe text takes priority over a link inside it. Multiple links and unrecognized prose remain editable text instead of silently choosing a source. Public ChatGPT pages support both the legacy embedded reference table and the newer public mobile transcript; only complete visible assistant responses are candidates. See [audit results](IMPORT_AUDIT.md).
+
+### Punctuation and list variants
+
+The shared caption reader accepts supported English/Spanish heading aliases, Unicode spacing and common punctuation, sequential letter/parenthesized lists, and no-space markers. Qualified ingredients and decimal commas remain intact. Semicolons outside parentheses separate rows; ingredient commas separate only before another explicit numeric quantity. Comma-only word lists stay together for review. Exact simulated coverage and limits are recorded in [the combination audit](CAPTION_COMBINATION_AUDIT.md).

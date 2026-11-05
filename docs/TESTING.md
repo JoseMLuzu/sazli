@@ -105,3 +105,9 @@ See [CAPTION_COMBINATION_AUDIT.md](CAPTION_COMBINATION_AUDIT.md) for 1,363 const
 ## Recipe integrity regressions
 
 The 79-test suite additionally covers the exact Cajun TikTok caption (14 ingredients / 8 steps), spaced ranges with three dash forms, explicit-bullet numeric weight qualifiers, ChatGPT numbered Markdown step headings with continuation paragraphs, title preservation over five newline forms and three title decorations, and real ingredient rows with group-like prefixes. Test the Cajun short link from the library and Original source → Import recipe details. Check Parmesan's comma qualifier, the unquantified herbs/oil/seasoning rows, and the eight numbered actions. Source imports preserve existing fields; clear an intentionally incorrect manually filled field before reimporting, or review the original caption in the editor. No changes persist before Save.
+
+## Direct share-sheet acceptance
+
+On the destination iPhone, use ChatGPT's system Share sheet and choose Sazli (enable it in More if needed). Send a public conversation link, tap Add to imports/Done, then open Sazli and review/save. Repeat with selected recipe text and with a TikTok/YouTube URL. Test Sazli initially closed and already running; cancel before sending (no inbox entry), cancel recipe review after sending (pending retained), retry after reopening, and save once (no duplicate). Existing personal recipes and an already-open editor must remain intact. Images/files alone must not be offered as supported imports.
+
+ShareImportTests covers native NSURL/NSString providers, duplicate text, unsafe file URLs, empty/oversized data, durable handoff, interrupted-copy recovery with the same UUID, malformed shared files retaining private imports, capacity/backpressure, and filename identity validation. The permanent full suite has 86 tests. These provider/store tests do not certify ChatGPT's actual current share menu or replace interactive physical-device acceptance.

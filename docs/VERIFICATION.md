@@ -404,3 +404,23 @@ Full native suite: **79 passed, 0 failures** on iPhone 17 Pro / iOS 26.5, Xcode 
 A separate live native Foundation probe using the production TikTok reader successfully fetched the exact Cajun short link and verified 14 ingredients, 8 steps, the original source URL and `50g Parmesan, grated`. It uses a value-only draft projection and does not access the personal library. Log: `/private/tmp/sazli-cajun-live-audit.log`. The final signed iOS Release build passed, including the Live Activity extension (`/private/tmp/sazli-recipe-integrity-release.log`).
 
 Devicectl confirmed successful installation of the final signed update on the physical iPhone 15 with existing app data preserved. No public sample was saved or modified in the personal library. Source-field visual/save acceptance remains manual.
+
+## Native Share Extension — November 4, 2026
+
+Implemented SazliShareExtension with a native SwiftUI receiver, shared visual assets and explicit Add to imports / Done / Cancel behavior. It accepts source-supplied HTTP(S) links or recipe text, without fetching account/history data or inserting recipes inside the extension. SazliShared contains the typed NSItemProvider reader and durable App Group request store. RecipeImportInbox receives verified durable copies using the original UUID before acknowledging shared files. Existing SwiftData recipes remain in their original private store. App Group entitlements apply to the main app and share target only; the existing timer target/signing configuration is unchanged.
+
+Validation:
+
+- Full native XCTest on iPhone 17 Pro / iOS 26.5: **86 tests passed, 0 failures**. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_21-16-49--0500.xcresult`. ShareImportTests adds seven tests covering real typed NSURL/NSString providers, duplicate text, file/empty/oversized rejection, durable handoff/reopening, interrupted-copy verification, malformed shared files preserving private imports, capacity and identifier checks. Existing recipe parsing/save/reopen/timer tests passed.
+- The initial build found incorrect source-phase membership for the new shared files; it was corrected without regenerating the real project. A subsequent native provider test exposed NSURL's archived data representation, so the receiver now prefers typed URL/string object loading rather than assuming raw UTF-8. Temporary type-only diagnostics were removed. Earlier failed runs are not counted as passes.
+- Signed generic iOS Release build passed with both extensions. Automatic provisioning updates succeeded using the existing development team. The main app and embedded Share Extension signatures both contain `group.com.sazli.app.imports`; share-service metadata and codesign deep/strict verification passed. No credentials or signing keys were read/exported.
+- The project generator was updated for the shared files, App Group entitlement paths and four targets, then run in a separate temporary directory. Its generated plist and expected target/source membership validated; the actual project/team configuration was preserved.
+- Computer-use inspection of Device Hub returned `noWindowsAvailable`. The actual ChatGPT share menu, extension presentation and on-phone end-to-end save remain manual acceptance; passing provider tests and installed metadata do not certify that interaction.
+
+The supported flow is ChatGPT/system Share → Sazli → Add to imports → Done, then open Sazli to review/save. Apple documents containing-app URL opening for Today extensions, not arbitrary Share Extensions; no private selector/responder workaround is used. Sources: [extension overview](https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/ExtensionOverview.html), [App Groups](https://developer.apple.com/documentation/xcode/configuring-app-groups). No backend, API key, stored-recipe migration, commits or push.
+
+Logs: `/private/tmp/sazli-share-extension-tests-final.log` and `/private/tmp/sazli-share-extension-release-final.log`. The optional Shortcuts action remains available alongside direct sharing.
+
+Devicectl confirmed successful installation of the final signed app with the Share Extension on the physical iPhone 15. Existing app data was preserved and no shared test recipe was inserted into the personal library.
+
+The subsequent launch was denied because the iPhone was locked. Installation succeeded; open the updated app manually after unlocking.
