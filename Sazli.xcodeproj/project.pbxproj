@@ -63,6 +63,7 @@
 		9CFD11312100CA897D0B6661 = {isa = PBXBuildFile; fileRef = B1CCB9E01F570B08A7371C8E; };
 		74472460AED62B517DA02479 = {isa = PBXBuildFile; fileRef = C6ECFF927CB1D72D5BD7E906; };
 		309322C951767DA472D6DD5E = {isa = PBXBuildFile; fileRef = A05663585E308C2344521A96; };
+		C13BA2DB62BBCD870D1E11DC = {isa = PBXBuildFile; fileRef = A7C4262A0A12FDBD12753F58; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -135,6 +136,7 @@
 		B1CCB9E01F570B08A7371C8E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/TikTokRecipeTests.swift"; sourceTree = SOURCE_ROOT; };
 		C6ECFF927CB1D72D5BD7E906 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/TikTokCaptionParser.swift"; sourceTree = SOURCE_ROOT; };
 		A05663585E308C2344521A96 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/TikTokCaptionFormatTests.swift"; sourceTree = SOURCE_ROOT; };
+		A7C4262A0A12FDBD12753F58 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeCaptionParser.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -170,6 +172,7 @@
 				97B0E7682E6F97D15BFF183B,
 				37B714DBB6DC2E8E9B5F1FF9,
 				C6ECFF927CB1D72D5BD7E906,
+				A7C4262A0A12FDBD12753F58,
 				820C81D0F207F00CD9325BA4,
 				BEA91E8B1D60A9CF0B14C326,
 				1A6AC606AAFAB52BD1E0B3B4,
@@ -354,6 +357,7 @@
 				C6E65FAFC14F5772532E0CA4,
 				6FE13A6048626E8286FA83EC,
 				74472460AED62B517DA02479,
+				C13BA2DB62BBCD870D1E11DC,
 				38B4EBC4B5B71E178E2D6132,
 				5AFCA9A353FE33E65D5E2C6B,
 				13470A08DD8901C9C6310D72,
