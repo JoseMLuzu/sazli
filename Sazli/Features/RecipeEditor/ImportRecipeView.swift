@@ -52,7 +52,7 @@ struct ImportRecipeView: View {
                         ForEach(SourcePlatform.allCases) { Text($0.title).tag($0) }
                     }
                 } footer: {
-                    Text("Public ChatGPT shares and supported TikTok descriptions can be read on this iPhone. Other links remain references. Video transcription is not included.")
+                    Text("Public ChatGPT shares and supported TikTok/YouTube descriptions can be read on this iPhone. Other links remain references. Video transcription is not included.")
                 }
                 Section {
                     PrimaryButton(title: "Review recipe", symbol: "arrow.right") { prepareReview() }
@@ -111,20 +111,20 @@ struct ImportRecipeView: View {
                         savedID = recipe.id
                     }
                 case .chatGPT(let url):
-                    ChatGPTShareImportView(url: url, importIdentifier: request?.id) { recipe in
+                    ChatGPTShareImportView(url: url, importIdentifier: request?.id, onSave: { recipe in
                         savedID = recipe.id
-                    }
-                case .tikTok(let url):
-                    TikTokRecipeImportView(url: url, importIdentifier: request?.id) { recipe in
+                    })
+                case .video(let url):
+                    VideoRecipeImportView(url: url, importIdentifier: request?.id) { recipe in
                         savedID = recipe.id
                     }
                 }
             }
             .task {
-                if let request, let url = SourceLink.chatGPTShareURL(from: request.text) {
-                    review = ImportReview(content: .chatGPT(url))
-                } else if let request, let url = SourceLink.tikTokVideoURL(from: request.text) {
-                    review = ImportReview(content: .tikTok(url))
+                guard let request, let route = try? RecipeImportRouter.route(request.text) else { return }
+                switch route {
+                case .draft: break
+                default: review = ImportReview(content: route)
                 }
             }
         }
@@ -132,18 +132,8 @@ struct ImportRecipeView: View {
 
     private func prepareReview() {
         focused = false
-        if let url = SourceLink.chatGPTShareURL(from: text) {
-            review = ImportReview(content: .chatGPT(url))
-            return
-        }
-        if let url = SourceLink.tikTokVideoURL(from: text) {
-            review = ImportReview(content: .tikTok(url))
-            return
-        }
         do {
-            var draft = try RecipeImportParser.parse(text)
-            if draft.sourceURL.isEmpty { draft.sourcePlatform = platform }
-            review = ImportReview(content: .draft(draft))
+            review = ImportReview(content: try RecipeImportRouter.route(text, platform: platform))
         } catch { errorMessage = error.localizedDescription }
     }
 
@@ -156,10 +146,5 @@ struct ImportRecipeView: View {
 
 private struct ImportReview: Identifiable {
     let id = UUID()
-    let content: Content
-    enum Content {
-        case draft(RecipeDraft)
-        case chatGPT(URL)
-        case tikTok(URL)
-    }
+    let content: RecipeImportRoute
 }

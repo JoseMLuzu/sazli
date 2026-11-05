@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TikTokRecipeImportView: View {
+struct VideoRecipeImportView: View {
     @Environment(\.dismiss) private var dismiss
     let url: URL
     let importIdentifier: UUID?
@@ -11,16 +11,18 @@ struct TikTokRecipeImportView: View {
     @State private var reading = true
     @State private var useLinkOnly = false
     @State private var attempt = UUID()
-    @State private var imported: TikTokRecipeImport?
+    @State private var imported: VideoRecipeImport?
+
+    private var platform: SourcePlatform { VideoRecipeReader.platform(for: url) }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Label("From TikTok to your recipe book", systemImage: "text.book.closed")
+                    Label("From \(platform.title) to your recipe book", systemImage: "text.book.closed")
                         .font(.title3.weight(.semibold)).foregroundStyle(SazliTheme.terracotta)
                     if reading {
-                        ProgressView("Reading the video description…")
+                        ProgressView("Reading the public video description…")
                     } else if let errorMessage {
                         ContentUnavailableView {
                             Label("Couldn't read this video", systemImage: "link.badge.plus")
@@ -29,6 +31,7 @@ struct TikTokRecipeImportView: View {
                             Button("Paste the description instead") { dismiss() }
                         }
                     } else if let imported {
+                        if let notice = imported.notice { Text(notice).foregroundStyle(.secondary) }
                         Text(imported.draft.ingredients.isEmpty || imported.draft.instructions.isEmpty
                              ? "The description doesn't include a complete recipe. You can review the available text and fill in the rest."
                              : "The recipe in the description is ready to review.")
@@ -42,7 +45,7 @@ struct TikTokRecipeImportView: View {
                 }.padding(20).frame(maxWidth: 720).frame(maxWidth: .infinity)
             }
             .sazliScreen()
-            .navigationTitle("Import from TikTok")
+            .navigationTitle("Import from \(platform.title)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Close") { dismiss() } }
@@ -52,7 +55,7 @@ struct TikTokRecipeImportView: View {
                 reading = true
                 errorMessage = nil
                 do {
-                    let result = try await TikTokRecipeDocument.read(from: url)
+                    let result = try await VideoRecipeReader.read(from: url)
                     guard !Task.isCancelled else { return }
                     imported = result
                     reading = false
@@ -66,7 +69,8 @@ struct TikTokRecipeImportView: View {
             .sheet(item: $selected, onDismiss: finishIfSaved) { candidate in
                 RecipeEditorView(draft: candidate.draft, importIdentifier: importIdentifier,
                                  importPhotoURLs: useLinkOnly ? nil : candidate.photoURLs,
-                                 importPhotoSource: .tikTok) { savedRecipe = $0 }
+                                 importPhotoSource: imported?.photoSource ?? .tikTok,
+                                 importNotice: useLinkOnly ? nil : imported?.notice) { savedRecipe = $0 }
             }
         }
     }

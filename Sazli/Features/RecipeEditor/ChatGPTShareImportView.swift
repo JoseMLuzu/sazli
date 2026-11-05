@@ -4,7 +4,8 @@ struct ChatGPTShareImportView: View {
     @Environment(\.dismiss) private var dismiss
     let url: URL
     let importIdentifier: UUID?
-    let onSave: (Recipe) -> Void
+    private let onSave: ((Recipe) -> Void)?
+    private let onChoose: ((SharedRecipeCandidate) -> Void)?
     @State private var candidates: [SharedRecipeCandidate] = []
     @State private var selected: SharedRecipeCandidate?
     @State private var errorMessage: String?
@@ -12,6 +13,14 @@ struct ChatGPTShareImportView: View {
     @State private var readConversation = false
     @State private var savedRecipe: Recipe?
     @State private var attempt = UUID()
+
+    init(url: URL, importIdentifier: UUID?, onChoose: ((SharedRecipeCandidate) -> Void)? = nil,
+         onSave: ((Recipe) -> Void)? = nil) {
+        self.url = url
+        self.importIdentifier = importIdentifier
+        self.onChoose = onChoose
+        self.onSave = onSave
+    }
 
     var body: some View {
         NavigationStack {
@@ -44,12 +53,12 @@ struct ChatGPTShareImportView: View {
                         Text(candidates.count == 1 ? "Your recipe is ready to review." : "Choose a recipe to review. Follow-up advice has not been mixed into its cooking steps.")
                             .foregroundStyle(.secondary)
                         ForEach(candidates) { candidate in
-                            Button { selected = candidate } label: {
+                            Button { choose(candidate) } label: {
                                 VStack(alignment: .leading, spacing: 10) {
                                     Text(candidate.draft.title).font(.headline).foregroundStyle(.primary)
                                     Text("\(RecipeText.lines(in: candidate.draft.ingredients).count) ingredients · \(RecipeText.lines(in: candidate.draft.instructions).count) steps")
                                         .font(.subheadline).foregroundStyle(.secondary)
-                                    Label("Review recipe", systemImage: "arrow.right")
+                                    Label(onChoose == nil ? "Review recipe" : "Use this recipe", systemImage: "arrow.right")
                                         .font(.subheadline.weight(.semibold)).foregroundStyle(SazliTheme.terracotta)
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading).padding(20)
@@ -87,19 +96,26 @@ struct ChatGPTShareImportView: View {
             candidates = ChatGPTRecipeExtractor.recipes(inSharedMessages: messages, sourceURL: url)
             if candidates.isEmpty {
                 errorMessage = "No complete recipe with explicit ingredients and instructions was found. Import the recipe text, or keep this link to complete it later."
-            } else if candidates.count == 1 { selected = candidates[0] }
+            } else if candidates.count == 1 { choose(candidates[0]) }
         case .failure(let error): errorMessage = error.localizedDescription
         }
     }
 
     private func keepLink() {
         guard let draft = try? RecipeImportParser.parse(url.absoluteString) else { return }
-        selected = SharedRecipeCandidate(draft: draft)
+        choose(SharedRecipeCandidate(draft: draft))
+    }
+
+    private func choose(_ candidate: SharedRecipeCandidate) {
+        if let onChoose {
+            onChoose(candidate)
+            dismiss()
+        } else { selected = candidate }
     }
 
     private func finishIfSaved() {
         guard let savedRecipe else { return }
-        onSave(savedRecipe)
+        onSave?(savedRecipe)
         dismiss()
     }
 }

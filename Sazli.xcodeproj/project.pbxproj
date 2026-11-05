@@ -139,7 +139,7 @@
 		444E29ECDF97C7773F94C09B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/ChatGPTRecipePhoto.swift"; sourceTree = SOURCE_ROOT; };
 		A5E33B99E2048B8639E575B6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeRemotePhoto.swift"; sourceTree = SOURCE_ROOT; };
 		97B0E7682E6F97D15BFF183B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/TikTokRecipeDocument.swift"; sourceTree = SOURCE_ROOT; };
-		37B714DBB6DC2E8E9B5F1FF9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/RecipeEditor/TikTokRecipeImportView.swift"; sourceTree = SOURCE_ROOT; };
+		37B714DBB6DC2E8E9B5F1FF9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/RecipeEditor/VideoRecipeImportView.swift"; sourceTree = SOURCE_ROOT; };
 		B1CCB9E01F570B08A7371C8E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/TikTokRecipeTests.swift"; sourceTree = SOURCE_ROOT; };
 		C6ECFF927CB1D72D5BD7E906 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/TikTokCaptionParser.swift"; sourceTree = SOURCE_ROOT; };
 		A05663585E308C2344521A96 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/TikTokCaptionFormatTests.swift"; sourceTree = SOURCE_ROOT; };
