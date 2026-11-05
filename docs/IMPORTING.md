@@ -1,6 +1,6 @@
 # Importing recipes
 
-Sazli accepts recipe text and original links locally. Supported public ChatGPT share pages and TikTok/YouTube video descriptions can also be read directly on the iPhone. It does not connect to private accounts, transcribe videos, or extract arbitrary webpages. No API key or backend is required.
+Sazli accepts recipe text and original links locally. Supported public ChatGPT share pages and TikTok/YouTube/Instagram descriptions can also be read directly on the iPhone. It does not connect to private accounts, transcribe videos, or extract arbitrary webpages. No API key or backend is required.
 
 ## Paste from ChatGPT and other apps
 
@@ -10,7 +10,7 @@ Sazli accepts recipe text and original links locally. Supported public ChatGPT s
 4. Tap **Review recipe**. Check the name, ingredients, method, time, servings, source, and optional photo in the normal editor.
 5. Tap **Save**. The recipe is stored in the existing SwiftData library and opens in the detail pane.
 
-Copying the full ChatGPT recipe text imports its ingredients and steps when it has recognizable headings. A supported public ChatGPT share link starts the on-device reader described below. Private or unreadable links can still be kept as references. Supported TikTok and YouTube video links start a description reader. Facebook and other links are retained as references with empty ingredients and steps until you provide them. Photos can be added in the review editor.
+Copying the full ChatGPT recipe text imports its ingredients and steps when it has recognizable headings. A supported public ChatGPT share link starts the on-device reader described below. Private or unreadable links can still be kept as references. Supported TikTok, YouTube, and Instagram post links start a description reader. Facebook and other links are retained as references with empty ingredients and steps until you provide them. Photos can be added in the review editor.
 
 ## Read a public ChatGPT conversation
 
@@ -38,7 +38,7 @@ The editor attempts to import the public video cover through the shared bounded 
 
 ### Import from Original source while editing
 
-You can also paste a supported TikTok, YouTube, or public ChatGPT link into **Original source** in **New recipe** or **Edit recipe**, then tap **Import recipe details** directly below the link. This uses the corresponding public reader (with recipe selection for ChatGPT) and fills empty title, description, ingredient, method, and time fields in the current draft. Default portions can be filled for a new recipe; existing/edited portions are preserved. Existing text and photos remain in place. An available cover is attempted only when no photo has been chosen. The editor shows ingredient/step counts after reading; review the fields and choose **Save** to persist them. Changing the source link or dismissing the editor cancels pending results, and cover loading can be skipped. Pasting a link alone remains suitable for saving a reference without fetching details.
+You can also paste a supported TikTok, YouTube, Instagram, or public ChatGPT link into **Original source** in **New recipe** or **Edit recipe**, then tap **Import recipe details** directly below the link. This uses the corresponding public reader (with recipe selection for ChatGPT) and fills empty title, description, ingredient, method, and time fields in the current draft. Default portions can be filled for a new recipe; existing/edited portions are preserved. Existing text and photos remain in place. An available cover is attempted only when no photo has been chosen. The editor shows ingredient/step counts after reading; review the fields and choose **Save** to persist them. Changing the source link or dismissing the editor cancels pending results, and cover loading can be skipped. Pasting a link alone remains suitable for saving a reference without fetching details.
 
 ### Recover a recipe saved entirely in the description
 
@@ -75,7 +75,7 @@ The shortcut is optional and is not installed automatically. It uses the existin
 - Reads preparation time only when a supported minutes unit is explicit, and servings only when an explicit supported integer is supplied.
 - Keeps unrecognized content in the description. Without section headings, it does not guess which lines are ingredients or cooking steps.
 - Detects known platforms by host boundaries and retains the original HTTP(S) URL. Unknown hosts are Web; text without a link defaults to Manual.
-- Reads supported public ChatGPT share pages and TikTok/YouTube descriptions. Does not transcribe, infer quantities, generate recipes, or extract arbitrary websites.
+- Reads supported public ChatGPT share pages and TikTok/YouTube/Instagram descriptions. Does not transcribe, infer quantities, generate recipes, or extract arbitrary websites.
 - Limits each input to 200 KB and the pending inbox to 20 recipes.
 - Keeps shared text in atomic JSON files in the app's private Application Support directory until a recipe is successfully saved or the user explicitly discards the import. Closing a pending import keeps its original text, rather than saving changes made during review.
 - Uses the import UUID as the new recipe UUID, preventing a duplicate if the app stops between saving a recipe and acknowledging its inbox entry. Existing recipe edits are preserved on retry.
@@ -102,3 +102,11 @@ Bare supported links and short recognized share wrappers use the same router in 
 ### Punctuation and list variants
 
 The shared caption reader accepts supported English/Spanish heading aliases, Unicode spacing and common punctuation, sequential letter/parenthesized lists, and no-space markers. Qualified ingredients and decimal commas remain intact. Semicolons outside parentheses separate rows; ingredient commas separate only before another explicit numeric quantity. Comma-only word lists stay together for review. Exact simulated coverage and limits are recorded in [the combination audit](CAPTION_COMBINATION_AUDIT.md).
+
+## Instagram public captions
+
+Share a supported public Instagram post/Reel to Sazli or paste its link in Import recipe / Original source → Import recipe details. Sazli can read the exposed public caption and optional cover without signing in. Private, login-only, removed or unavailable pages cannot be read; keep the original link or paste the written caption instead. The shared caption parser recognizes supported sections, fractions, portion labels and ingredient tables. Empty fields remain editable and nothing is persisted before Save. A Reel's audio, on-screen text, comments and private feed are not accessed. Page metadata can change or be incomplete, so review the imported recipe. See [the latest audit](IMPORT_AUDIT.md).
+
+### Strong implicit recipe structure
+
+Supported captions can omit Ingredients when a quantity-led list and a complete consecutive method provide clear boundaries. Ordered methods can use numbers, parentheses, letters, keycaps or Step/Paso labels. An explicit Instructions heading may still be present. Bare metric equivalents and short preparation qualifiers stay attached to their ingredient; capitalization alone does not justify removing a food name. Public assistant messages can use the same supported implicit structures, without combining separate responses or guessing cover photos. Ambiguous or incomplete outlines remain editable. See [the robustness audit](ROBUSTNESS_AUDIT.md).

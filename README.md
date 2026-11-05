@@ -28,6 +28,7 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 - Whole-recipe text/link import with English and Spanish section parsing and editable review before saving. The existing field-level paste tool also remains available.
 - Public TikTok video descriptions can populate explicit ingredients, steps, servings, and an available video cover, from the library importer or Import recipe details under the editor’s Original source field; the original link is preserved. No audio/video transcription is used.
 - Public YouTube descriptions can populate explicitly labeled recipe sections, with optional thumbnails and a review notice for missing or mixed sections.
+- Public Instagram post/Reel captions can populate recipe sections with optional covers; unavailable/private pages offer editable link/text fallback.
 - A native **Sazli** Share Extension receives text and public links directly from the iOS share sheet. Open Sazli afterward to review; no shortcut setup is needed.
 - A local reader for supported public ChatGPT share pages, offering complete recipes and accessible cover photos for editable review without an API key or backend. Photo import is optional; unavailable images can be added from Photos.
 - A native **Import recipe** Shortcuts action for sharing text and URLs into Sazli, with a durable pending inbox. One-time share-sheet shortcut setup is described in [importing recipes](docs/IMPORTING.md).
@@ -35,7 +36,7 @@ The project targets **iOS 17.0**, uses **Swift 6**, and has no package dependenc
 - Adaptive warm colors, native typography and controls, Dynamic Type, accessibility labels, and persisted System/Light/Dark appearance settings.
 - A two-pane recipe book on the open iPhone Duo: browse the library on the left and read or edit the selected recipe on the right. Cooking uses balanced ingredient and step panels. Closing Duo keeps the selected recipe in a single-screen navigation flow.
 
-Supported public ChatGPT share pages can be read directly on the iPhone; the resulting recipes are reviewed before saving. Supported TikTok and YouTube descriptions can also be read; Facebook and other links remain references. Video transcription and general webpage extraction are not included, and missing recipe content is never generated. There is no backend, account system, analytics, CloudKit sync, StoreKit, or subscription.
+Supported public ChatGPT share pages can be read directly on the iPhone; the resulting recipes are reviewed before saving. Supported TikTok, YouTube, and Instagram descriptions can also be read; Facebook and other links remain references. Video transcription and general webpage extraction are not included, and missing recipe content is never generated. There is no backend, account system, analytics, CloudKit sync, StoreKit, or subscription.
 
 ## Structure
 
