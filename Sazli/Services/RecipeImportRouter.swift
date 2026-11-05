@@ -13,9 +13,11 @@ enum RecipeImportRouter {
         if let url = SourceLink.url(from: input) { return route(url, fallback: fallback) }
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         let firstLine = text.components(separatedBy: .newlines).first ?? ""
+        let startsWithList = firstLine.range(of: #"^[ \t]*[-*•◦▪✅–—]\uFE0F?(?:\s+|(?=\p{N}))"#,
+                                             options: .regularExpression) != nil
         let hasTitleLine = text.rangeOfCharacter(from: .newlines) != nil
             && firstLine.trimmingCharacters(in: CharacterSet(charactersIn: "#*_ ")) == fallback.title
-            && !RecipeCaptionParser.containsSectionHeading(firstLine)
+            && !startsWithList && !RecipeCaptionParser.containsSectionHeading(firstLine)
         let title = hasTitleLine ? fallback.title : "Imported recipe"
         let caption = hasTitleLine ? String(text.dropFirst(firstLine.count)).trimmingCharacters(in: .newlines) : text
         var structured = try RecipeCaptionParser.parse(caption, title: title)
@@ -44,7 +46,7 @@ enum RecipeImportRouter {
         let rest = text.replacingCharacters(in: range, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
         guard rest.count < 160 else { return nil }
         let prefix = rest.lowercased()
-        guard rest.isEmpty || ["watch", "check out", "mira", "mira este", "tiktok", "youtube", "chatgpt"]
+        guard rest.isEmpty || ["watch", "check out", "mira", "mira este", "tiktok", "youtube", "instagram", "chatgpt"]
             .contains(where: { prefix.hasPrefix($0) }) else { return nil }
         return url
     }
