@@ -424,3 +424,39 @@ Logs: `/private/tmp/sazli-share-extension-tests-final.log` and `/private/tmp/saz
 Devicectl confirmed successful installation of the final signed app with the Share Extension on the physical iPhone 15. Existing app data was preserved and no shared test recipe was inserted into the personal library.
 
 The subsequent launch was denied because the iPhone was locked. Installation succeeded; open the updated app manually after unlocking.
+
+## Instagram and additional format simulations — November 4, 2026
+
+Added the bounded public Instagram caption/cover reader and connected it to existing paste, share-inbox and source-field review. Added explicit ingredient-table handling, protected Notes columns, mixed/Unicode fractions, prefix portion metadata, ChatGPT emoji/alias headings, named Tip footers, and numbered-method sentence-dash preservation. See [the import audit](IMPORT_AUDIT.md) for five refreshed public links, snapshot-versus-live distinctions and limits.
+
+Final native suite: **90 passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_21-53-10--0500.xcresult`. Signed generic iOS Release build passed with both extensions; project plist validated. Public Instagram native carbonara request verified 5 ingredient rows / 4 author-numbered steps. The second captured public Instagram sample yielded 4/4; a third HTTP 200 page correctly remained unavailable. Refreshed TikTok/YouTube samples retained 14/8 and 25/33. Previously captured public ChatGPT mobile/legacy documents each still yielded two recipes; no new live browser run was claimed. Probes use value-only drafts and isolated source documents. No personal recipe database access, account connection, schema migration, commits or push. Interactive share/import/save acceptance remains manual.
+
+Devicectl confirmed successful installation of the final signed update on the physical iPhone 15. Existing app data was preserved; no public test recipe was inserted into the personal library. Interactive on-phone review/save for the new Instagram entry path remains manual acceptance.
+
+## Kookmutsjes Crunchwrap TikTok — November 4, 2026
+
+The supplied caption omitted an Ingredients heading and numbered method markers. Added conservative all-caps quantity-led group recognition, parenthetical-measure protection, sentence separation for this unnumbered method, and explicit group-heading display filtering. The exact source now produces 14 ingredients / 20 written method sentences. The new regression saves and reopens the recipe in an isolated SwiftData store, preserving fields/title/source; prose controls prevent single/unsupported group guesses. Source-field status uses the cleaned ingredient count.
+
+Final full native suite: **93 passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_22-14-00--0500.xcresult`. Live native public reader probe verified 14/20 and the exact original URL. Signed generic iOS Release build passed and project plist validated. Logs: `/private/tmp/sazli-crunchwrap-tests-persistence.log`, `/private/tmp/sazli-crunchwrap-live.log`, `/private/tmp/sazli-crunchwrap-release.log`. See [the audit](IMPORT_AUDIT.md). No personal data/database extraction or recipe insertion, migration, commits or push. Interactive source-field review/save is separate from the passing isolated persistence test.
+
+Devicectl confirmed installation of the final signed Crunchwrap fix on the physical iPhone 15, preserving existing app data. No test recipe was saved in the personal library.
+
+## Headerless lemon pasta TikTok — November 4, 2026
+
+The supplied Marisa Kapeal video has quantity-led asterisk ingredients and consecutive numbered steps, but omits Ingredients/Instructions labels. RecipeBulletedCaption now recognizes that explicit structure conservatively, keeps supported group labels as editable headings, and retains website notices as description text. Ingredient bullet handling also preserves metric equivalents separated by em/en dashes rather than creating extra food rows.
+
+Exact-caption verification: 25 ingredients / 7 authored steps, including complete metric equivalents, decimal grams, source URL and unguessed portion range. The regression saves and reopens the recipe in an isolated temporary SwiftData database. Full native suite: **96 passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_22-24-47--0500.xcresult`. Logs: `/private/tmp/sazli-lemon-pasta-{before,after}.log`. Existing Crunchwrap, Instagram, ChatGPT, share, timer and persistence regressions passed. See [the audit](IMPORT_AUDIT.md). No personal recipe insertion/extraction, schema migration, commits or push; interactive acceptance remains separate from the isolated save test.
+
+A separate live native public-reader probe verified the exact supplied lemon-pasta URL with 25 ingredient items, 7 steps, preserved original source and intact metric/decimal items (`/private/tmp/sazli-lemon-pasta-live.log`). The probe uses a value-only draft projection; the persistence regression uses the actual app model/services in a temporary store. Signed generic iOS Release build passed, including both extensions (`/private/tmp/sazli-lemon-pasta-release.log`); project plist validated.
+
+Devicectl confirmed successful installation of the final signed lemon-pasta fix on the physical iPhone 15, preserving existing app data. No test recipe was inserted into the personal library. Interactive on-phone review/Save remains manual acceptance.
+
+## Large recipe-structure simulation audit — November 4, 2026
+
+Added 6,674 new deterministic scenarios around the two recent TikTok failure families, including absent section labels, bullet/ordinal variants, equivalent measures, food names/qualifiers, explicit method-only headings, routing and public-assistant extraction. Fixed the failures exposed by the baseline and intermediate runs. See [ROBUSTNESS_AUDIT.md](ROBUSTNESS_AUDIT.md) for counts, concrete fixes and limits.
+
+Final full native suite: **104 passed, 0 failures**, iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.04_22-57-43--0500.xcresult`. Updated standalone persistence check passed create/reopen/edit/reopen/delete/reopen using a temporary store. Existing exact TikTok, ChatGPT, Instagram, YouTube, share-inbox and timer regressions passed. No personal data was accessed or rewritten; no model migration, backend, commits or push. Interactive acceptance remains separate from programmatic tests.
+
+The final signed generic iOS Release build passed with both extensions (`/private/tmp/sazli-robustness-round3-release-final.log`), and the Xcode project plist validated. A separate native Foundation replay of retained public documents preserved five TikTok outcomes (Crunchwrap 14/20, lemon pasta 25/7, Cajun 14/8, taco 9/7 and gnocchi 12/3) and two recipes each from retained public mobile/legacy ChatGPT transcripts. These were snapshot replays through current production parser sources with a value-only draft projection, not new network/browser requests or personal-library reads. Log: `/private/tmp/sazli-robustness-replay.log`.
+
+Devicectl confirmed successful installation of the final signed robustness update on the physical iPhone 15, preserving existing app data. No simulated recipe was inserted into the personal library. Interactive review/save remains a manual acceptance step.

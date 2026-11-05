@@ -111,3 +111,19 @@ The 79-test suite additionally covers the exact Cajun TikTok caption (14 ingredi
 On the destination iPhone, use ChatGPT's system Share sheet and choose Sazli (enable it in More if needed). Send a public conversation link, tap Add to imports/Done, then open Sazli and review/save. Repeat with selected recipe text and with a TikTok/YouTube URL. Test Sazli initially closed and already running; cancel before sending (no inbox entry), cancel recipe review after sending (pending retained), retry after reopening, and save once (no duplicate). Existing personal recipes and an already-open editor must remain intact. Images/files alone must not be offered as supported imports.
 
 ShareImportTests covers native NSURL/NSString providers, duplicate text, unsafe file URLs, empty/oversized data, durable handoff, interrupted-copy recovery with the same UUID, malformed shared files retaining private imports, capacity/backpressure, and filename identity validation. The permanent full suite has 86 tests. These provider/store tests do not certify ChatGPT's actual current share menu or replace interactive physical-device acceptance.
+
+## Instagram and cross-platform format controls
+
+The full suite now has 90 tests. CrossPlatformImportTests adds 21 synthetic document controls across TikTok/YouTube/Instagram, four ChatGPT heading/table variants, source/entity/identity checks and malformed/unsupported table controls. Check real Instagram sample outcomes in IMPORT_AUDIT.md. On the phone, try a public Instagram Reel through both direct sharing and Original source → Import recipe details; verify the source, optional cover, ingredient quantities and method counts before Save. Login/private/unavailable pages should offer fallback. Interactive device acceptance remains distinct from native provider/parser tests and Mac snapshot probes.
+
+## Recipes with all-caps ingredient groups
+
+The Kookmutsjes Crunchwrap URL in IMPORT_AUDIT.md should produce 14 checklist ingredient items and 20 written-sentence actions. Verify measures such as `1½ tbsp (25 ml)` and the separate tortilla/sauce/cheese rows. Group names stay in editable source text but are omitted from ingredient checklists/counts. Import through Original source → Import recipe details, review, Save, and reopen. If an older TikTok recipe has only the full caption in its description with both sections empty, Edit can propose the recovered sections; canceling must leave the stored recipe unchanged. The full suite now has 93 tests including exact-caption save/reopen in an isolated store and sentence-range/decimal controls.
+
+## Numbered recipes without section headings
+
+The Marisa Kapeal TikTok in IMPORT_AUDIT.md should populate 25 ingredient checklist rows and 7 original numbered actions. Verify pasta's `8–10 oz — 225–285 g` equivalent remains one item, decimal gram values are intact, title-case subgroup names are hidden from ingredient counts, and the website/bio notice belongs to the description. Reimport through the original source button or direct sharing, review, Save and reopen. The 96-test suite includes exact-caption isolated disk persistence, four bullet-marker controls and deliberately non-recipe prose.
+
+## Large structural robustness matrices
+
+See [ROBUSTNESS_AUDIT.md](ROBUSTNESS_AUDIT.md) for 6,674 additional deterministic scenarios and exact counts. RecipeRobustnessTests exercises headerless/grouped formats, quantities, delimiters, equivalents, food-name preservation, false-positive controls, first-line routing and implicit public-assistant structures. CrossPlatformImportTests repeats ordered formats through all three public description adapters. The full suite now has 104 tests; scenario counts are not method counts. The standalone persistence script includes current parser dependencies and passed its six isolated store phases.
