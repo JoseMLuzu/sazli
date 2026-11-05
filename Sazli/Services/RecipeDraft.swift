@@ -27,6 +27,43 @@ struct RecipeDraft: Equatable {
         sourcePlatform = recipe.platform
     }
 
+    /// Repairs older/incomplete TikTok drafts for review. The stored model changes only on Save.
+    @discardableResult
+    mutating func recoverTikTokSectionsIfNeeded() -> Bool {
+        guard sourcePlatform == .tiktok,
+              SourceLink.tikTokVideoURL(from: sourceURL) != nil,
+              ingredients.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              instructions.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        var lines = description.components(separatedBy: .newlines)
+        var credits: [String] = []
+        while let last = lines.last {
+            let line = last.trimmingCharacters(in: .whitespacesAndNewlines)
+            if line.isEmpty { lines.removeLast() }
+            else if line.hasPrefix("Creator: ") {
+                credits.insert(line, at: 0)
+                lines.removeLast()
+            } else { break }
+        }
+        guard let recovered = try? TikTokCaptionParser.parse(lines.joined(separator: "\n")),
+              !recovered.ingredients.isEmpty, !recovered.instructions.isEmpty else { return false }
+        ingredients = recovered.ingredients
+        instructions = recovered.instructions
+        description = ([recovered.description] + credits)
+            .filter { !$0.isEmpty }.joined(separator: "\n\n")
+        return true
+    }
+
+    /// Source imports fill the current review without overwriting the user's existing text.
+    mutating func fillEmptyDetails(from imported: RecipeDraft, useDefaultServings: Bool = false) {
+        func isBlank(_ text: String) -> Bool { text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        if isBlank(title) { title = imported.title }
+        if isBlank(description) { description = imported.description }
+        if isBlank(ingredients) { ingredients = imported.ingredients }
+        if isBlank(instructions) { instructions = imported.instructions }
+        if isBlank(preparationTime) { preparationTime = imported.preparationTime }
+        if isBlank(servings) || (useDefaultServings && servings == "1") { servings = imported.servings }
+    }
+
     var validationMessage: String? {
         if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return "Give your recipe a name before saving."
