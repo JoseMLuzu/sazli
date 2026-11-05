@@ -82,6 +82,7 @@
 		F5E44CE258377592B9C1D601 = {isa = PBXBuildFile; fileRef = 5A623BDE0DCEB9B32FE7B6D7; };
 		0016D185AB058B61DBE0285D = {isa = PBXBuildFile; fileRef = 1A1BEAD4A4FF3C17FFCF2420; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2537631F0EAA0694418347A9 = {isa = PBXBuildFile; fileRef = C1373DF6872C6B3A3E3DA08D; };
+		59731672E4C25310B9738B3E = {isa = PBXBuildFile; fileRef = E49541EF7B167411448C3C07; };
 		440E58EA39B424AC712CCD0E = {isa = PBXBuildFile; fileRef = 39EAAB8A8C858663E8DF0102; };
 		9301F288B3B11AFC007BC8D4 = {isa = PBXBuildFile; fileRef = FA2E3C39FA8D4921A7539B00; };
 		3CC6A954E270039BACF4F5CD = {isa = PBXBuildFile; fileRef = 588FFFBAC0CF09A96EE912AB; };
@@ -176,6 +177,7 @@
 		5A623BDE0DCEB9B32FE7B6D7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/ShareImportTests.swift"; sourceTree = SOURCE_ROOT; };
 		1A1BEAD4A4FF3C17FFCF2420 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = SazliShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1373DF6872C6B3A3E3DA08D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/InstagramRecipeDocument.swift"; sourceTree = SOURCE_ROOT; };
+		E49541EF7B167411448C3C07 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CrossPlatformImportTests.swift"; sourceTree = SOURCE_ROOT; };
 		39EAAB8A8C858663E8DF0102 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeGroupedCaption.swift"; sourceTree = SOURCE_ROOT; };
 		FA2E3C39FA8D4921A7539B00 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeBulletedCaption.swift"; sourceTree = SOURCE_ROOT; };
 		588FFFBAC0CF09A96EE912AB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeMethodMarkers.swift"; sourceTree = SOURCE_ROOT; };
@@ -287,6 +289,7 @@
 		BFC937463906E5DB7A02A37C /* SazliTests */ = {
 			isa = PBXGroup;
 			children = (
+				E49541EF7B167411448C3C07,
 				5A623BDE0DCEB9B32FE7B6D7,
 				27C67EED75DD86763E213FA8 /* SazliTests/CookingTimerTests.swift */,
 				B1CCB9E01F570B08A7371C8E,
@@ -406,6 +409,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59731672E4C25310B9738B3E,
 				F5E44CE258377592B9C1D601,
 				24241D23C84FA610A7D1C017 /* SazliTests/CookingTimerTests.swift in Sources */,
 				9CFD11312100CA897D0B6661,
