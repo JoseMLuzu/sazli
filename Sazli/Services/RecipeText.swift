@@ -24,6 +24,7 @@ enum RecipeText {
         let trailing = CharacterSet.whitespacesAndNewlines
             .union(CharacterSet(charactersIn: ":：,，.。;；!?！？…"))
         return lines(in: text).compactMap { line in
+            if line.range(of: #"^#{1,6}[ \t]+"#, options: .regularExpression) != nil { return nil }
             var cleaned = line
             while let last = cleaned.unicodeScalars.last, trailing.contains(last) {
                 cleaned.removeLast()

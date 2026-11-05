@@ -13,12 +13,8 @@ enum RecipeCaptionParser {
         return ["Ingredients", "Instructions", "Notes"].contains { normalized.contains("\n" + $0 + ":\n") }
     }
 
-    static func containsIngredientHeading(_ text: String) -> Bool {
-        normalize(text).contains("\nIngredients:\n")
-    }
-
-    private static func normalize(_ caption: String) -> String {
-        var text = caption.replacingOccurrences(of: "\r\n", with: "\n")
+    private static func normalizedSpacing(_ caption: String) -> String {
+        return caption.replacingOccurrences(of: "\r\n", with: "\n")
             .replacingOccurrences(of: "\r", with: "\n")
             .replacingOccurrences(of: "\u{2028}", with: "\n")
             .replacingOccurrences(of: "\u{2029}", with: "\n")
@@ -30,12 +26,37 @@ enum RecipeCaptionParser {
             .replacingOccurrences(of: "__", with: "")
             .replacingOccurrences(of: #"\p{Zs}"#, with: " ", options: .regularExpression)
             .precomposedStringWithCanonicalMapping
+    }
+
+    static func containsIngredientHeading(_ text: String) -> Bool {
+        normalize(text).contains("\nIngredients:\n")
+    }
+
+    static func implicitDraft(_ text: String, title: String) -> RecipeDraft? {
+        guard text.utf8.count <= RecipeImportParser.maximumBytes else { return nil }
+        let cleaned = normalizedSpacing(text)
+        let methodPattern = #"\b(?i:instructions|method|directions|instrucciones|preparaci[oó]n|procedimiento)(?:[ \t]*[:：]|[ \t\n]+(?=\p{Lu}))"#
+        guard let headings = try? NSRegularExpression(pattern: methodPattern),
+              headings.numberOfMatches(in: cleaned, range: NSRange(cleaned.startIndex..., in: cleaned)) <= 1,
+              RecipeGroupedCaption.normalized(cleaned, quantity: quantity) != nil,
+              let draft = try? parse(cleaned, title: title),
+              !draft.ingredients.isEmpty, !draft.instructions.isEmpty else { return nil }
+        return draft
+    }
+
+    private static func normalize(_ caption: String) -> String {
+        var text = normalizedSpacing(caption)
         text = normalizeGroupedHeadings(text)
+        let grouped = RecipeGroupedCaption.normalized(text, quantity: quantity)
+        if let grouped { text = grouped }
         // Decorations belong to the heading, not the preceding ingredient or step.
         let decoration = #"(?:#{1,6}[ \t]*)?(?:[\p{So}\uFE0F\u200D]+[ \t]*)?\b"#
         // Without a colon, require a list marker or a standalone heading line.
         let headingEnd = #"[ \t]*(?:[:：;|=–—-]+|\.{2,3}|(?=[ \t]*(?:[-*•◦▪✅]\uFE0F?(?:\s+|(?=[\p{L}\p{N}]))|[0-9]\uFE0F?\u20E3|(?:\d+[.)]|[a-z]\)|\(\d+\))(?:\s+|(?=\p{L}))|\d+[-–]\s+|\n|$)))"#
         let ingredientHeading = #"(?:ingredient list|lista de ingredientes|lo que necesitas|what you['’]ll need|ingredients|ingredientes)"#
+        text = text.replacingOccurrences(
+            of: "(" + ingredientHeading + #")[ \t]*\([ \t]*(?:serves|servings|porciones|raciones)[ \t]*[:=]?[ \t]*(\d{1,3}(?:[ \t]*[-–][ \t]*\d{1,3})?)[ \t]*\)"#,
+            with: "$1 ($2 servings)", options: [.regularExpression, .caseInsensitive])
         let portions = #"[ \t]*\([ \t]*(\d{1,3})(?:[ \t]*[-–][ \t]*\d{1,3})?[ \t]+(?:personas?|servings?|porciones|raciones)[ \t]*\)"#
         if let expression = try? NSRegularExpression(pattern: ingredientHeading + portions, options: .caseInsensitive),
            let match = expression.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
@@ -61,16 +82,15 @@ enum RecipeCaptionParser {
         if !text.contains("\nIngredients:\n"), let method = text.range(of: "\nInstructions:\n") {
             let prefix = String(text[..<method.lowerBound])
             let normalized = replacingFirst(in: prefix,
-                pattern: decoration + ingredientHeading + #"[ \t]+(?=\d+(?:[.,]\d+)?[ \t]*\p{L})"#,
+                pattern: decoration + ingredientHeading + "[ \\t]+(?=" + quantity + #"[ \t]*\p{L})"#,
                 with: "\nIngredients:\n")
             if normalized != prefix {
                 text.replaceSubrange(text.startIndex..<method.lowerBound, with: normalized)
                 hasQuantifiedHeading = true
             }
         }
-        text = text.replacingOccurrences(
-            of: decoration + #"(?:per serving|nutrition(?: per serving)?|macros(?: per serving)?|notes|tips?|por porci[oó]n|notas?|consejos|nutrici[oó]n|informaci[oó]n nutricional|utensilios|utensils|equipment|kitchen tools)"# + headingEnd,
-            with: "\nNotes:\n", options: [.regularExpression, .caseInsensitive])
+        text = normalizeFooters(text,
+            pattern: decoration + #"(?:per serving|nutrition(?: per serving)?|macros(?: per serving)?|notes|(?:(?:[\p{L}]+['’]s[ \t]+)?top[ \t]+)?tips?|por porci[oó]n|notas?|consejos|nutrici[oó]n|informaci[oó]n nutricional|utensilios|utensils|equipment|kitchen tools)"# + headingEnd)
         if let tags = text.range(
             of: #"\s+(#[\p{L}\p{N}_]+(?:\s+#[\p{L}\p{N}_]+)*(?:\s+[\p{So}\p{P}\uFE0F\u200D]+)*\s*)$"#,
             options: .regularExpression) {
@@ -79,7 +99,8 @@ enum RecipeCaptionParser {
         }
         text = normalizeList(text, heading: "Ingredients", stoppingAt: ["Instructions", "Notes"], isMethod: false,
                              splitQuantities: hasQuantifiedHeading)
-        return normalizeList(text, heading: "Instructions", stoppingAt: ["Notes"], isMethod: true)
+        return normalizeList(text, heading: "Instructions", stoppingAt: ["Notes"], isMethod: true,
+                             splitSentences: grouped != nil)
     }
 
     private static func replacingFirst(in text: String, pattern: String, with replacement: String) -> String {
@@ -87,6 +108,23 @@ enum RecipeCaptionParser {
               let match = expression.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
               let range = Range(match.range, in: text) else { return text }
         return text.replacingCharacters(in: range, with: replacement)
+    }
+
+    private static func normalizeFooters(_ text: String, pattern: String) -> String {
+        let lines = text.components(separatedBy: "\n")
+        var inTable = false
+        return lines.indices.map { index in
+            let line = lines[index]
+            if !inTable, line.contains("|"), index + 1 < lines.count {
+                let cells = lines[index + 1].split(separator: "|").map { $0.trimmingCharacters(in: .whitespaces) }
+                inTable = cells.count >= 2 && cells.allSatisfy {
+                    $0.range(of: #"^:?-{3,}:?$"#, options: .regularExpression) != nil
+                }
+            }
+            if inTable, line.contains("|") { return line }
+            inTable = false
+            return line.replacingOccurrences(of: pattern, with: "\nNotes:\n", options: [.regularExpression, .caseInsensitive])
+        }.joined(separator: "\n")
     }
 
     /// A flattened caption may put a short group name between both section headings and their lists.
@@ -109,40 +147,76 @@ enum RecipeCaptionParser {
     }
 
     private static func normalizeList(_ text: String, heading: String, stoppingAt boundaries: [String], isMethod: Bool,
-                                      splitQuantities: Bool = false) -> String {
+                                      splitQuantities: Bool = false, splitSentences: Bool = false) -> String {
         guard let headingRange = text.range(of: heading + ":\n") else { return text }
         let tail = text[headingRange.upperBound...]
         let end = boundaries.compactMap { tail.range(of: "\n" + $0 + ":")?.lowerBound }.min() ?? text.endIndex
         var list = String(text[headingRange.upperBound..<end])
+        if splitSentences { list = RecipeGroupedCaption.methodLines(list) }
+        if isMethod, let ordered = RecipeMethodMarkers.canonicalized(list) { list = ordered }
         if splitQuantities { list = splitFlattenedQuantities(list) }
         // These explicit group labels precede a bullet; quantities and prose are left untouched.
-        let groups = #"(?<!\S)(Sauce & Pasta|Chicken|Pasta|Garnish|Sauce|Pollo|Salsa|Guarnici[oó]n)[ \t]+[-*•◦▪✅]\uFE0F?\s*"#
-        list = list.replacingOccurrences(of: groups,
-            with: isMethod ? "\n- $1: " : "\n$1:\n- ", options: .regularExpression)
+        list = normalizeGroupLabels(list, isMethod: isMethod)
         list = list.replacingOccurrences(of: #"(?:\s+[•◦▪]){2,}\s*$"#, with: "", options: .regularExpression)
         if isMethod {
             list = list.replacingOccurrences(of: #"([0-9])\uFE0F?\u20E3"#, with: "\n$1. ", options: .regularExpression)
         }
+        let orderedItems = !RecipeMethodMarkers.candidates(in: list).isEmpty || list.range(
+            of: #"^\s*(?:\d+[.)]|[a-z]\)|\(\d+\))(?:\s+|(?=\p{L}))"#,
+            options: [.regularExpression, .caseInsensitive]) != nil
+        let nonDashBullets = list.range(of: #"(?<!\S)[*•◦▪✅]\uFE0F?\s+"#,
+                                       options: .regularExpression) != nil
+        let hyphenBullets = list.range(of: #"^\s*-\s+"#, options: .regularExpression) != nil
         list = normalizeSequentialMarkers(list, pattern: #"(?<!\S)([a-z])\)(?:[ \t]+|(?=\p{L}))"#, expected: Array("abcdefghijklmnopqrstuvwxyz").map(String.init))
         list = normalizeSequentialMarkers(list, pattern: #"(?<!\S)\((\d{1,2})\)(?:[ \t]+|(?=\p{L}))"#, expected: (1...99).map(String.init))
         list = normalizeSequentialMarkers(list, pattern: #"(?<!\S)(\d{1,2})[-–][ \t]+"#, expected: (1...99).map(String.init))
         let explicitItems = list.range(of: #"(?<!\S)(?:[*•◦▪✅–—-]\s*|\d+[.)]\s+)"#,
                                        options: .regularExpression) != nil
         list = separatePunctuation(list, isMethod: isMethod || explicitItems)
-        list = normalizeBullets(list)
+        list = normalizeBullets(list, preserveDashes: orderedItems || nonDashBullets,
+                                preserveUnicodeDashes: hyphenBullets)
             .replacingOccurrences(of: #"(?<![\d.])(\d{1,2})[.)](?:\s+|(?=\p{L}))"#, with: "\n$1. ", options: .regularExpression)
         var result = text
         result.replaceSubrange(headingRange.upperBound..<end, with: list)
         return result
     }
 
-    private static func splitFlattenedQuantities(_ text: String) -> String {
+    private static func normalizeGroupLabels(_ text: String, isMethod: Bool) -> String {
+        guard let expression = try? NSRegularExpression(
+            pattern: #"(?<!\S)(Sauce & Pasta|Chicken|Pasta|Garnish|Sauce|Pollo|Salsa|Guarnici[oó]n)[ \t]+[-*•◦▪✅]\uFE0F?\s*"#) else { return text }
+        var result = text
+        for match in expression.matches(in: text, range: NSRange(text.startIndex..., in: text)).reversed() {
+            guard let original = Range(match.range, in: text), let name = Range(match.range(at: 1), in: text),
+                  let range = Range(match.range, in: result) else { continue }
+            let prefix = text[..<original.lowerBound].split(separator: "\n", omittingEmptySubsequences: false).last?
+                .trimmingCharacters(in: .whitespaces) ?? ""
+            guard prefix.isEmpty || prefix.lowercased().hasSuffix("(for cooking)")
+                    || prefix.lowercased().hasSuffix("(para cocinar)") || (isMethod && prefix.hasSuffix("."))
+                    || (!isMethod && prefix.hasSuffix("to taste")) else { continue }
+            let title = String(text[name])
+            result.replaceSubrange(range, with: isMethod ? "\n- \(title): " : "\n\(title):\n- ")
+        }
+        return result
+    }
+
+    static func splitFlattenedQuantities(_ text: String) -> String {
         let blocks = text.replacingOccurrences(of: #"[ \t]{2,}"#, with: "\n", options: .regularExpression)
         guard let expression = try? NSRegularExpression(
-            pattern: #"(?<![\p{L}\p{N}.,/])\d+(?:[.,]\d+)?(?:[ \t]*/[ \t]*\d+)?(?=[ \t]*\p{L})"#) else { return text }
+            pattern: #"(?<![\p{L}\p{N}.,/])"# + quantity + #"(?=[ \t]*\p{L})"#) else { return text }
         return blocks.components(separatedBy: .newlines).map { block in
             let line = block.trimmingCharacters(in: .whitespaces)
-            let matches = expression.matches(in: line, range: NSRange(line.startIndex..., in: line))
+            let allMatches = expression.matches(in: line, range: NSRange(line.startIndex..., in: line))
+            let positions = Set(allMatches.map { $0.range.location })
+            var topLevel = Set<Int>()
+            var depth = 0
+            var offset = 0
+            for scalar in line.unicodeScalars {
+                if depth == 0, positions.contains(offset) { topLevel.insert(offset) }
+                if scalar == "(" || scalar == "[" { depth += 1 }
+                if scalar == ")" || scalar == "]" { depth = max(0, depth - 1) }
+                offset += scalar.value > 0xFFFF ? 2 : 1
+            }
+            let matches = allMatches.filter { topLevel.contains($0.range.location) }
             guard matches.count > 1, matches.first?.range.location == 0 else { return line }
             var result = line
             for match in matches.dropFirst().reversed() {
@@ -154,13 +228,20 @@ enum RecipeCaptionParser {
         }.joined(separator: "\n")
     }
 
-    private static func normalizeBullets(_ text: String) -> String {
+    private static func normalizeBullets(_ text: String, preserveDashes: Bool, preserveUnicodeDashes: Bool) -> String {
         guard let expression = try? NSRegularExpression(
             pattern: #"(?<!\S)(?:[*•◦▪✅]\uFE0F?(?:\s+|(?=[\p{L}\p{N}]))|[-–—](?:\s+|(?=\p{L})))"#) else { return text }
         var result = text
-        for match in expression.matches(in: text, range: NSRange(text.startIndex..., in: text)).reversed() {
+        let matches = expression.matches(in: text, range: NSRange(text.startIndex..., in: text))
+        for (index, match) in matches.enumerated().reversed() {
             guard let range = Range(match.range, in: result) else { continue }
             if "-–—".contains(result[range.lowerBound]) {
+                if let original = Range(match.range, in: text) {
+                    let end = index + 1 < matches.count ? Range(matches[index + 1].range, in: text)?.lowerBound : text.endIndex
+                    if let end, !text[..<original.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                       RecipeIngredientMeasure.isContinuation(String(text[original.upperBound..<end])) { continue }
+                }
+                if preserveDashes || (preserveUnicodeDashes && result[range.lowerBound] != "-") { continue }
                 var preceding: Character?
                 for character in result[..<range.lowerBound].reversed() {
                     if character == "\n" { break }
