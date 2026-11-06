@@ -88,6 +88,12 @@
 		7557E5D36A03C1F349AD7276 = {isa = PBXBuildFile; fileRef = 133024F475BE9D88AAD282D2; };
 		3CC6A954E270039BACF4F5CD = {isa = PBXBuildFile; fileRef = 588FFFBAC0CF09A96EE912AB; };
 		1B890DEB49ACB5E4226C33E8 = {isa = PBXBuildFile; fileRef = 76A004335D67F98C11A18D12; };
+		47017AE19F2F989C560662B2 = {isa = PBXBuildFile; fileRef = 347BD2888C8F454EFA459BA5; };
+		7D1C23EE5CD59AD8653EB3DE = {isa = PBXBuildFile; fileRef = 5E1784776FB821E175A641DE; };
+		5A8B648FD186D52C3FBD9DEA = {isa = PBXBuildFile; fileRef = 5B2141ADD8538120D05FE74C; };
+		A8A6ED35E3692DE0E9A5059E = {isa = PBXBuildFile; fileRef = C9C66E4558B7614DA816C555; };
+		6D9F8396681011CB3B56EF2B = {isa = PBXBuildFile; fileRef = 650E1A8C2905912EFBD1FA6A; };
+		444FD5E9F193ABDA111C3DBC = {isa = PBXBuildFile; fileRef = 38B6BA11BA8CC92717CC8402; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,6 +190,12 @@
 		133024F475BE9D88AAD282D2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/RecipeRobustnessTests.swift"; sourceTree = SOURCE_ROOT; };
 		588FFFBAC0CF09A96EE912AB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeMethodMarkers.swift"; sourceTree = SOURCE_ROOT; };
 		76A004335D67F98C11A18D12 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/RecipeIngredientMeasure.swift"; sourceTree = SOURCE_ROOT; };
+		347BD2888C8F454EFA459BA5 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingVoiceCommand.swift"; sourceTree = SOURCE_ROOT; };
+		5E1784776FB821E175A641DE = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingSpeechOutput.swift"; sourceTree = SOURCE_ROOT; };
+		5B2141ADD8538120D05FE74C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingCommandListener.swift"; sourceTree = SOURCE_ROOT; };
+		C9C66E4558B7614DA816C555 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Services/CookingVoiceController.swift"; sourceTree = SOURCE_ROOT; };
+		650E1A8C2905912EFBD1FA6A = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sazli/Features/CookingMode/CookingVoiceControls.swift"; sourceTree = SOURCE_ROOT; };
+		38B6BA11BA8CC92717CC8402 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SazliTests/CookingVoiceTests.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -213,6 +225,11 @@
 		1BDBD24583AAF7F81F76B976 /* Sazli */ = {
 			isa = PBXGroup;
 			children = (
+				650E1A8C2905912EFBD1FA6A,
+				C9C66E4558B7614DA816C555,
+				5B2141ADD8538120D05FE74C,
+				5E1784776FB821E175A641DE,
+				347BD2888C8F454EFA459BA5,
 				76A004335D67F98C11A18D12,
 				588FFFBAC0CF09A96EE912AB,
 				FA2E3C39FA8D4921A7539B00,
@@ -291,6 +308,7 @@
 		BFC937463906E5DB7A02A37C /* SazliTests */ = {
 			isa = PBXGroup;
 			children = (
+				38B6BA11BA8CC92717CC8402,
 				133024F475BE9D88AAD282D2,
 				E49541EF7B167411448C3C07,
 				5A623BDE0DCEB9B32FE7B6D7,
@@ -412,6 +430,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				444FD5E9F193ABDA111C3DBC,
 				7557E5D36A03C1F349AD7276,
 				59731672E4C25310B9738B3E,
 				F5E44CE258377592B9C1D601,
@@ -430,6 +449,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D9F8396681011CB3B56EF2B,
+				A8A6ED35E3692DE0E9A5059E,
+				5A8B648FD186D52C3FBD9DEA,
+				7D1C23EE5CD59AD8653EB3DE,
+				47017AE19F2F989C560662B2,
 				1B890DEB49ACB5E4226C33E8,
 				3CC6A954E270039BACF4F5CD,
 				9301F288B3B11AFC007BC8D4,
@@ -559,6 +583,8 @@
 				DEVELOPMENT_TEAM = 62TPVT35FP;
 				GENERATE_INFOPLIST_FILE = YES;
 				CODE_SIGN_ENTITLEMENTS = Sazli/App/Sazli.entitlements;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Sazli uses the microphone only when you enable voice commands in cooking mode, such as Next step or Repeat.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Sazli recognizes cooking commands such as Next, Previous, Repeat and Stop on this iPhone. Voice recordings are not saved.";
 				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -591,6 +617,8 @@
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				CODE_SIGN_ENTITLEMENTS = Sazli/App/Sazli.entitlements;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Sazli uses the microphone only when you enable voice commands in cooking mode, such as Next step or Repeat.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Sazli recognizes cooking commands such as Next, Previous, Repeat and Stop on this iPhone. Voice recordings are not saved.";
 				INFOPLIST_KEY_CFBundleDisplayName = Sazli;
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";

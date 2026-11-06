@@ -84,28 +84,14 @@ struct RecipeStepCard: View {
 
   private var cookingCard: some View {
     VStack(alignment: .leading, spacing: 24) {
-      HStack(spacing: 10) {
-        Text(String(format: "%02d", number))
-          .font(.system(.title2, design: .rounded, weight: .bold))
-          .monospacedDigit()
-          .foregroundStyle(SazliTheme.terracotta)
-          .frame(minWidth: 56, minHeight: 56)
-          .background(
-            SazliTheme.terracotta.opacity(0.11),
-            in: RoundedRectangle(cornerRadius: 18))
-        Text("STEP \(number)")
-          .font(.caption.weight(.semibold)).tracking(1.3)
-          .foregroundStyle(SazliTheme.terracotta)
-      }
-      .accessibilityHidden(true)
       Text(text)
-        .font(.largeTitle.weight(.medium))
-        .lineSpacing(6)
+        .font(.title.weight(.medium))
+        .lineSpacing(8)
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
     .padding(24)
-    .frame(maxWidth: .infinity, minHeight: 220, alignment: .topLeading)
+    .frame(maxWidth: .infinity, minHeight: 240, alignment: .topLeading)
     .recipePanel()
   }
 }
