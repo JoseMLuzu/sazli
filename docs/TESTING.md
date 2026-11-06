@@ -127,3 +127,13 @@ The Marisa Kapeal TikTok in IMPORT_AUDIT.md should populate 25 ingredient checkl
 ## Large structural robustness matrices
 
 See [ROBUSTNESS_AUDIT.md](ROBUSTNESS_AUDIT.md) for 6,674 additional deterministic scenarios and exact counts. RecipeRobustnessTests exercises headerless/grouped formats, quantities, delimiters, equivalents, food-name preservation, false-positive controls, first-line routing and implicit public-assistant structures. CrossPlatformImportTests repeats ordered formats through all three public description adapters. The full suite now has 104 tests; scenario counts are not method counts. The standalone persistence script includes current parser dependencies and passed its six isolated store phases.
+
+## Cooking voice assistance
+
+CookingVoiceTests adds 19 tests for strict Spanish/English commands, stable partials, permissions, stale results, audio sequencing, interruptions and shutdown. The full suite now has 123 tests. Adapters use fakes for audio; real microphone and narration acceptance remains manual. Follow [the voice checklist](COOKING_VOICE.md).
+
+Regional recognition selection adds three voice regressions (23 voice tests total). Test a phone without local es-ES support but with es-US/es-MX support: Español must remain enabled using an available Spanish recognizer. No available local Spanish variant must produce an explanatory error, with no English/server substitution. See COOKING_VOICE.md for physical-device capability evidence.
+
+## Cooking presentation refresh
+
+Verify a long step scrolls independently of the bottom tools/navigation. Ingredients, Timer and Voice should open their panels; closing voice settings must preserve enabled reading/commands. Pause/Resume should remain available on the step screen during narration. Confirm progress and Back/Next/Finish boundaries, ingredient check-off state, and the open Duo column layout. Inspect accessibility sizes and short landscape windows for scroll reachability.

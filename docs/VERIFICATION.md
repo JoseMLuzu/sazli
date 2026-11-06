@@ -460,3 +460,43 @@ Final full native suite: **104 passed, 0 failures**, iPhone 17 Pro / iOS 26.5, X
 The final signed generic iOS Release build passed with both extensions (`/private/tmp/sazli-robustness-round3-release-final.log`), and the Xcode project plist validated. A separate native Foundation replay of retained public documents preserved five TikTok outcomes (Crunchwrap 14/20, lemon pasta 25/7, Cajun 14/8, taco 9/7 and gnocchi 12/3) and two recipes each from retained public mobile/legacy ChatGPT transcripts. These were snapshot replays through current production parser sources with a value-only draft projection, not new network/browser requests or personal-library reads. Log: `/private/tmp/sazli-robustness-replay.log`.
 
 Devicectl confirmed successful installation of the final signed robustness update on the physical iPhone 15, preserving existing app data. No simulated recipe was inserted into the personal library. Interactive review/save remains a manual acceptance step.
+
+## Cooking voice assistance — November 5, 2026
+
+Added optional narration and local Spanish/English voice commands to cooking mode, with pause/resume/repeat, explicit permission handling, interrupted-session cleanup, and reading/capture exclusion. Both options begin off. No recipe migration or backend.
+
+Full native suite: **123 passed, 0 failures**, including 19 voice tests on iPhone 17 Pro / iOS 26.5, Xcode 27.2. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.05_01-35-52--0500.xcresult`; log: `/private/tmp/sazli-cooking-voice-full-tests.log`. Signed generic iOS Release build passed with both extensions; log: `/private/tmp/sazli-cooking-voice-release.log`. Project generator validated separately without altering signing.
+
+The signed update installed on the paired iPhone 15 after a connection-reset retry. Device Hub inspection reached the simulator library/editor, then failed with `noWindowsAvailable` before cooking controls could be reviewed. No real microphone/narration acceptance is claimed; follow [COOKING_VOICE.md](COOKING_VOICE.md). No commits or push.
+
+## Voice permission crash correction — November 5, 2026
+
+The iPhone crash report `Sazli-2026-11-05-014624.ips` identified an EXC_BREAKPOINT in `_dispatch_assert_queue_fail` from `NativeCookingCommandListener.authorize(language:)`, called by Speech/TCC on a background queue. The authorization closure had inherited MainActor isolation under Swift 6. Usage-description keys were present; this was a callback isolation failure.
+
+The production authorization callback is now explicitly nonisolated/Sendable. Audio-tap and recognition-result callbacks are also explicitly Sendable; UI/controller updates continue through MainActor tasks. A new regression invokes the production permission callback on a global queue for all four authorization states, without requesting microphone permission. All **20 voice tests passed, 0 failures**. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.05_01-47-49--0500.xcresult`; log: `/private/tmp/sazli-voice-crash-fix-tests.log`. Real microphone acceptance remains separate from these tests.
+
+The corrected signed Release build passed (`/private/tmp/sazli-voice-crash-fix-release.log`) and installed successfully on the paired iPhone 15. No recipe store was accessed or changed by diagnosis.
+
+## Spanish command availability correction — November 5, 2026
+
+Replaced hard-coded Spanish (Spain) recognition with same-language regional resolution. The paired iPhone 15 reported `es-US`, `es-MX`, `es-419`, and `es-CO` as locally supported/available; `es-ES` and `es-CL` reported no local support. This reproduced the original guard rejection without recording audio. A temporary native capability-only diagnostic passed on the physical phone and was removed after diagnosis. Its result is `build/DeviceVoiceDiagnostics/Logs/Test/Test-Sazli-2026.11.05_01-56-05--0500.xcresult`; log `/private/tmp/sazli-spanish-device-capabilities.log`. The initial diagnostic build needed the existing development team passed as a command-line override; project signing settings were preserved.
+
+All **23 permanent voice tests passed, 0 failures** on iPhone 17 Pro / iOS 26.5. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.05_01-54-52--0500.xcresult`; log `/private/tmp/sazli-voice-spanish-tests.log`. Signed iOS Release build passed, log `/private/tmp/sazli-voice-spanish-release.log`. No new permission, server fallback, recipe mutation, migration, commits, or push. Device availability probing does not certify spoken recognition accuracy.
+
+The Spanish correction installed successfully on the paired iPhone 15. User should retry Español → Voice commands and speak Siguiente/Anterior/Repetir/Detener between readings.
+
+## Cooking presentation refresh — November 5, 2026
+
+Updated CookingModeView, CookingVoiceControls and the prominent RecipeStepCard. Removed the repeated step badge and tinted heading panel, gave the instruction more space, moved voice settings to a sheet, and grouped Ingredients/Timer/Voice above persistent step navigation. The active voice status and Pause/Resume remain directly accessible. No model or voice/timer service behavior changed.
+
+**33 targeted tests passed, 0 failures** (23 voice, 10 timer), iPhone 17 Pro / iOS 26.5. Result: `build/ActionTests/Logs/Test/Test-Sazli-2026.11.05_02-05-05--0500.xcresult`; log `/private/tmp/sazli-cooking-layout-tests.log`. Interactive Device Hub review verified the new step screen with a long sample instruction, Next advancing to step 2 with 33% progress, the separate Voice panel, enabling Read aloud, and returning to the step with reading still enabled. Sample recipes were loaded only in the test simulator through the existing debug argument. Real microphone recognition, accessibility-size and Duo visual acceptance were not repeated in this pass.
+
+Signed iOS Release build passed (`/private/tmp/sazli-cooking-layout-release.log`) and installed successfully on the paired iPhone 15. No commits or push.
+
+## Native narration quality — November 5, 2026
+
+CookingSpeechOutput now ranks available same-language voices by quality, regional preference, system voice and stable identifier. Novelty/Personal voices are excluded. Utterances preserve recipe text and use normal pitch/default cadence. CookingVoiceTests adds three tests for quality/language exclusions, regional/system tie breaking, compact fallback and native Spanish utterance preservation. No UI controls, recipe schema, microphone permissions or external services were added.
+
+**26 voice tests passed, 0 failures** on iPhone 17 Pro / iOS 26.5; log `/private/tmp/sazli-natural-narration-tests.log`. Signed Release build passed; log `/private/tmp/sazli-natural-narration-release.log`. The physical-phone utterance test initially waited for the locked device, then completed successfully when it became available. It reported the selected voice as Mónica / es-ES / quality 1 (basic), so no higher-quality eligible Spanish voice was available to the app in that snapshot. Its log is `/private/tmp/sazli-natural-narration-device.log`. No audio was played by this test and no microphone access was requested. Subjective audio quality remains manual; downloading a higher-quality voice is a user action.
+
+The signed narration update installed successfully on the paired iPhone 15. No commits or push.
